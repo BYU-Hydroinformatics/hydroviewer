@@ -1,0 +1,83 @@
+#headerCustomButtons {
+    margin-right: 15px;
+    margin-left: 15px;
+    width: 800px
+}
+#app-content-wrapper #app-content{
+    height: 100%;
+    /*padding-top: 60px;*/
+    /*padding-bottom: 50px;*/
+}
+
+#inner-app-content{
+    padding: 0;
+}
+
+#app-actions {
+    display: none;
+}
+#map {
+    height: 100%;
+}
+
+#graph {
+    height: 100%;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.chart {
+    min-width: 320px;
+    max-width: 800px;
+    height: 220px;
+    margin: 0 auto;
+}
+.map-view-legend {
+    bottom: 50px;
+    /*right: 20px;*/
+    width: 170px;
+    max-height: 90%;
+    overflow-y: auto;
+    margin: 5px;
+    color:white;
+    background: #286090;
+    border: 1px #ddd solid;
+    z-index: 999;
+}
+.flex-container-row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#overview {
+    font-size: 15pt;
+    padding: 0 20px 0 20px;
+}
+#logos {
+  padding: 5px 0;
+  white-space: nowrap;
+  width: 100%;
+  display: table;
+}
+
+.logo-image {
+  vertical-align: middle;
+  display: table-cell;
+  padding: 0 2px;
+}
+
+.logo-image img {
+  max-width: 100%;
+}
+#about .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+#about .modal-body {
+  height: 100%;
+  border-radius: 0;
+}
