@@ -40,7 +40,7 @@
 
 {# Use the after_app_content block for modals #}
 {% block after_app_content %}
-
+<!-- Chart Modal -->
 <div class="modal fade" id="graph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -52,9 +52,51 @@
                 </div>
             </div>
             <div class="modal-body">
-                <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
-                <div id="plot" class="hidden">
-                    <div id="container" style="padding-right: 30px"></div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-toggle="tab">Forecast</a></li>
+                    <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical</a></li>
+                    <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Flow-Duration</a></li>
+                    <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="forecast_tab">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
+                                <div id="plot" class="hidden">
+                                    <div id="container" style="padding-right: 30px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- /.tab-pane -->
+                    <div role="tabpanel" class="tab-pane" id="historical">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div id="historical_streamflow_data" class="panel-body" style="height: 50%;">
+                                    Historical
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.tab-pane -->
+                    <div role="tabpanel" class="tab-pane" id="flow_duration">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div id="monthly_streamflow_data" class="panel-body" style="height: 50%;">
+                                    Flow Duration
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.tab-pane -->
+                    <div role="tabpanel" class="tab-pane" id="download">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                Download
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

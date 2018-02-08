@@ -41,6 +41,9 @@ class HydroviewerNepal(TethysAppBase):
             UrlMap(name='get-warning-points',
                    url='hydroviewer-nepal/ecmwf-rapid/get-warning-points',
                    controller='hydroviewer_nepal.controllers.get_warning_points'),
+            UrlMap(name='get-historic-data',
+                   url='hydroviewer-nepal/ecmwf-rapid/get-historic-data',
+                   controller='hydroviewer_nepal.controllers.get_historic_data'),
         )
 
         return url_maps

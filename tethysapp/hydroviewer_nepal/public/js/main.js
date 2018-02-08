@@ -375,6 +375,59 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
     });
 }
 
+function get_historic_time_series(model, watershed, subbasin, comid, startdate) {
+
+     $loading.removeClass('hidden');
+     $("#plot").addClass('hidden');
+    $.ajax({
+        type: 'GET',
+        url: 'ecmwf-rapid/get-historic-data/',
+        dataType: 'json',
+        data: {
+            'model': model,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'comid': comid,
+            'startdate': startdate
+        },
+        error: function () {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#info').addClass('hidden')
+            }, 5000);
+            $('#dates').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#dates').addClass('hidden')
+            }, 5000);
+        },
+        success: function (data) {
+            if ("success" in data) {
+                if ("ts_pairs_data" in data) {
+                    var returned_tsPairsData = JSON.parse(data.ts_pairs_data).ts_pairs;
+                    var returned_tsPairsData2 = JSON.parse(data.ts_pairs_data).ts_pairs2;
+                    initChart(returned_tsPairsData,returned_tsPairsData2, watershed, subbasin, comid);
+                    get_return_periods(watershed, subbasin, comid);
+                    $loading.addClass('hidden');
+                    $('#dates').removeClass('hidden');
+                    $("#plot").removeClass('hidden');
+                }
+            } else if ("error" in data) {
+                $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
+                $('#info').removeClass('hidden');
+
+                setTimeout(function () {
+                    $('#info').addClass('hidden')
+                }, 5000);
+            } else {
+                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            }
+        }
+    });
+}
+
 function initChart(data,data2, watershed, subbasin, id) {
     Highcharts.stockChart('container', {
         chart: {

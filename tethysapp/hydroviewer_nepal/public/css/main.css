@@ -81,3 +81,12 @@
   height: 100%;
   border-radius: 0;
 }
+#graph .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+#graph .modal-body {
+  height: 100%;
+  border-radius: 0;
+}
