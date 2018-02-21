@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import JsonResponse
 
-import plotly.graph_objs as go
 from utilities import *
 import requests
 import json
@@ -12,6 +11,8 @@ import time
 import netCDF4 as nc
 import numpy as np
 
+import plotly.graph_objs as go
+from tethys_sdk.gizmos import PlotlyView
 
 def home(request):
     """
@@ -105,64 +106,208 @@ def ecmwf_get_time_series(request):
             startdate = get_data['startdate']
         else:
             startdate = 'most_recent'
+        units = 'metric'
 
         if model == 'ecmwf-rapid':
-            res = requests.get('https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetWaterML/?watershed_name=' +
-                               watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&start_folder=' +
-                               startdate + '&stat_type=mean', headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            mean_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=mean&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            res2 = requests.get(
-                'https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
-                headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            hres_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=high_res&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            res3 = requests.get(
-                'https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetWaterML/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&start_folder=' +
-                startdate + '&stat_type=outer_range_lower',
-                headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            # res2 = requests.get(
+            #     'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
+            #     watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
+            #     headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            res4 = requests.get(
-                'https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetWaterML/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&start_folder=' +
-                startdate + '&stat_type=outer_range_upper',
-                headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            min_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=min&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            res5 = requests.get(
-                'https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetWaterML/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&start_folder=' +
-                startdate + '&stat_type=std_dev_range_lower',
-                headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            max_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=max&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            res6 = requests.get(
-                'https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetWaterML/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&start_folder=' +
-                startdate + '&stat_type=std_dev_range_upper',
-                headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
+            std_dev_lower_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=std_dev_range_lower&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            ts_pairs = get_ts_pairs(res.content)
-            ts_pairs2 = get_ts_pairs(res2.content)
-            ts_pairs3 = get_ts_pairs_range(res3.content,res4.content)
-            ts_pairs4 = get_ts_pairs_range(res5.content,res6.content)
+            std_dev_upper_res = requests.get(
+                'https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+                startdate + '&stat_type=std_dev_range_upper&return_format=csv',
+                headers={'Authorization': 'Token 0b1310ea009af7de0315213adf21ea765e57b03a'})
 
-            ts_pairs_data = {}
-            ts_pairs_data['watershed'] = watershed
-            ts_pairs_data['subbasin'] = subbasin
-            ts_pairs_data['id'] = comid
-            ts_pairs_data['ts_pairs'] = ts_pairs
-            ts_pairs_data['ts_pairs2'] = ts_pairs2
-            ts_pairs_data['ts_pairs3'] = ts_pairs3
-            ts_pairs_data['ts_pairs4'] = ts_pairs4
+            mean_pairs = mean_res.content.splitlines()
+            hres_pairs = mean_res.content.splitlines()
+            min_pairs = min_res.content.splitlines()
+            max_pairs = max_res.content.splitlines()
+            std_dev_lower_pairs = std_dev_lower_res.content.splitlines()
+            std_dev_upper_pairs = std_dev_upper_res.content.splitlines()
+
+            mean_pairs.pop(0)
+            hres_pairs.pop(0)
+            min_pairs.pop(0)
+            max_pairs.pop(0)
+            std_dev_lower_pairs.pop(0)
+            std_dev_upper_pairs.pop(0)
+
+            dates = []
+            hres_dates = []
+
+            mean_values = []
+            hres_values = []
+            min_values = []
+            max_values = []
+            std_dev_lower_values = []
+            std_dev_upper_values = []
+
+            stats_list = zip(mean_pairs, hres_pairs, min_pairs, max_pairs, std_dev_lower_pairs, std_dev_upper_pairs)
+            for mean_pair, hres_pair, min_pair, max_pair, std_dev_lower_pair, std_dev_upper_pair in stats_list:
+                dates.append(dt.datetime.strptime(mean_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
+                hres_dates.append(dt.datetime.strptime(hres_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
+
+                mean_values.append(float(mean_pair.split(',')[1]))
+                hres_values.append(float(hres_pair.split(',')[1]))
+                min_values.append(float(min_pair.split(',')[1]))
+                max_values.append(float(max_pair.split(',')[1]))
+                std_dev_lower_values.append(float(std_dev_lower_pair.split(',')[1]))
+                std_dev_upper_values.append(float(std_dev_upper_pair.split(',')[1]))
 
 
-            return JsonResponse({
-                "success": "Data analysis complete!",
-                "ts_pairs_data": json.dumps(ts_pairs_data)
-            })
+            # ----------------------------------------------
+            # Chart Section
+            # ----------------------------------------------
+
+            datetime_start = dates[0]
+            datetime_end = dates[-1]
+
+            avg_series = go.Scatter(
+                name='Mean',
+                x=dates,
+                y=mean_values,
+                line=dict(
+                    color='blue',
+                )
+            )
+
+            max_series = go.Scatter(
+                name='Max',
+                x=dates,
+                y=max_values,
+                fill='tonexty',
+                mode='lines',
+                line=dict(
+                    color='rgb(152, 251, 152)',
+                    width=0,
+                )
+            )
+
+            min_series = go.Scatter(
+                name='Min',
+                x=dates,
+                y=min_values,
+                fill=None,
+                mode='lines',
+                line=dict(
+                    color='rgb(152, 251, 152)',
+                )
+            )
+
+            std_dev_lower_series = go.Scatter(
+                name='Std. Dev. Lower',
+                x=dates,
+                y=std_dev_lower_values,
+                fill='tonexty',
+                mode='lines',
+                line=dict(
+                    color='rgb(152, 251, 152)',
+                    width=0,
+                )
+            )
+
+            std_dev_upper_series = go.Scatter(
+                name='Std. Dev. Upper',
+                x=dates,
+                y=std_dev_upper_values,
+                fill='tonexty',
+                mode='lines',
+                line=dict(
+                    width=0,
+                    color='rgb(34, 139, 34)',
+                )
+            )
+
+            plot_series = [min_series,
+                           std_dev_lower_series,
+                           std_dev_upper_series,
+                           max_series,
+                           avg_series]
+
+            if hres_pairs:
+                plot_series.append(go.Scatter(
+                    name='HRES',
+                    x=hres_dates,
+                    y=hres_values,
+                    line=dict(
+                        color='black',
+                    )
+                ))
+
+            # try:
+            #     return_shapes, return_annotations = \
+            #         get_return_period_ploty_info(
+            #             request, datetime_start, datetime_end,
+            #             forecast_statistics['max'].max())
+            # except NotFoundError:
+            #     return_annotations = []
+            #     return_shapes = []
+            #
+
+            layout = go.Layout(
+                title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
+                    watershed, subbasin, comid),
+                xaxis=dict(
+                    title='Date',
+                ),
+                yaxis=dict(
+                    title='Streamflow ({}<sup>3</sup>/s)'
+                          .format(get_units_title(units))
+                ),
+                # shapes=return_shapes,
+                # annotations=return_annotations
+            )
+
+            chart_obj = PlotlyView(
+                go.Figure(data=plot_series,
+                          layout=layout)
+            )
+
+            context = {
+                'gizmo_object': chart_obj,
+            }
+
+            return render(request,
+                          'hydroviewer_nepal/gizmo_ajax.html',
+                          context)
+
 
     except Exception as e:
         print str(e)
         return JsonResponse({'error': 'No data found for the selected reach.'})
+
 
 def get_available_dates(request):
     get_data = request.GET
@@ -213,7 +358,7 @@ def get_historic_data(request):
     subbasin = get_data['subbasin']
     comid = get_data['comid']
 
-    res = requests.get('https://tethys.byu.edu/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' + watershed +
+    res = requests.get('https://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' + watershed +
                        '&subbasin_name=' + subbasin + '&reach_id=' + comid,
                        headers={'Authorization': 'Token 72b145121add58bcc5843044d9f1006d9140b84b'})
 
@@ -221,134 +366,7 @@ def get_historic_data(request):
         "return_periods": eval(res.content)
     })
 
-def get_ecmwf_hydrograph_plot(request):
-    """
-    Retrieves 52 ECMWF ensembles analysis with min., max., avg., std. dev.
-    as a plotly hydrograph plot.
-    """
-    # retrieve statistics
-    forecast_statistics, watershed_name, subbasin_name, river_id, units = \
-        get_ecmwf_forecast_statistics(request)
 
-    # ensure lower std dev values limited by the min
-    std_dev_lower_df = \
-        forecast_statistics['std_dev_range_lower']
-    std_dev_lower_df[std_dev_lower_df < forecast_statistics['min']] =\
-        forecast_statistics['min']
-
-    # ----------------------------------------------
-    # Chart Section
-    # ----------------------------------------------
-    datetime_start = forecast_statistics['mean'].index[0]
-    datetime_end = forecast_statistics['mean'].index[-1]
-
-    avg_series = go.Scatter(
-        name='Mean',
-        x=forecast_statistics['mean'].index,
-        y=forecast_statistics['mean'].values,
-        line=dict(
-            color='blue',
-        )
-    )
-
-    max_series = go.Scatter(
-        name='Max',
-        x=forecast_statistics['max'].index,
-        y=forecast_statistics['max'].values,
-        fill='tonexty',
-        mode='lines',
-        line=dict(
-            color='rgb(152, 251, 152)',
-            width=0,
-        )
-    )
-
-    min_series = go.Scatter(
-        name='Min',
-        x=forecast_statistics['min'].index,
-        y=forecast_statistics['min'].values,
-        fill=None,
-        mode='lines',
-        line=dict(
-            color='rgb(152, 251, 152)',
-        )
-    )
-
-    std_dev_lower_series = go.Scatter(
-        name='Std. Dev. Lower',
-        x=std_dev_lower_df.index,
-        y=std_dev_lower_df.values,
-        fill='tonexty',
-        mode='lines',
-        line=dict(
-            color='rgb(152, 251, 152)',
-            width=0,
-        )
-    )
-
-    std_dev_upper_series = go.Scatter(
-        name='Std. Dev. Upper',
-        x=forecast_statistics['std_dev_range_upper'].index,
-        y=forecast_statistics['std_dev_range_upper'].values,
-        fill='tonexty',
-        mode='lines',
-        line=dict(
-            width=0,
-            color='rgb(34, 139, 34)',
-        )
-    )
-
-    plot_series = [min_series,
-                   std_dev_lower_series,
-                   std_dev_upper_series,
-                   max_series,
-                   avg_series]
-
-    if 'high_res' in forecast_statistics:
-        plot_series.append(go.Scatter(
-            name='HRES',
-            x=forecast_statistics['high_res'].index,
-            y=forecast_statistics['high_res'].values,
-            line=dict(
-                color='black',
-            )
-        ))
-
-    try:
-        return_shapes, return_annotations = \
-            get_return_period_ploty_info(
-                request, datetime_start, datetime_end,
-                forecast_statistics['max'].max())
-    except NotFoundError:
-        return_annotations = []
-        return_shapes = []
-
-    layout = go.Layout(
-        title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
-            watershed_name, subbasin_name, river_id),
-        xaxis=dict(
-            title='Date',
-        ),
-        yaxis=dict(
-            title='Streamflow ({}<sup>3</sup>/s)'
-                  .format(get_units_title(units))
-        ),
-        shapes=return_shapes,
-        annotations=return_annotations
-    )
-
-    chart_obj = PlotlyView(
-        go.Figure(data=plot_series,
-                  layout=layout)
-    )
-
-    context = {
-        'gizmo_object': chart_obj,
-    }
-
-    return render(request,
-                  'streamflow_prediction_tool/gizmo_ajax.html',
-                  context)
 def get_historical_hydrograph(request):
     """""
     Returns ERA Interim hydrograph
@@ -499,3 +517,13 @@ def get_daily_seasonal_streamflow_chart(request):
     return render(request,
                   'streamflow_prediction_tool/gizmo_ajax.html',
                   context)
+
+
+def get_units_title(unit_type):
+    """
+    Get the title for units
+    """
+    units_title = "m"
+    if unit_type == 'english':
+        units_title = "ft"
+    return units_title

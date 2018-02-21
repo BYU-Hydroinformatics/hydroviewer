@@ -1,5 +1,8 @@
 {% extends "hydroviewer_nepal/base.html" %}
 {% load tethys_gizmos %}
+{% block import_gizmos %}
+    {% import_gizmo_dependency plotly_view %}
+{% endblock %}
 
 {% block app_content %}
 <div id="map" class="map">
@@ -64,7 +67,7 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="forecast_tab">
                         <div class="panel panel-default">
-                            <div class="panel-body">
+                            <div id="long-term-chart" class="panel-body">
                                 <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
                                 <div id="plot" class="hidden">
                                     <div id="container" style="padding-right: 30px"></div>

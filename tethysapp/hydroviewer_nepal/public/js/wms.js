@@ -171,7 +171,7 @@ function view_watershed(){
 
         $('#dates').addClass('hidden');
 
-        $('#plot').addClass('hidden');
+        //$('#plot').addClass('hidden');
 
         map.updateSize();
 
@@ -406,7 +406,6 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
     $.ajax({
         type: 'GET',
         url: 'ecmwf-rapid/get-time-series/',
-        dataType: 'json',
         data: {
             'model': model,
             'watershed': watershed,
@@ -423,20 +422,13 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
             }, 5000);
         },
         success: function (data) {
-            if ("success" in data) {
-                if ("ts_pairs_data" in data) {
-                    var returned_tsPairsData = JSON.parse(data.ts_pairs_data).ts_pairs;
-                    var returned_tsPairsData2 = JSON.parse(data.ts_pairs_data).ts_pairs2;
-                    var returned_tsPairsData3 = JSON.parse(data.ts_pairs_data).ts_pairs3;
-                    var returned_tsPairsData4 = JSON.parse(data.ts_pairs_data).ts_pairs4;
-                    initChart(returned_tsPairsData,returned_tsPairsData2,returned_tsPairsData3,returned_tsPairsData4, watershed, subbasin, comid);
-                    get_return_periods(watershed, subbasin, comid);
-                    $loading.addClass('hidden');
-                    $("#plot").removeClass('hidden');
-                    $('#dates').removeClass('hidden');
-                }
+            if (data.error = false) {
+            $("#plot").removeClass('hidden');
+            $('#dates').removeClass('hidden');
+            $('#long-term-chart').removeClass('hidden');
+            $('#long-term-chart').html(data);
 
-            } else if ("error" in data) {
+            } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
                 $('#info').removeClass('hidden');
 
@@ -450,147 +442,6 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
     });
 }
 
-function initChart(data,data2,data3,data4, watershed, subbasin, id) {
-    if($("#container").highcharts()){
-        $("#container").highcharts().destroy();
-    }
-    Highcharts.stockChart('container', {
-        chart: {
-            zoomType: 'x'
-        },
-        title: {
-            text: 'Forecast'
-        },
-        subtitle: {
-            text: watershed.charAt(0).toUpperCase() + watershed.slice(1) + ' (' + subbasin.charAt(0).toUpperCase() + subbasin.slice(1) + '): ' + id
-        },
-        rangeSelector: {
-            allButtonsEnabled: true,
-            buttons: [{
-                type: 'day',
-                count: 15,
-                text: 'Forecast'
-            }, {
-                type: 'month',
-                count: 1,
-                text: '1m'
-            }, {
-                type: 'month',
-                count: 3,
-                text: '3m'
-            }, {
-                type: 'month',
-                count: 6,
-                text: '6m'
-            }, {
-                type: 'ytd',
-                text: 'YTD'
-            }, {
-                type: 'year',
-                count: 1,
-                text: '1y'
-            }, {
-                type: 'all',
-                text: 'All'
-            }
-            ],
-            buttonTheme: {
-                width: 60
-            },
-            selected: 0
-        },
-        xAxis: {
-            title: {
-                text: 'Date (UTC)'
-            },
-            type: 'datetime',
-            tickInterval:24 * 3600 * 10000,
-            minRange: 1 * 24 * 3600000,
-            ordinal:false
-        },
-        yAxis: {
-            title: {
-                text: 'Flow (cms)'
-            },
-            opposite:false,
-            min:0
-        },
-        legend: {
-            enabled: true
-        },
-        _navigator: {
-            enabled: false
-        },
-        plotOptions: {
-            series:{
-                pointStart: Date.UTC(1980, 0, 1),
-                pointInterval: 24 * 3600 * 1000,
-                connectNulls: true
-            },
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null,
-                marker: {
-                    enabled: false
-                }
-            }
-        },
-
-        series: [{
-            type: 'line',
-            name: 'Mean Forecast',
-            data: data,
-            lineWidth: 4
-        },
-            {
-                type: 'line',
-                name: 'Historic Forecast',
-                data: data2,
-                lineWidth: 2
-            },
-            {
-                type: 'arearange',
-                name: 'Ensemble Range',
-                data: data3,
-                lineWidth: 0,
-                dataLabels: {
-                    enabled: false
-                },
-                fillOpacity: 0.3,
-                visible: false
-            },
-            {
-                type: 'arearange',
-                name: 'Std. Dev.',
-                data: data4,
-                lineWidth: 0,
-                dataLabels: {
-                    enabled: false
-                },
-                fillOpacity: 0.3,
-                visible: false
-            }
-        ]
-    });
-
-}
 
 function map_events(){
     map.on('pointermove', function(evt) {
@@ -619,7 +470,7 @@ function map_events(){
                 $loading.removeClass('hidden');
                 //Retrieving the details for clicked point via the url
                 $('#dates').addClass('hidden');
-                $('#plot').addClass('hidden');
+                //$('#plot').addClass('hidden');
                 $.ajax({
                     type: "GET",
                     url: wms_url,
