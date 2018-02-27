@@ -69,34 +69,32 @@
                         <div class="panel panel-default">
                             <div id="long-term-chart" class="panel-body">
                                 <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
-                                <div id="plot" class="hidden">
-                                    <div id="container" style="padding-right: 30px"></div>
-                                </div>
                             </div>
                         </div>
                     </div> <!-- /.tab-pane -->
                     <div role="tabpanel" class="tab-pane" id="historical">
                         <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div id="historical_streamflow_data" class="panel-body" style="height: 50%;">
-                                    Historical
-                                </div>
+                            <div id="historical-chart" class="panel-body">
+                                <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
                             </div>
                         </div>
                     </div><!-- /.tab-pane -->
                     <div role="tabpanel" class="tab-pane" id="flow_duration">
                         <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div id="monthly_streamflow_data" class="panel-body" style="height: 50%;">
-                                    Flow Duration
-                                </div>
+                            <div id='fdc-chart' class="panel-body">
+                                <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
                             </div>
                         </div>
                     </div><!-- /.tab-pane -->
                     <div role="tabpanel" class="tab-pane" id="download">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                Download
+                                <h6>Download ERA Interim Data</h6>
+                                <div id="download_interim" class="btn-group" role="group">
+                                    <a class="btn btn-info" role="button" id="submit-download-interim-csv">
+                                        <span class="glyphicon glyphicon-play"></span> Download Interim Data
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

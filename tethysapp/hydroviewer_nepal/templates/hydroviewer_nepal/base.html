@@ -16,13 +16,15 @@
 
 {% block header_buttons %}
 <div id="headerCustomButtons" class="row">
-  <div class="col-md-6">
-    <div class="row">
-      <div id="modelSelect" class="col-md-9">
-          {% gizmo select_input model_input %}
+  {% if model_input%}
+    <div class="col-md-6">
+      <div class="row">
+        <div id="modelSelect" class="col-md-9">
+            {% gizmo select_input model_input %}
+        </div>
       </div>
     </div>
-  </div>
+  {% endif %}
   {% if watershed_select%}
     <div id="watershedSelect" class="col-md-6">
       {% gizmo select_input watershed_select %}

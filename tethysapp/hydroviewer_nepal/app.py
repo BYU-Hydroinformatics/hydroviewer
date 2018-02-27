@@ -32,18 +32,30 @@ class HydroviewerNepal(TethysAppBase):
                 name='get-available-dates',
                 url='hydroviewer-nepal/ecmwf-rapid/get-available-dates',
                 controller='hydroviewer_nepal.controllers.get_available_dates'),
-            UrlMap(name='get-time-series',
-                   url='hydroviewer-nepal/ecmwf-rapid/get-time-series',
-                   controller='hydroviewer_nepal.controllers.ecmwf_get_time_series'),
-            UrlMap(name='get-return-periods',
-                   url='hydroviewer-nepal/ecmwf-rapid/get-return-periods',
-                   controller='hydroviewer_nepal.controllers.get_return_periods'),
-            UrlMap(name='get-warning-points',
-                   url='hydroviewer-nepal/ecmwf-rapid/get-warning-points',
-                   controller='hydroviewer_nepal.controllers.get_warning_points'),
-            UrlMap(name='get-historic-data',
-                   url='hydroviewer-nepal/ecmwf-rapid/get-historic-data',
-                   controller='hydroviewer_nepal.controllers.get_historic_data'),
+            UrlMap(
+                name='get-time-series',
+                url='hydroviewer-nepal/ecmwf-rapid/get-time-series',
+                controller='hydroviewer_nepal.controllers.ecmwf_get_time_series'),
+            UrlMap(
+                name='get-return-periods',
+                url='hydroviewer-nepal/ecmwf-rapid/get-return-periods',
+                controller='hydroviewer_nepal.controllers.get_return_periods'),
+            UrlMap(
+                name='get-warning-points',
+                url='hydroviewer-nepal/ecmwf-rapid/get-warning-points',
+                controller='hydroviewer_nepal.controllers.get_warning_points'),
+            UrlMap(
+                name='get-historic-data',
+                url='hydroviewer-nepal/ecmwf-rapid/get-historic-data',
+                controller='hydroviewer_nepal.controllers.get_historic_data'),
+            UrlMap(
+                name='get-flow-duration-curve',
+                url='hydroviewer-nepal/ecmwf-rapid/get-flow-duration-curve',
+                controller='hydroviewer_nepal.controllers.get_flow_duration_curve'),
+            UrlMap(
+                name='get_historic_data_csv',
+                url='hydroviewer-nepal/ecmwf-rapid/get-historic-data-csv',
+                controller='hydroviewer_nepal.controllers.get_historic_data_csv'),
         )
 
         return url_maps
