@@ -49,7 +49,7 @@ def home(request):
     geoserver_workspace = app.get_custom_setting('workspace').encode("utf-8")
     region = app.get_custom_setting('region').encode("utf-8")
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=[geoserver_base_url, geoserver_workspace, region],
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 

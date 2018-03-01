@@ -197,7 +197,7 @@ function view_watershed(){
 
         $('#dates').addClass('hidden');
 
-        var workspace = eval($('#geoserver_endpoint').val())[1];
+        var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
         var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
@@ -207,7 +207,7 @@ function view_watershed(){
         var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
                 params: {'LAYERS':layerName},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -218,7 +218,7 @@ function view_watershed(){
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
-        var ajax_url =eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url =JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -597,15 +597,15 @@ function map_events(){
                         if ("derived_from" in (result["features"][0]["properties"])) {
                             var watershed = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[0];
                             var subbasin = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[1];
-                        } else if (eval($('#geoserver_endpoint').val())[2]) {
-                            var watershed = eval($('#geoserver_endpoint').val())[2].split('-')[0]
-                            var subbasin = eval($('#geoserver_endpoint').val())[2].split('-')[1];
+                        } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
+                            var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
+                            var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
                         } else {
                             var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
                             var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
                         };
 
-                        var workspace = eval($('#geoserver_endpoint').val())[1];
+                        var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
 
                         var model = 'ecmwf-rapid';
                         $('#info').addClass('hidden');
@@ -632,7 +632,7 @@ function add_feature(workspace,watershed,subbasin,comid){
     var vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         url: function (extent) {
-            return eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+'ows?service=wfs&' +
+            return JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+'ows?service=wfs&' +
                 'version=2.0.0&request=getfeature&typename='+workspace+':'+watershed+'-'+subbasin+'-drainage_line'+'&CQL_FILTER=COMID='+comid+'&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
         },
         strategy: ol.loadingstrategy.bbox
