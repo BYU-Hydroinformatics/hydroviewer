@@ -246,10 +246,6 @@ function view_watershed(){
         });
 
     } else {
-//        $("#inner-app-content").removeClass("row");
-//        $("#map").removeClass("col-md-7");
-//        $("#graph").addClass("hidden");
-//        $("#graph").removeClass("col-md-5");
 
         map.updateSize();
         //map.removeInteraction(select_interaction);
@@ -594,9 +590,9 @@ function map_events(){
                     success: function (result) {
                         var comid = result["features"][0]["properties"]["COMID"];
                         var startdate = '';
-                        if ("derived_from" in (result["features"][0]["properties"])) {
-                            var watershed = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[0];
-                            var subbasin = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[1];
+                        if ("derived_fr" in (result["features"][0]["properties"])) {
+                            var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
+                            var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
                         } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
                             var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
                             var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
@@ -609,7 +605,7 @@ function map_events(){
 
                         var model = 'ecmwf-rapid';
                         $('#info').addClass('hidden');
-                        add_feature(workspace,watershed,subbasin,comid);
+                        add_feature(workspace,comid);
 
                         get_available_dates(watershed, subbasin,comid);
                         get_time_series(model, watershed, subbasin, comid, startdate);
@@ -626,8 +622,11 @@ function map_events(){
 
 }
 
-function add_feature(workspace,watershed,subbasin,comid){
+function add_feature(workspace,comid){
     map.removeLayer(featureOverlay);
+
+    var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
+    var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
 
     var vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),

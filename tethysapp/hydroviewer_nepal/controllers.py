@@ -35,7 +35,18 @@ def home(request):
                       any(val in value[0].lower().replace(' ', '') for
                           val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
 
-    watershed_list.append(['Select Watershed', ''])
+    watershed_list = [['Select Watershed', '']] + watershed_list
+
+    res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
+                        '/featuretypes.json')
+
+    for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
+        raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
+        if 'drainage_line' in raw_feature and any(n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
+            feat_name = raw_feature.split('-')[0].replace('_', ' ').title() + ' (' + \
+                        raw_feature.split('-')[1].replace('_', ' ').title() + ')'
+            if feat_name not in watershed_list:
+                watershed_list.append([feat_name, feat_name])
 
     watershed_select = SelectInput(display_text='',
                                    name='watershed',
@@ -45,9 +56,9 @@ def home(request):
                                    attributes = {'onchange':"javascript:view_watershed();"}
                                    )
 
-    geoserver_base_url = app.get_custom_setting('geoserver').encode("utf-8")
-    geoserver_workspace = app.get_custom_setting('workspace').encode("utf-8")
-    region = app.get_custom_setting('region').encode("utf-8")
+    geoserver_base_url = app.get_custom_setting('geoserver')
+    geoserver_workspace = app.get_custom_setting('workspace')
+    region = app.get_custom_setting('region')
     geoserver_endpoint = TextInput(display_text='',
                                    initial=json.dumps([geoserver_base_url, geoserver_workspace, region]),
                                    name='geoserver_endpoint',
@@ -558,7 +569,9 @@ def get_historic_data_csv(request):
         qout_data.pop(0)
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=historic_streamflow_{0}_{1}_{2}.csv'.format(watershed, subbasin, comid)
+        response['Content-Disposition'] = 'attachment; filename=historic_streamflow_{0}_{1}_{2}.csv'.format(watershed,
+                                                                                                            subbasin,
+                                                                                                            comid)
 
         writer = csv_writer(response)
 
@@ -600,8 +613,12 @@ def get_forecast_data_csv(request):
         qout_data = res.content.splitlines()
         qout_data.pop(0)
 
+        init_time = qout_data[0].split(',')[0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=current_streamflow_{0}_{1}_{2}.csv'.format(watershed, subbasin, comid)
+        response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_{0}_{1}_{2}_{3}.csv'.format(watershed,
+                                                                                                                subbasin,
+                                                                                                                comid,
+                                                                                                                init_time)
 
         writer = csv_writer(response)
         writer.writerow(['datetime', 'high_res (m3/s)', 'max (m3/s)', 'mean (m3/s)', 'min (m3/s)', 'std_dev_range_lower (m3/s)',

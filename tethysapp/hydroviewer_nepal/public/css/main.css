@@ -86,6 +86,10 @@
   height: 75%;
   padding: 0;
 }
+.logos {
+    width: 20%;
+    padding: 0 5px 0 5px;
+}
 #graph .modal-body {
   height: 100%;
   border-radius: 0;

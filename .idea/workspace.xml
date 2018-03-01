@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="93f1c550-5d35-4ef0-b9f5-c04dd1fc1498" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/images/Copernicus_logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/images/byu_logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/images/glofas_logo.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/controllers.py" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/controllers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html" afterPath="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html" />
     </list>
     <ignored path=".idea/dataSources.local.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,7 +33,7 @@
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/app.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+              <caret line="9" column="29" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="29" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -39,8 +44,8 @@
       <file leaf-file-name="controllers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/controllers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="56" column="37" selection-start-line="56" selection-start-column="37" selection-end-line="56" selection-end-column="37" />
+            <state vertical-scroll-proportion="-11.444445">
+              <caret line="67" column="37" selection-start-line="67" selection-start-column="37" selection-end-line="67" selection-end-column="37" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -48,11 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.css" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="35" column="1" selection-start-line="35" selection-start-column="1" selection-end-line="35" selection-end-column="1" />
+            <state vertical-scroll-proportion="0.26792827">
+              <caret line="49" column="18" selection-start-line="49" selection-start-column="18" selection-end-line="49" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -61,8 +66,8 @@
       <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="128" column="79" selection-start-line="128" selection-start-column="70" selection-end-line="128" selection-end-column="79" />
+            <state vertical-scroll-proportion="-7.4313726">
+              <caret line="54" column="41" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -71,7 +76,7 @@
       <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-10.625">
               <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
@@ -81,19 +86,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="wms.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="wms.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4954955">
-              <caret line="642" column="29" selection-start-line="642" selection-start-column="29" selection-end-line="642" selection-end-column="29" />
+            <state vertical-scroll-proportion="-12.666667">
+              <caret line="195" column="26" selection-start-line="195" selection-start-column="12" selection-end-line="195" selection-end-column="26" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-                <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-                <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-                <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-                <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-                <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+                <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -120,7 +125,7 @@
       <file leaf-file-name="gizmo_ajax.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/gizmo_ajax.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-1.25">
               <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
               <folding />
             </state>
@@ -164,12 +169,12 @@
         <option value="$USER_HOME$/gwater.py" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/gizmo_ajax.html" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/main.js" />
-        <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css" />
-        <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/base.html" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/app.py" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/controllers.py" />
         <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js" />
+        <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html" />
+        <option value="$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css" />
       </list>
     </option>
   </component>
@@ -179,9 +184,10 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="1918" />
     <option name="y" value="23" />
-    <option name="width" value="1440" />
-    <option name="height" value="873" />
+    <option name="width" value="1922" />
+    <option name="height" value="1173" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -208,8 +214,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -304,12 +308,40 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="images" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HydroviewerNepal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HydroviewerNepal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tethysapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hydroviewer_nepal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="css" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -549,14 +581,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="873" extended-state="6" />
+    <frame x="1918" y="23" width="1922" height="1173" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.010729614" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1888298" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5909511" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -607,6 +639,73 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="1" selection-start-line="35" selection-start-column="1" selection-end-line="35" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="128" column="79" selection-start-line="128" selection-start-column="70" selection-end-line="128" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="352" column="34" selection-start-line="352" selection-start-column="34" selection-end-line="352" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <marker date="1518819986000" expanded="true" signature="8087:8105" placeholder="..." />
+            <marker date="1518819986000" expanded="true" signature="8926:8944" placeholder="..." />
+            <marker date="1518819986000" expanded="true" signature="10943:10961" placeholder="..." />
+            <marker date="1518819986000" expanded="true" signature="12116:12134" placeholder="..." />
+            <marker date="1518819986000" expanded="true" signature="13101:13119" placeholder="..." />
+            <marker date="1518819986000" expanded="true" signature="14274:14292" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/gizmo_ajax.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -660,12 +759,12 @@
           <caret line="584" column="26" selection-start-line="584" selection-start-column="26" selection-end-line="584" selection-end-column="26" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -739,12 +838,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -818,12 +917,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -897,12 +996,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -976,12 +1075,12 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1017,9 +1116,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/gizmo_ajax.html">
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.625">
+          <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="29" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/gizmo_ajax.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.25">
           <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
           <folding />
         </state>
@@ -1041,66 +1161,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css">
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="1" selection-start-line="35" selection-start-column="1" selection-end-line="35" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="128" column="79" selection-start-line="128" selection-start-column="70" selection-end-line="128" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+        <state vertical-scroll-proportion="-12.666667">
+          <caret line="195" column="26" selection-start-line="195" selection-start-column="12" selection-end-line="195" selection-end-column="26" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#56#0" expanded="true" />
+            <element signature="n#!!doc" expanded="true" />
+            <marker date="1519943981000" expanded="true" signature="11064:11082" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="12060:12078" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="14095:14113" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="15226:15244" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="16943:16961" placeholder="..." />
+            <marker date="1519943981000" expanded="true" signature="18175:18193" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/controllers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="37" selection-start-line="56" selection-start-column="37" selection-end-line="56" selection-end-column="37" />
+        <state vertical-scroll-proportion="-11.444445">
+          <caret line="67" column="37" selection-start-line="67" selection-start-column="37" selection-end-line="67" selection-end-column="37" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/js/wms.js">
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/templates/hydroviewer_nepal/home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4954955">
-          <caret line="642" column="29" selection-start-line="642" selection-start-column="29" selection-end-line="642" selection-end-column="29" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <marker date="1519922060000" expanded="true" signature="11252:11270" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="12248:12266" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="14283:14301" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="15414:15432" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="17131:17149" placeholder="..." />
-            <marker date="1519922060000" expanded="true" signature="18363:18381" placeholder="..." />
-          </folding>
+        <state vertical-scroll-proportion="-7.4313726">
+          <caret line="54" column="41" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/hydroviewer_nepal/public/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26792827">
+          <caret line="49" column="18" selection-start-line="49" selection-start-column="18" selection-end-line="49" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
