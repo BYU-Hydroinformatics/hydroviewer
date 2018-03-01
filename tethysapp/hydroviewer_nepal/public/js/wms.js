@@ -197,7 +197,7 @@ function view_watershed(){
 
         $('#dates').addClass('hidden');
 
-        var workspace = 'spt-30935191ace55f90bd1e61456f1ef016';
+        var workspace = eval($('#geoserver_endpoint').val())[1];
         var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
@@ -207,7 +207,7 @@ function view_watershed(){
         var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: 'http://tethys.byu.edu:8181/geoserver/wms',
+                url: eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
                 params: {'LAYERS':layerName},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -218,7 +218,7 @@ function view_watershed(){
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
-        var ajax_url ='http://tethys.byu.edu:8181/geoserver/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url =eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -239,16 +239,9 @@ function view_watershed(){
                 var miny = Number(x.split('"')[3]);
                 var maxx = Number(x.split('"')[5]);
                 var maxy = Number(x.split('"')[7]);
-                if(watershed=='south_asia'){
-                    var extent = ol.proj.transform([64.5,9.5], 'EPSG:4326', 'EPSG:3857').concat(ol.proj.transform([105.5, 31.5], 'EPSG:4326', 'EPSG:3857'));
+                var extent = ol.proj.transform([minx, miny], 'EPSG:4326', 'EPSG:3857').concat(ol.proj.transform([maxx, maxy], 'EPSG:4326', 'EPSG:3857'));
 
-                    map.getView().fit(extent, map.getSize())
-                }else{
-                    var extent = ol.proj.transform([minx, miny], 'EPSG:4326', 'EPSG:3857').concat(ol.proj.transform([maxx, maxy], 'EPSG:4326', 'EPSG:3857'));
-
-                    map.getView().fit(extent, map.getSize())
-                }
-
+                map.getView().fit(extent, map.getSize())
             }
         });
 
@@ -423,7 +416,7 @@ function get_return_periods(watershed, subbasin, comid) {
 
 function get_time_series(model, watershed, subbasin, comid, startdate) {
     $loading.removeClass('hidden');
-    $("#plot").addClass('hidden');
+    $('#long-term-chart').addClass('hidden');
     $('#dates').addClass('hidden');
     $.ajax({
         type: 'GET',
@@ -445,31 +438,24 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
         },
         success: function (data) {
             if (!data.error) {
-                $("#plot").removeClass('hidden');
                 $('#dates').removeClass('hidden');
+                $loading.addClass('hidden');
                 $('#long-term-chart').removeClass('hidden');
                 $('#long-term-chart').html(data);
 
-                ////FUNCTION: updates forecast download URL
-                //updateDownloadForecastURL = function() {
-                //    var params = {
-                //        watershed_name: watershed,
-                //        subbasin_name: subbasin,
-                //        reach_id: comid,
-                //        units: 'metric',
-                //    };
-                //    var sel_data = $('#download-select').select2('data');
-                //    if (sel_data != null)
-                //    {
-                //        params.forecast_folder = sel_data.id;
-                //    }
-                //
-                //    //change download button urls
-                //    $('#submit-download-forecast').attr({
-                //        target: '_blank',
-                //        href: 'get-forecast-streamflow-csv?' + jQuery.param( params )
-                //    });
-                //}
+                var params = {
+                    watershed_name: watershed,
+                    subbasin_name: subbasin,
+                    reach_id: comid,
+                    startdate: startdate,
+                };
+
+                $('#submit-download-forecast').attr({
+                    target: '_blank',
+                    href: 'ecmwf-rapid/get-forecast-data-csv?' + jQuery.param( params )
+                });
+
+                $('#download_forecast').removeClass('hidden');
 
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
@@ -501,7 +487,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
         },
         success: function (data) {
             if (!data.error) {
-                $("#historical-plot").removeClass('hidden');
+                $('#his-view-file-loading').addClass('hidden');
                 $('#historical-chart').removeClass('hidden');
                 $('#historical-chart').html(data);
 
@@ -509,7 +495,6 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
                     watershed_name: watershed,
                     subbasin_name: subbasin,
                     reach_id: comid,
-                    units: 'metric',
                     daily: false
                 };
 
@@ -517,6 +502,8 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
                     target: '_blank',
                     href: 'ecmwf-rapid/get-historic-data-csv?' + jQuery.param( params )
                 });
+
+                $('#download_interim').removeClass('hidden');
 
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
@@ -548,7 +535,7 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
         },
         success: function (data) {
             if (!data.error) {
-                $("#fdc-plot").removeClass('hidden');
+                $('#fdc-view-file-loading').addClass('hidden');
                 $('#fdc-chart').removeClass('hidden');
                 $('#fdc-chart').html(data);
             } else if (data.error) {
@@ -584,6 +571,13 @@ function map_events(){
 
         if (map.getTargetElement().style.cursor == "pointer") {
             $("#graph").modal('show');
+
+            $('#long-term-chart').addClass('hidden');
+            $('#historical-chart').addClass('hidden');
+            $('#fdc-chart').addClass('hidden');
+            $('#download_forecast').addClass('hidden');
+            $('#download_interim').addClass('hidden');
+
             var view = map.getView();
             var viewResolution = view.getResolution();
 
@@ -600,9 +594,18 @@ function map_events(){
                     success: function (result) {
                         var comid = result["features"][0]["properties"]["COMID"];
                         var startdate = '';
-                        var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
-                        var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
-                        var workspace = 'spt-30935191ace55f90bd1e61456f1ef016';
+                        if ("derived_from" in (result["features"][0]["properties"])) {
+                            var watershed = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[0];
+                            var subbasin = (result["features"][0]["properties"]["derived_from"]).toLowerCase().split('-')[1];
+                        } else if (eval($('#geoserver_endpoint').val())[2]) {
+                            var watershed = eval($('#geoserver_endpoint').val())[2].split('-')[0]
+                            var subbasin = eval($('#geoserver_endpoint').val())[2].split('-')[1];
+                        } else {
+                            var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
+                            var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
+                        };
+
+                        var workspace = eval($('#geoserver_endpoint').val())[1];
 
                         var model = 'ecmwf-rapid';
                         $('#info').addClass('hidden');
@@ -629,7 +632,7 @@ function add_feature(workspace,watershed,subbasin,comid){
     var vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         url: function (extent) {
-            return 'http://tethys.byu.edu:8181/geoserver/ows?service=wfs&' +
+            return eval($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+'ows?service=wfs&' +
                 'version=2.0.0&request=getfeature&typename='+workspace+':'+watershed+'-'+subbasin+'-drainage_line'+'&CQL_FILTER=COMID='+comid+'&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
         },
         strategy: ol.loadingstrategy.bbox
@@ -661,6 +664,7 @@ $(function(){
         var subbasin = sel_val[2];
         var comid = sel_val[3];
         var model = 'ecmwf-rapid';
+        $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
     });
 });
