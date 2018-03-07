@@ -176,11 +176,11 @@ function init_map(){
     map = new ol.Map({
         target: 'map',
         view: new ol.View({
-            center: ol.proj.transform([84, 28.2], 'EPSG:4326', 'EPSG:3857'),
+            center: ol.proj.transform([102.5, 15.5], 'EPSG:4326', 'EPSG:3857'),
             zoom: 3,
             minZoom: 2,
             maxZoom: 18,
-            zoom:7.5
+            zoom:5
         }),
         layers:layers
     });
