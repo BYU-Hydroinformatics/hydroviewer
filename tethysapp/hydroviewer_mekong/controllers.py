@@ -12,7 +12,7 @@ import datetime as dt
 
 import plotly.graph_objs as go
 
-from .app import HydroviewerNepal as app
+from .app import HydroviewerMekong as app
 
 def home(request):
     """
@@ -70,7 +70,7 @@ def home(request):
         "geoserver_endpoint": geoserver_endpoint
     }
 
-    return render(request, 'hydroviewer_nepal/home.html', context)
+    return render(request, 'hydroviewer_mekong/home.html', context)
 
 
 def get_warning_points(request):
@@ -262,7 +262,7 @@ def ecmwf_get_time_series(request):
                 'gizmo_object': chart_obj,
             }
 
-            return render(request, 'hydroviewer_nepal/gizmo_ajax.html', context)
+            return render(request, 'hydroviewer_mekong/gizmo_ajax.html', context)
 
 
     except Exception as e:
@@ -377,7 +377,7 @@ def get_historic_data(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request,'hydroviewer_mekong/gizmo_ajax.html', context)
 
     except Exception as e:
         print str(e)
@@ -442,7 +442,7 @@ def get_flow_duration_curve(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request,'hydroviewer_mekong/gizmo_ajax.html', context)
 
     except Exception as e:
         print str(e)

@@ -1,4 +1,4 @@
-{% extends "hydroviewer_nepal/base.html" %}
+{% extends "hydroviewer_mekong/base.html" %}
 {% load tethys_gizmos %}
 {% block import_gizmos %}
     {% import_gizmo_dependency plotly_view %}
@@ -52,9 +52,9 @@
                     <div id="watershed-info" class="col-md-8"></div>
                     <div class="col-md-4">
                         <div align="right">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/byu_logo.png">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/glofas_logo.png">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/copernicus_logo.png">
+                        <img class="logos" src="/static/hydroviewer_mekong/images/byu_logo.png">
+                        <img class="logos" src="/static/hydroviewer_mekong/images/glofas_logo.png">
+                        <img class="logos" src="/static/hydroviewer_mekong/images/copernicus_logo.png">
                         </div>
                     </div>
                 </div>
@@ -77,20 +77,20 @@
                                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
                                     <select id="datesSelect" class="form-control"></select>
                                 </div>
-                                <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
+                                <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="/static/hydroviewer_mekong/images/loader.gif" /></div>
                                 <div id="long-term-chart"></div>
                             </div>
                         </div>
                     </div> <!-- /.tab-pane -->
                     <div role="tabpanel" class="tab-pane" id="historical">
                         <div class="panel panel-default">
-                            <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
+                            <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="/static/hydroviewer_mekong/images/loader.gif" /></div>
                             <div id="historical-chart" class="panel-body"></div>
                         </div>
                     </div><!-- /.tab-pane -->
                     <div role="tabpanel" class="tab-pane" id="flow_duration">
                         <div class="panel panel-default">
-                            <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
+                            <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="/static/hydroviewer_mekong/images/loader.gif" /></div>
                             <div id='fdc-chart' class="panel-body"></div>
                         </div>
                     </div><!-- /.tab-pane -->
