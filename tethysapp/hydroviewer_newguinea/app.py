@@ -9,7 +9,7 @@ class HydroviewerNewGuinea(TethysAppBase):
 
     name = 'HydroViewer New Guinea'
     index = 'hydroviewer_newguinea:home'
-    icon = 'hydroviewer_newguinea/images/logo.png'
+    icon = 'hydroviewer_newguinea/images/indo_newguinea.png'
     package = 'hydroviewer_newguinea'
     root_url = 'hydroviewer-newguinea'
     color = '#C62E0D'
