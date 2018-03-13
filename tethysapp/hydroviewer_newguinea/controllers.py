@@ -12,7 +12,7 @@ import datetime as dt
 
 import plotly.graph_objs as go
 
-from .app import HydroviewerNepal as app
+from .app import HydroviewerNewGuinea as app
 
 def home(request):
     """

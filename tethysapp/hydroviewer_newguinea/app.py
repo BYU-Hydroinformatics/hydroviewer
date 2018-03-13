@@ -2,16 +2,16 @@ from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
 
 
-class HydroviewerNepal(TethysAppBase):
+class HydroviewerNewGuinea(TethysAppBase):
     """
-    Tethys app class for HydroViewer Nepal.
+    Tethys app class for HydroViewer New Guinea.
     """
 
-    name = 'HydroViewer Nepal'
+    name = 'HydroViewer New Guinea'
     index = 'hydroviewer_newguinea:home'
     icon = 'hydroviewer_newguinea/images/logo.png'
     package = 'hydroviewer_newguinea'
-    root_url = 'hydroviewer-nepal'
+    root_url = 'hydroviewer-newguinea'
     color = '#C62E0D'
     description = 'Place a brief description of your app here.'
     tags = 'Hydrology'
@@ -27,39 +27,39 @@ class HydroviewerNepal(TethysAppBase):
         url_maps = (
             UrlMap(
                 name='home',
-                url='hydroviewer-nepal',
+                url='hydroviewer-newguinea',
                 controller='hydroviewer_newguinea.controllers.home'),
             UrlMap(
                 name='get-available-dates',
-                url='hydroviewer-nepal/ecmwf-rapid/get-available-dates',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-available-dates',
                 controller='hydroviewer_newguinea.controllers.get_available_dates'),
             UrlMap(
                 name='get-time-series',
-                url='hydroviewer-nepal/ecmwf-rapid/get-time-series',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-time-series',
                 controller='hydroviewer_newguinea.controllers.ecmwf_get_time_series'),
             UrlMap(
                 name='get-return-periods',
-                url='hydroviewer-nepal/ecmwf-rapid/get-return-periods',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-return-periods',
                 controller='hydroviewer_newguinea.controllers.get_return_periods'),
             UrlMap(
                 name='get-warning-points',
-                url='hydroviewer-nepal/ecmwf-rapid/get-warning-points',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-warning-points',
                 controller='hydroviewer_newguinea.controllers.get_warning_points'),
             UrlMap(
                 name='get-historic-data',
-                url='hydroviewer-nepal/ecmwf-rapid/get-historic-data',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-historic-data',
                 controller='hydroviewer_newguinea.controllers.get_historic_data'),
             UrlMap(
                 name='get-flow-duration-curve',
-                url='hydroviewer-nepal/ecmwf-rapid/get-flow-duration-curve',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-flow-duration-curve',
                 controller='hydroviewer_newguinea.controllers.get_flow_duration_curve'),
             UrlMap(
                 name='get_historic_data_csv',
-                url='hydroviewer-nepal/ecmwf-rapid/get-historic-data-csv',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-historic-data-csv',
                 controller='hydroviewer_newguinea.controllers.get_historic_data_csv'),
             UrlMap(
                 name='get_forecast_data_csv',
-                url='hydroviewer-nepal/ecmwf-rapid/get-forecast-data-csv',
+                url='hydroviewer-newguinea/ecmwf-rapid/get-forecast-data-csv',
                 controller='hydroviewer_newguinea.controllers.get_forecast_data_csv'),
         )
 
