@@ -12,7 +12,6 @@ var current_layer,
     ten_year_warning,
     twenty_year_warning,
     map;
-var model = 'ecmwf-rapid';
 var $loading = $('#view-file-loading');
 var m_downloaded_historical_streamflow = false;
 var m_downloaded_flow_duration = false;
@@ -86,36 +85,7 @@ var two_symbols = [new ol.style.RegularShape({
 })];
 
 
-$(function () {
-    $("#forecast_tab_link").click(function(){
-        Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
-    });
-
-    $("#historical_tab_link").click(function(){
-        if (!m_downloaded_historical_streamflow && isValidRiverSelected()) {
-            addInfoMessage("Loading data ...", "historical_streamflow_data");
-            loadHistoricallStreamflowChart();
-        }
-        else if (m_downloaded_historical_streamflow)
-        {
-            Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
-        }
-    });
-
-    $("#flow_duration_tab_link").click(function(){
-        if (!m_downloaded_flow_duration && isValidRiverSelected()) {
-            addInfoMessage("Loading data ...", "flow_duration_data");
-            loadFlowDurationChart();
-        }
-        else if (m_downloaded_flow_duration)
-        {
-            Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
-        }
-    });
-})
-
-
-function init_map(){
+function init_map () {
 
 
     var base_layer = new ol.layer.Tile({
@@ -169,18 +139,18 @@ function init_map(){
         })
     });
 
-
-
-
     layers = [base_layer,two_year_warning,ten_year_warning,twenty_year_warning,featureOverlay];
+
+    var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
+    var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
+    var zoomLevel = Number(JSON.parse($('#zoom_info').val()).split(',')[2]);
     map = new ol.Map({
         target: 'map',
         view: new ol.View({
-            center: ol.proj.transform([84, 28.2], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 3,
+            center: ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857'),
+            zoom: zoomLevel,
             minZoom: 2,
             maxZoom: 18,
-            zoom:7.5
         }),
         layers:layers
     });
@@ -191,13 +161,14 @@ function view_watershed(){
     map.removeInteraction(select_interaction);
     map.removeLayer(wmsLayer);
     $("#get-started").modal('hide');
-    if ($('#watershedSelect option:selected').val() !== "") {
+    if ($('#model option:selected').text() === 'ECMWF-RAPID' && $('#watershedSelect option:selected').val() !== "") {
 
         $("#watershed-info").empty();
 
         $('#dates').addClass('hidden');
 
         var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
+        var model = $('#model option:selected').text();
         var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
@@ -214,7 +185,8 @@ function view_watershed(){
             })
         });
 
-        get_warning_points(watershed,subbasin);
+        get_warning_points(model, watershed, subbasin);
+
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
@@ -245,6 +217,47 @@ function view_watershed(){
             }
         });
 
+    } else  if ($('#model option:selected').text() === 'LIS-RAPID' && $('#watershedSelect option:selected').val() !== "") {
+        $("#watershed-info").empty();
+
+        $('#dates').addClass('hidden');
+
+        var model = $('#model option:selected').text();
+        var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
+        var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
+        var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
+        var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        $("#watershed-info").append('<h3>Current Watershed: '+ watershed_display_name + '</h3><h5>Subbasin Name: '+ subbasin_display_name);
+
+        var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
+        $.ajax({
+            type: 'GET',
+            url: 'get-lis-shp/',
+            dataType: 'json',
+            data: {
+                'model': model,
+                'watershed': watershed,
+                'subbasin': subbasin
+            },
+            success: function (result) {
+                wmsLayer = new ol.layer.Vector({
+                    renderMode: 'image',
+                    source: new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(result.options)
+                    }),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'blue',
+                            width: 1
+                        })
+                    })
+                });
+
+                map.addLayer(wmsLayer);
+
+                map.getView().fit(result.legend_extent, map.getSize())
+            }
+        });
     } else {
 
         map.updateSize();
@@ -254,12 +267,13 @@ function view_watershed(){
     }
 }
 
-function get_warning_points(watershed,subbasin){
+function get_warning_points(model, watershed, subbasin){
     $.ajax({
         type: 'GET',
-        url: 'ecmwf-rapid/get-warning-points/',
+        url: 'get-warning-points/',
         dataType: 'json',
         data: {
+            'model': model,
             'watershed': watershed,
             'subbasin': subbasin
         },
@@ -321,43 +335,44 @@ function get_warning_points(watershed,subbasin){
     });
 }
 
-function get_available_dates(watershed, subbasin,comid) {
+function get_available_dates(model, watershed, subbasin, comid) {
+    if (model === 'ECMWF-RAPID') {
+        $.ajax({
+            type: 'GET',
+            url: 'get-available-dates/',
+            dataType: 'json',
+            data: {
+                'watershed': watershed,
+                'subbasin': subbasin,
+                'comid': comid
+            },
+            error: function () {
+                $('#dates').html(
+                    '<p class="alert alert-danger" style="text-align: center"><strong>An error occurred while retrieving the available dates</strong></p>'
+                );
 
-    $.ajax({
-        type: 'GET',
-        url: 'ecmwf-rapid/get-available-dates/',
-        dataType: 'json',
-        data: {
-            'watershed': watershed,
-            'subbasin': subbasin,
-            'comid':comid
-        },
-        error: function () {
-            $('#dates').html(
-                '<p class="alert alert-danger" style="text-align: center"><strong>An error occurred while retrieving the available dates</strong></p>'
-            );
+                setTimeout(function () {
+                    $('#dates').addClass('hidden')
+                }, 5000);
+            },
+            success: function (dates) {
+                datesParsed = JSON.parse(dates.available_dates);
+                $('#datesSelect').empty();
 
-            setTimeout(function () {
-                $('#dates').addClass('hidden')
-            }, 5000);
-        },
-        success: function (dates) {
-            datesParsed = JSON.parse(dates.available_dates);
-            $('#datesSelect').empty();
+                $.each(datesParsed, function (i, p) {
+                    var val_str = p.slice(1).join();
+                    $('#datesSelect').append($('<option></option>').val(val_str).html(p[0]));
+                });
 
-            $.each(datesParsed, function(i, p) {
-                var val_str = p.slice(1).join();
-                $('#datesSelect').append($('<option></option>').val(val_str).html(p[0]));
-            });
-
-        }
-    });
+            }
+        });
+    }
 }
 
 function get_return_periods(watershed, subbasin, comid) {
     $.ajax({
         type: 'GET',
-        url: 'ecmwf-rapid/get-return-periods/',
+        url: 'get-return-periods/',
         dataType: 'json',
         data: {
             'watershed': watershed,
@@ -416,7 +431,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
     $('#dates').addClass('hidden');
     $.ajax({
         type: 'GET',
-        url: 'ecmwf-rapid/get-time-series/',
+        url: 'get-time-series/',
         data: {
             'model': model,
             'watershed': watershed,
@@ -448,7 +463,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
 
                 $('#submit-download-forecast').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-forecast-data-csv?' + jQuery.param( params )
+                    href: 'get-forecast-data-csv?' + jQuery.param( params )
                 });
 
                 $('#download_forecast').removeClass('hidden');
@@ -473,7 +488,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
     m_downloaded_historical_streamflow = true;
     $.ajax({
         type: 'GET',
-        url: 'ecmwf-rapid/get-historic-data',
+        url: 'get-historic-data',
         data: {
             'model': model,
             'watershed': watershed,
@@ -496,7 +511,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
 
                 $('#submit-download-interim-csv').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-historic-data-csv?' + jQuery.param( params )
+                    href: 'get-historic-data-csv?' + jQuery.param( params )
                 });
 
                 $('#download_interim').removeClass('hidden');
@@ -521,7 +536,7 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
     m_downloaded_flow_duration = true;
     $.ajax({
         type: 'GET',
-        url: 'ecmwf-rapid/get-flow-duration-curve',
+        url: 'get-flow-duration-curve',
         data: {
             'model': model,
             'watershed': watershed,
@@ -554,16 +569,27 @@ function map_events(){
         if (evt.dragging) {
             return;
         }
+        var model = $('#model option:selected').text();
         var pixel = map.getEventPixel(evt.originalEvent);
-        var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-            if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]){
-                current_layer = layer;
-                return true;}
-        });
+        if (model === 'ECMWF-RAPID') {
+            var hit = map.forEachLayerAtPixel(pixel, function(layer) {
+                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]){
+                    current_layer = layer;
+                    return true;}
+            });
+        } else if (model === 'LIS-RAPID') {
+            var hit = map.forEachFeatureAtPixel(pixel, function(layer) {
+                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]){
+                    current_layer = layer;
+                    return true;}
+            });
+        }
+
         map.getTargetElement().style.cursor = hit ? 'pointer' : '';
     });
 
     map.on("singleclick",function(evt) {
+        var model = $('#model option:selected').text();
 
         if (map.getTargetElement().style.cursor == "pointer") {
             $("#graph").modal('show');
@@ -577,92 +603,179 @@ function map_events(){
             var view = map.getView();
             var viewResolution = view.getResolution();
 
-            var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), {'INFO_FORMAT': 'application/json'}); //Get the wms url for the clicked point
-            if (wms_url) {
-                $loading.removeClass('hidden');
-                //Retrieving the details for clicked point via the url
-                $('#dates').addClass('hidden');
-                //$('#plot').addClass('hidden');
-                $.ajax({
-                    type: "GET",
-                    url: wms_url,
-                    dataType: 'json',
-                    success: function (result) {
-                        var comid = result["features"][0]["properties"]["COMID"];
-                        var startdate = '';
-                        if ("derived_fr" in (result["features"][0]["properties"])) {
-                            var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
-                            var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
-                        } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
-                            var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
-                            var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
-                        } else {
-                            var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
-                            var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
-                        };
+            if (model === 'ECMWF-RAPID') {
+                var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), {'INFO_FORMAT': 'application/json'}); //Get the wms url for the clicked point
 
-                        var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
+                if (wms_url) {
+                    $loading.removeClass('hidden');
+                    //Retrieving the details for clicked point via the url
+                    $('#dates').addClass('hidden');
+                    //$('#plot').addClass('hidden');
+                    $.ajax({
+                        type: "GET",
+                        url: wms_url,
+                        dataType: 'json',
+                        success: function (result) {
+                            var model = $('#model option:selected').text();
+                            var comid = result["features"][0]["properties"]["COMID"];
 
-                        var model = 'ecmwf-rapid';
-                        $('#info').addClass('hidden');
-                        add_feature(workspace,comid);
+                            var startdate = '';
+                            if ("derived_fr" in (result["features"][0]["properties"])) {
+                                var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
+                                var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
+                            } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
+                                var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
+                                var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
+                            } else {
+                                var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
+                                var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
+                            }
 
-                        get_available_dates(watershed, subbasin,comid);
-                        get_time_series(model, watershed, subbasin, comid, startdate);
-                        get_historic_data(model, watershed, subbasin, comid, startdate);
-                        get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        console.log(Error);
-                    }
-                });
+                            get_available_dates(model, watershed, subbasin, comid);
+                            get_time_series(model, watershed, subbasin, comid, startdate);
+                            get_historic_data(model, watershed, subbasin, comid, startdate);
+                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+
+                            var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
+
+                            $('#info').addClass('hidden');
+                            add_feature(model, workspace, comid);
+
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            console.log(Error);
+                        }
+                    });
+                }
+            } else if (model === 'LIS-RAPID') {
+                var comid = current_layer.get('COMID');
+                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
+                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
+
+                get_time_series(model, watershed, subbasin, comid);
+
+                $('#info').addClass('hidden');
+                var workspace = [watershed, subbasin];
+
+                add_feature(model, workspace, comid);
             }
         };
     });
 
 }
 
-function add_feature(workspace,comid){
+function add_feature(model,workspace,comid){
     map.removeLayer(featureOverlay);
 
     var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
     var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
 
-    var vectorSource = new ol.source.Vector({
-        format: new ol.format.GeoJSON(),
-        url: function (extent) {
-            return JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+'ows?service=wfs&' +
-                'version=2.0.0&request=getfeature&typename='+workspace+':'+watershed+'-'+subbasin+'-drainage_line'+'&CQL_FILTER=COMID='+comid+'&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
-        },
-        strategy: ol.loadingstrategy.bbox
-    });
+    if (model === 'ECMWF-RAPID') {
+        var vectorSource = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            url: function (extent) {
+                return JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + 'ows?service=wfs&' +
+                    'version=2.0.0&request=getfeature&typename=' + workspace + ':' + watershed + '-' + subbasin + '-drainage_line' + '&CQL_FILTER=COMID=' + comid + '&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
+            },
+            strategy: ol.loadingstrategy.bbox
+        });
 
-
-    featureOverlay = new ol.layer.Vector({
-        source: vectorSource,
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#00BFFF',
-                width: 8
+        featureOverlay = new ol.layer.Vector({
+            source: vectorSource,
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: '#00BFFF',
+                    width: 8
+                })
             })
-        })
-    });
-    map.addLayer(featureOverlay);
-    map.getLayers().item(5)
+        });
+        map.addLayer(featureOverlay);
+        map.getLayers().item(5);
 
+    } else if (model === 'LIS-RAPID') {
+        var vectorSource;
+        $.ajax({
+            type: 'GET',
+            url: 'get-lis-shp/',
+            dataType: 'json',
+            data: {
+                'model': model,
+                'watershed': workspace[0],
+                'subbasin': workspace[1]
+            },
+            success: function (result) {
+                JSON.parse(result.options).features.forEach(function(elm) {
+                    if (elm.properties.COMID === parseInt(comid)) {
+                        var filtered_json = {
+                            "type": "FeatureCollection",
+                            "features": [elm]
+                        };
+                        vectorSource = new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(filtered_json)
+                        });
+                    }
+                });
+
+                featureOverlay = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: '#00BFFF',
+                            width: 8
+                        })
+                    })
+                });
+                map.addLayer(featureOverlay);
+                map.getLayers().item(5);
+            }
+        });
+    }
 }
+
+function submit_model() {
+    $('#model').on('change', function () {
+        if ($('#model option:selected').val() === 'ecmwf') {
+            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal/ecmwf-rapid/?model=ECMWF-RAPID';
+        } else if ($('#model option:selected').val() === 'lis') {
+            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal/lis-rapid/?model=LIS-RAPID';
+        } else {
+            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal';
+        }
+    });
+};
+
+function resize_graphs() {
+    $("#forecast_tab_link").click(function(){
+        Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
+    });
+
+    $("#historical_tab_link").click(function(){
+        if (m_downloaded_historical_streamflow) {
+            Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
+        }
+    });
+
+    $("#flow_duration_tab_link").click(function(){
+        if (m_downloaded_flow_duration) {
+            Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
+        }
+    });
+};
+
 $(function(){
     $('#app-content-wrapper').removeClass('show-nav');
     $(".toggle-nav").removeClass('toggle-nav');
     init_map();
     map_events();
+    submit_model();
+    resize_graphs();
     $('#datesSelect').change(function() { //when date is changed
         var sel_val = ($('#datesSelect option:selected').val()).split(',');
         var startdate = sel_val[0];
         var watershed = sel_val[1];
         var subbasin = sel_val[2];
         var comid = sel_val[3];
-        var model = 'ecmwf-rapid';
+        var model = 'ECMWF-RAPID';
         $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
     });

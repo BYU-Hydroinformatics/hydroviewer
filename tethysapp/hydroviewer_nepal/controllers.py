@@ -3,9 +3,13 @@ from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
 
+import os
 import requests
 import json
 import numpy as np
+import netCDF4 as nc
+from osgeo import ogr
+from osgeo import osr
 from csv import writer as csv_writer
 import scipy.stats as sp
 import datetime as dt
@@ -18,24 +22,49 @@ def home(request):
     """
     Controller for the app home page.
     """
-    # model_input = SelectInput(display_text='',
-    #                           name='model',
-    #                           multiple=False,
-    #                           options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf')],
-    #                           initial=['Select Model'],
-    #                           original=True)
+    model_input = SelectInput(display_text='',
+                              name='model',
+                              multiple=False,
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              initial=['Select Model'],
+                              original=True)
 
-    res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
-                       headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+    zoom_info = TextInput(display_text='',
+                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+                          name='zoom_info',
+                          disabled=True)
 
-    watershed_list_raw = json.loads(res.content)
+    context = {
+        "model_input": model_input,
+        "zoom_info": zoom_info
+    }
 
-    app.get_custom_setting('keywords').lower().replace(' ', '').split(',')
-    watershed_list = [value for value in watershed_list_raw if
-                      any(val in value[0].lower().replace(' ', '') for
-                          val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
+    return render(request, 'hydroviewer_nepal/home.html', context)
 
-    watershed_list = [['Select Watershed', '']] + watershed_list
+
+def ecmwf(request):
+    """
+    Controller for the app home page.
+    """
+    model_input = SelectInput(display_text='',
+                              name='model',
+                              multiple=False,
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              initial=[request.GET['model'] if request.GET else 'Select Model'],
+                              original=True)
+
+    # uncomment for displaying watershds in the SPT
+    # res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
+    #                    headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+    #
+    # watershed_list_raw = json.loads(res.content)
+    #
+    # app.get_custom_setting('keywords').lower().replace(' ', '').split(',')
+    # watershed_list = [value for value in watershed_list_raw if
+    #                   any(val in value[0].lower().replace(' ', '') for
+    #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
+
+    watershed_list = [['Select Watershed', '']] #+ watershed_list
 
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
                         '/featuretypes.json')
@@ -45,7 +74,7 @@ def home(request):
         if 'drainage_line' in raw_feature and any(n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
             feat_name = raw_feature.split('-')[0].replace('_', ' ').title() + ' (' + \
                         raw_feature.split('-')[1].replace('_', ' ').title() + ')'
-            if feat_name not in watershed_list:
+            if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, feat_name])
 
     watershed_select = SelectInput(display_text='',
@@ -56,6 +85,11 @@ def home(request):
                                    attributes = {'onchange':"javascript:view_watershed();"}
                                    )
 
+    zoom_info = TextInput(display_text='',
+                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+                          name='zoom_info',
+                          disabled=True)
+
     geoserver_base_url = app.get_custom_setting('geoserver')
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
@@ -65,51 +99,97 @@ def home(request):
                                    disabled=True)
 
     context = {
-        # "model_input": model_input,
+        "model_input": model_input,
         "watershed_select": watershed_select,
+        "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint
     }
 
-    return render(request, 'hydroviewer_nepal/home.html', context)
+    return render(request, 'hydroviewer_nepal/ecmwf.html', context)
+
+
+def lis(request):
+    """
+    Controller for the app home page.
+    """
+    model_input = SelectInput(display_text='',
+                              name='model',
+                              multiple=False,
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              initial=[request.GET['model'] if request.GET else 'Select Model'],
+                              original=True)
+
+    watershed_list = [['Select Watershed', '']]
+
+    if app.get_custom_setting('lis_path'):
+        res = os.listdir(app.get_custom_setting('lis_path'))
+
+        for i in res:
+            feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
+                        i.split('-')[1].replace('_', ' ').title() + ')'
+            if feat_name not in str(watershed_list):
+                watershed_list.append([feat_name, i])
+
+    watershed_select = SelectInput(display_text='',
+                                   name='watershed',
+                                   options=watershed_list,
+                                   initial=['Select Watershed'],
+                                   original=True,
+                                   attributes = {'onchange':"javascript:view_watershed();"}
+                                   )
+
+    zoom_info = TextInput(display_text='',
+                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+                          name='zoom_info',
+                          disabled=True)
+    context = {
+        "model_input": model_input,
+        "watershed_select": watershed_select,
+        "zoom_info": zoom_info
+    }
+
+    return render(request, 'hydroviewer_nepal/lis.html', context)
 
 
 def get_warning_points(request):
     get_data = request.GET
-    try:
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
+    if get_data['model'] == 'ECMWF-RAPID':
+        try:
+            watershed = get_data['watershed']
+            subbasin = get_data['subbasin']
 
-        res20 = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            res20 = requests.get(
+                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&return_period=20',
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
-        res10 = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            res10 = requests.get(
+                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&return_period=10',
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
-        res2 = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            res2 = requests.get(
+                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                watershed + '&subbasin_name=' + subbasin + '&return_period=2',
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
-        return JsonResponse({
-            "success": "Data analysis complete!",
-            "warning20":json.loads(res20.content)["features"],
-            "warning10":json.loads(res10.content)["features"],
-            "warning2":json.loads(res2.content)["features"]
-        })
-    except Exception as e:
-        print str(e)
-        return JsonResponse({'error': 'No data found for the selected reach.'})
+            return JsonResponse({
+                "success": "Data analysis complete!",
+                "warning20":json.loads(res20.content)["features"],
+                "warning10":json.loads(res10.content)["features"],
+                "warning2":json.loads(res2.content)["features"]
+            })
+        except Exception as e:
+            print str(e)
+            return JsonResponse({'error': 'No data found for the selected reach.'})
+    else:
+        pass
 
 
 def ecmwf_get_time_series(request):
     get_data = request.GET
-
     try:
-        model = get_data['model']
+        # model = get_data['model']
         watershed = get_data['watershed']
         subbasin = get_data['subbasin']
         comid = get_data['comid']
@@ -119,29 +199,28 @@ def ecmwf_get_time_series(request):
             startdate = 'most_recent'
         units = 'metric'
 
-        if model == 'ecmwf-rapid':
-            res = requests.get(
-                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
-                startdate + '&return_format=csv',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+        res = requests.get(
+            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
+            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
+            startdate + '&return_format=csv',
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
-            pairs = res.content.splitlines()
-            pairs.pop(0)
+        pairs = res.content.splitlines()
+        header = pairs.pop(0)
 
-            dates = []
-            hres_dates = []
+        dates = []
+        hres_dates = []
 
-            mean_values = []
-            hres_values = []
-            min_values = []
-            max_values = []
-            std_dev_lower_values = []
-            std_dev_upper_values = []
+        mean_values = []
+        hres_values = []
+        min_values = []
+        max_values = []
+        std_dev_lower_values = []
+        std_dev_upper_values = []
 
-            for pair in pairs:
+        for pair in pairs:
+            if 'high_res' in header:
                 hres_dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
-
                 hres_values.append(float(pair.split(',')[1]))
 
                 if 'nan' not in pair:
@@ -152,122 +231,192 @@ def ecmwf_get_time_series(request):
                     std_dev_lower_values.append(float(pair.split(',')[5]))
                     std_dev_upper_values.append(float(pair.split(',')[6]))
 
+            else:
+                dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
+                max_values.append(float(pair.split(',')[1]))
+                mean_values.append(float(pair.split(',')[2]))
+                min_values.append(float(pair.split(',')[3]))
+                std_dev_lower_values.append(float(pair.split(',')[4]))
+                std_dev_upper_values.append(float(pair.split(',')[5]))
 
-            # ----------------------------------------------
-            # Chart Section
-            # ----------------------------------------------
 
-            datetime_start = dates[0]
-            datetime_end = dates[-1]
+        # ----------------------------------------------
+        # Chart Section
+        # ----------------------------------------------
 
-            avg_series = go.Scatter(
-                name='Mean',
-                x=dates,
-                y=mean_values,
+        datetime_start = dates[0]
+        datetime_end = dates[-1]
+
+        avg_series = go.Scatter(
+            name='Mean',
+            x=dates,
+            y=mean_values,
+            line=dict(
+                color='blue',
+            )
+        )
+
+        max_series = go.Scatter(
+            name='Max',
+            x=dates,
+            y=max_values,
+            fill='tonexty',
+            mode='lines',
+            line=dict(
+                color='rgb(152, 251, 152)',
+                width=0,
+            )
+        )
+
+        min_series = go.Scatter(
+            name='Min',
+            x=dates,
+            y=min_values,
+            fill=None,
+            mode='lines',
+            line=dict(
+                color='rgb(152, 251, 152)',
+            )
+        )
+
+        std_dev_lower_series = go.Scatter(
+            name='Std. Dev. Lower',
+            x=dates,
+            y=std_dev_lower_values,
+            fill='tonexty',
+            mode='lines',
+            line=dict(
+                color='rgb(152, 251, 152)',
+                width=0,
+            )
+        )
+
+        std_dev_upper_series = go.Scatter(
+            name='Std. Dev. Upper',
+            x=dates,
+            y=std_dev_upper_values,
+            fill='tonexty',
+            mode='lines',
+            line=dict(
+                width=0,
+                color='rgb(34, 139, 34)',
+            )
+        )
+
+        plot_series = [min_series,
+                       std_dev_lower_series,
+                       std_dev_upper_series,
+                       max_series,
+                       avg_series]
+
+        if hres_values:
+            plot_series.append(go.Scatter(
+                name='HRES',
+                x=hres_dates,
+                y=hres_values,
                 line=dict(
-                    color='blue',
+                    color='black',
                 )
-            )
+            ))
 
-            max_series = go.Scatter(
-                name='Max',
-                x=dates,
-                y=max_values,
-                fill='tonexty',
-                mode='lines',
-                line=dict(
-                    color='rgb(152, 251, 152)',
-                    width=0,
-                )
-            )
-
-            min_series = go.Scatter(
-                name='Min',
-                x=dates,
-                y=min_values,
-                fill=None,
-                mode='lines',
-                line=dict(
-                    color='rgb(152, 251, 152)',
-                )
-            )
-
-            std_dev_lower_series = go.Scatter(
-                name='Std. Dev. Lower',
-                x=dates,
-                y=std_dev_lower_values,
-                fill='tonexty',
-                mode='lines',
-                line=dict(
-                    color='rgb(152, 251, 152)',
-                    width=0,
-                )
-            )
-
-            std_dev_upper_series = go.Scatter(
-                name='Std. Dev. Upper',
-                x=dates,
-                y=std_dev_upper_values,
-                fill='tonexty',
-                mode='lines',
-                line=dict(
-                    width=0,
-                    color='rgb(34, 139, 34)',
-                )
-            )
-
-            plot_series = [min_series,
-                           std_dev_lower_series,
-                           std_dev_upper_series,
-                           max_series,
-                           avg_series]
-
-            if hres_values:
-                plot_series.append(go.Scatter(
-                    name='HRES',
-                    x=hres_dates,
-                    y=hres_values,
-                    line=dict(
-                        color='black',
-                    )
-                ))
-
-            try:
-                return_shapes, return_annotations = get_return_period_ploty_info(request, datetime_start, datetime_end)
-            except:
-                return_annotations = []
-                return_shapes = []
+        try:
+            return_shapes, return_annotations = get_return_period_ploty_info(request, datetime_start, datetime_end)
+        except:
+            return_annotations = []
+            return_shapes = []
 
 
-            layout = go.Layout(
-                title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
-                    watershed, subbasin, comid),
-                xaxis=dict(
-                    title='Date',
-                ),
-                yaxis=dict(
-                    title='Streamflow ({}<sup>3</sup>/s)'.format(get_units_title(units)),
-                    range=[0, max(max_values) + max(max_values)/5]
-                ),
-                shapes=return_shapes,
-                annotations=return_annotations
-            )
+        layout = go.Layout(
+            title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
+                watershed, subbasin, comid),
+            xaxis=dict(
+                title='Date',
+            ),
+            yaxis=dict(
+                title='Streamflow ({}<sup>3</sup>/s)'.format(get_units_title(units)),
+                range=[0, max(max_values) + max(max_values)/5]
+            ),
+            shapes=return_shapes,
+            annotations=return_annotations
+        )
 
-            chart_obj = PlotlyView(
-                go.Figure(data=plot_series,
-                          layout=layout)
-            )
+        chart_obj = PlotlyView(
+            go.Figure(data=plot_series,
+                      layout=layout)
+        )
 
-            context = {
-                'gizmo_object': chart_obj,
-            }
+        context = {
+            'gizmo_object': chart_obj,
+        }
 
-            return render(request, 'hydroviewer_nepal/gizmo_ajax.html', context)
-
+        return render(request, 'hydroviewer_nepal/gizmo_ajax.html', context)
 
     except Exception as e:
         print str(e)
         return JsonResponse({'error': 'No data found for the selected reach.'})
+
+
+def lis_get_time_series(request):
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+        comid = get_data['comid']
+        units = 'metric'
+
+        path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
+        filename = [f for f in os.listdir(path) if 'Qout' in f]
+        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+
+        dates_raw = res.variables['time'][:]
+        dates = []
+        for d in dates_raw:
+            dates.append(dt.datetime.fromtimestamp(d))
+
+        comid_list = res.variables['rivid'][:]
+        comid_index = int(np.where(comid_list == int(comid))[0])
+
+        values = []
+        for l in list(res.variables['Qout'][:]):
+            values.append(float(l[comid_index]))
+
+        # --------------------------------------
+        # Chart Section
+        # --------------------------------------
+        series = go.Scatter(
+            name='LDAS',
+            x=dates,
+            y=values,
+        )
+
+        layout = go.Layout(
+            title="LDAS Streamflow<br><sub>{0} ({1}): {2}</sub>".format(
+                watershed, subbasin, comid),
+            xaxis=dict(
+                title='Date',
+            ),
+            yaxis=dict(
+                title='Streamflow ({}<sup>3</sup>/s)'
+                      .format(get_units_title(units))
+            )
+        )
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[series],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
 def get_available_dates(request):
@@ -632,6 +781,191 @@ def get_forecast_data_csv(request):
     except Exception as e:
         print str(e)
         return JsonResponse({'error': 'No forecast data found.'})
+
+
+def get_lis_data_csv(request):
+    """""
+    Returns LIS data as csv
+    """""
+
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed_name']
+        subbasin = get_data['subbasin_name']
+        comid = get_data['reach_id']
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+        else:
+            startdate = 'most_recent'
+
+        path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
+        filename = [f for f in os.listdir(path) if 'Qout' in f]
+        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+
+        dates_raw = res.variables['time'][:]
+        dates = []
+        for d in dates_raw:
+            dates.append(dt.datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
+
+        comid_list = res.variables['rivid'][:]
+        comid_index = int(np.where(comid_list == int(comid))[0])
+
+        values = []
+        for l in list(res.variables['Qout'][:]):
+            values.append(float(l[comid_index]))
+
+        pairs = [list(a) for a in zip(dates, values)]
+
+        init_time = pairs[0][0].split(' ')[0]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=lis_forecast_{0}_{1}_{2}_{3}.csv'.format(watershed,
+                                                                                                                subbasin,
+                                                                                                                comid,
+                                                                                                                init_time)
+
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'lis_forecast (m3/s)'])
+
+        for row_data in pairs:
+            writer.writerow(row_data)
+
+        return response
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No forecast data found.'})
+
+
+def shp_to_geojson(request):
+    get_data = request.GET
+
+    try:
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+
+        reprojected_shp_path = os.path.join(
+                app.get_custom_setting('lis_path'),
+                '-'.join([watershed, subbasin]),
+                '-'.join([watershed, subbasin, 'drainage_line']),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp'])
+        )
+
+        if not os.path.exists(reprojected_shp_path):
+
+            raw_shp_path = reprojected_shp_path.replace('-3857', '')
+
+            raw_shp_src = driver.Open(raw_shp_path)
+            raw_shp = raw_shp_src.GetLayer()
+
+            in_prj = raw_shp.GetSpatialRef()
+
+            out_prj = osr.SpatialReference()
+
+            out_prj.ImportFromWkt(
+                """
+                PROJCS["WGS 84 / Pseudo-Mercator",
+                    GEOGCS["WGS 84",
+                        DATUM["WGS_1984",
+                            SPHEROID["WGS 84",6378137,298.257223563,
+                                AUTHORITY["EPSG","7030"]],
+                            AUTHORITY["EPSG","6326"]],
+                        PRIMEM["Greenwich",0,
+                            AUTHORITY["EPSG","8901"]],
+                        UNIT["degree",0.0174532925199433,
+                            AUTHORITY["EPSG","9122"]],
+                        AUTHORITY["EPSG","4326"]],
+                    PROJECTION["Mercator_1SP"],
+                    PARAMETER["central_meridian",0],
+                    PARAMETER["scale_factor",1],
+                    PARAMETER["false_easting",0],
+                    PARAMETER["false_northing",0],
+                    UNIT["metre",1,
+                        AUTHORITY["EPSG","9001"]],
+                    AXIS["X",EAST],
+                    AXIS["Y",NORTH],
+                    EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"],
+                    AUTHORITY["EPSG","3857"]]
+                """
+            )
+
+            coordTrans = osr.CoordinateTransformation(in_prj, out_prj)
+
+            reprojected_shp_src = driver.CreateDataSource(reprojected_shp_path)
+            reprojected_shp = reprojected_shp_src.CreateLayer('-'.join([watershed, subbasin,
+                                                                        'drainage_line', '3857']).encode('utf-8'),
+                                                              geom_type=ogr.wkbLineString)
+
+            raw_shp_lyr_def = raw_shp.GetLayerDefn()
+            for i in range(0, raw_shp_lyr_def.GetFieldCount()):
+                field_def = raw_shp_lyr_def.GetFieldDefn(i)
+                if field_def.name in ['COMID', 'watershed', 'subbasin']:
+                    reprojected_shp.CreateField(field_def)
+
+            # get the output layer's feature definition
+            reprojected_shp_lyr_def = reprojected_shp.GetLayerDefn()
+
+            # loop through the input features
+            in_feature = raw_shp.GetNextFeature()
+            while in_feature:
+                # get the input geometry
+                geom = in_feature.GetGeometryRef()
+                # reproject the geometry
+                geom.Transform(coordTrans)
+                # create a new feature
+                out_feature = ogr.Feature(reprojected_shp_lyr_def)
+                # set the geometry and attribute
+                out_feature.SetGeometry(geom)
+                out_feature.SetField('COMID', in_feature.GetField(in_feature.GetFieldIndex('COMID')))
+                out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
+                out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
+                # add the feature to the shapefile
+                reprojected_shp.CreateFeature(out_feature)
+                # dereference the features and get the next input feature
+                out_feature = None
+                in_feature = raw_shp.GetNextFeature()
+
+            fc = {
+                'type': 'FeatureCollection',
+                'features': []
+            }
+
+            for feature in reprojected_shp:
+                fc['features'].append(feature.ExportToJson(as_object=True))
+
+            with open(reprojected_shp_path.replace('.shp', '.json'), 'w') as f:
+                json.dump(fc, f)
+
+            # Save and close the shapefiles
+            raw_shp_src = None
+            reprojected_shp_src = None
+
+        shp_src = driver.Open(reprojected_shp_path)
+        shp = shp_src.GetLayer()
+
+        extent = list(shp.GetExtent())
+        xmin, ymin, xmax, ymax = extent[0], extent[2], extent[1], extent[3]
+
+        with open(reprojected_shp_path.replace('.shp', '.json'), 'r') as f:
+            geojson_streams = json.load(f)
+
+            geojson_layer = {
+                'source':'GeoJSON',
+                'options': json.dumps(geojson_streams),
+                'legend_title': '-'.join([watershed, subbasin, 'drainage_line']),
+                'legend_extent': [xmin, ymin, xmax, ymax],
+                'legend_extent_projection': 'EPSG:3857',
+                'feature_selection': True
+            }
+
+            return JsonResponse(geojson_layer)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No shapefile found.'})
 
 
 # def get_daily_seasonal_streamflow_chart(request):

@@ -14,30 +14,6 @@
 {# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
-{% block header_buttons %}
-  <div class="hidden" style="margin-right: 15px;">
-    {% gizmo text_input geoserver_endpoint %}
-  </div>
-  {% if model_input%}
-    <div id="modelSelect">
-        {% gizmo select_input model_input %}
-    </div>
-  {% endif %}
-  {% if watershed_select%}
-    <div id="watershedSelect" style="margin-right: 15px;">
-      {% gizmo select_input watershed_select %}
-    </div>
-  {% endif %}
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
-    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
-  </div>
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
-    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
-  </div>
-{% endblock %}
-
 {% block app_navigation_items %}
 
 {% endblock %}
