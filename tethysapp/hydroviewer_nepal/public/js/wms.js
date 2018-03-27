@@ -1,5 +1,6 @@
 /* Global Variables */
-var current_layer,
+var default_extent,
+    current_layer,
     stream_geom,
     layers,
     wmsLayer,
@@ -155,6 +156,8 @@ function init_map () {
         layers:layers
     });
 
+    default_extent = map.getView().calculateExtent(map.getSize());
+
 }
 
 function view_watershed(){
@@ -263,7 +266,7 @@ function view_watershed(){
         map.updateSize();
         //map.removeInteraction(select_interaction);
         map.removeLayer(wmsLayer);
-        map.getView().fit([-13599676.07249856, -6815054.405920124, 13599676.07249856, 11030851.461876547], map.getSize());
+        map.getView().fit(default_extent, map.getSize());
     }
 }
 
@@ -734,12 +737,19 @@ function add_feature(model,workspace,comid){
 
 function submit_model() {
     $('#model').on('change', function () {
+        var base_path = location.pathname;
+
+        if (base_path.includes('ecmwf-rapid') || base_path.includes('lis-rapid')) {
+            console.log('yes');
+            base_path = base_path.replace('/ecmwf-rapid', '').replace('/lis-rapid', '');
+        }
+
         if ($('#model option:selected').val() === 'ecmwf') {
-            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal/ecmwf-rapid/?model=ECMWF-RAPID';
+            location.href = 'http://' + location.host + base_path + 'ecmwf-rapid/?model=ECMWF-RAPID';
         } else if ($('#model option:selected').val() === 'lis') {
-            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal/lis-rapid/?model=LIS-RAPID';
+            location.href = 'http://' + location.host + base_path + 'lis-rapid/?model=LIS-RAPID';
         } else {
-            location.href = 'http://' + location.host + '/apps/hydroviewer-nepal';
+            location.href = 'http://' + location.host + base_path;
         }
     });
 };

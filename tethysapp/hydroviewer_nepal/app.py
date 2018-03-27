@@ -1,17 +1,19 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
 
+base_name = __package__.split('.')[-1]
+base_url = base_name.replace('_', '-')
 
-class HydroviewerNepal(TethysAppBase):
+class Hydroviewer(TethysAppBase):
     """
-    Tethys app class for HydroViewer Nepal.
+    Tethys app class for HydroViewer.
     """
 
-    name = 'HydroViewer Nepal'
-    index = 'hydroviewer_nepal:home'
-    icon = 'hydroviewer_nepal/images/logo.png'
-    package = 'hydroviewer_nepal'
-    root_url = 'hydroviewer-nepal'
+    name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
+    index = '{0}:home'.format(base_name)
+    icon = '{0}/images/logo.png'.format(base_name)
+    package = '{0}'.format(base_name)
+    root_url = base_url
     color = '#425e17'
     description = 'Place a brief description of your app here.'
     tags = 'Hydrology'
@@ -27,60 +29,60 @@ class HydroviewerNepal(TethysAppBase):
         url_maps = (
             UrlMap(
                 name='home',
-                url='hydroviewer-nepal',
-                controller='hydroviewer_nepal.controllers.home'),
+                url=base_url,
+                controller='{0}.controllers.home'.format(base_name)),
             UrlMap(
                 name='ecmwf',
                 url='ecmwf-rapid',
-                controller='hydroviewer_nepal.controllers.ecmwf'),
+                controller='{0}.controllers.ecmwf'.format(base_name)),
             UrlMap(
                 name='lis',
                 url='lis-rapid',
-                controller='hydroviewer_nepal.controllers.lis'),
+                controller='{0}.controllers.lis'.format(base_name)),
             UrlMap(
                 name='get-available-dates',
                 url='ecmwf-rapid/get-available-dates',
-                controller='hydroviewer_nepal.controllers.get_available_dates'),
+                controller='{0}.controllers.get_available_dates'.format(base_name)),
             UrlMap(
                 name='get-time-series',
                 url='ecmwf-rapid/get-time-series',
-                controller='hydroviewer_nepal.controllers.ecmwf_get_time_series'),
+                controller='{0}.controllers.ecmwf_get_time_series'.format(base_name)),
             UrlMap(
                 name='get-time-series',
                 url='lis-rapid/get-time-series',
-                controller='hydroviewer_nepal.controllers.lis_get_time_series'),
+                controller='{0}.controllers.lis_get_time_series'.format(base_name)),
             UrlMap(
                 name='get-return-periods',
                 url='ecmwf-rapid/get-return-periods',
-                controller='hydroviewer_nepal.controllers.get_return_periods'),
+                controller='{0}.controllers.get_return_periods'.format(base_name)),
             UrlMap(
                 name='get-warning-points',
                 url='ecmwf-rapid/get-warning-points',
-                controller='hydroviewer_nepal.controllers.get_warning_points'),
+                controller='{0}.controllers.get_warning_points'.format(base_name)),
             UrlMap(
                 name='get-historic-data',
                 url='ecmwf-rapid/get-historic-data',
-                controller='hydroviewer_nepal.controllers.get_historic_data'),
+                controller='{0}.controllers.get_historic_data'.format(base_name)),
             UrlMap(
                 name='get-flow-duration-curve',
                 url='ecmwf-rapid/get-flow-duration-curve',
-                controller='hydroviewer_nepal.controllers.get_flow_duration_curve'),
+                controller='{0}.controllers.get_flow_duration_curve'.format(base_name)),
             UrlMap(
                 name='get_historic_data_csv',
                 url='ecmwf-rapid/get-historic-data-csv',
-                controller='hydroviewer_nepal.controllers.get_historic_data_csv'),
+                controller='{0}.controllers.get_historic_data_csv'.format(base_name)),
             UrlMap(
                 name='get_forecast_data_csv',
                 url='ecmwf-rapid/get-forecast-data-csv',
-                controller='hydroviewer_nepal.controllers.get_forecast_data_csv'),
+                controller='{0}.controllers.get_forecast_data_csv'.format(base_name)),
             UrlMap(
                 name='get_forecast_data_csv',
                 url='lis-rapid/get-forecast-data-csv',
-                controller='hydroviewer_nepal.controllers.get_lis_data_csv'),
+                controller='{0}.controllers.get_lis_data_csv'.format(base_name)),
             UrlMap(
                 name='get_lis_shp',
                 url='lis-rapid/get-lis-shp',
-                controller='hydroviewer_nepal.controllers.shp_to_geojson'),
+                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
         )
 
         return url_maps

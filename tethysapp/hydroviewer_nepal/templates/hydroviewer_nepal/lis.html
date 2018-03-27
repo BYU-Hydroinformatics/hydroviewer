@@ -1,5 +1,7 @@
-{% extends "hydroviewer_nepal/base.html" %}
+{% extends base_name|add:"/base.html" %}
+{% load staticfiles %}
 {% load tethys_gizmos %}
+
 {% block import_gizmos %}
     {% import_gizmo_dependency plotly_view %}
 {% endblock %}
@@ -59,9 +61,9 @@
                     <div id="watershed-info" class="col-md-8"></div>
                     <div class="col-md-4">
                         <div align="right">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/byu_logo.png">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/glofas_logo.png">
-                        <img class="logos" src="/static/hydroviewer_nepal/images/copernicus_logo.png">
+                        <img class="logos" src="{% static base_name|add:'/images/byu_logo.png' %}">
+                        <img class="logos" src="{% static base_name|add:'/images/glofas_logo.png' %}">
+                        <img class="logos" src="{% static base_name|add:'/images/copernicus_logo.png' %}">
                         </div>
                     </div>
                 </div>
@@ -78,7 +80,7 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="forecast_tab">
                         <div class="panel panel-default">
-                            <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="/static/hydroviewer_nepal/images/loader.gif" /></div>
+                            <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                             <div id="long-term-chart" class="panel-body"></div>
                         </div>
                     </div><!-- /.tab-pane -->
@@ -113,32 +115,26 @@
             <div class="modal-body">
                 <p id="overview"><b>
                     This web application was created to allow users to visualize hydrologic model results
-                    from different sources. It currently displays ECMWF model results.
+                    from different sources. It currently displays GloFAS and LDAS model results.
                 </b></p>
                 <h3>How it works</h3>
                 <h6>1. Click on Get Started.</h6>
-                <h6>2. Select a hydrologic model and a corresponsding watershed of interest.</h6>
-                <h6>2. Click on View Watershed to load the watershed</h6>
-                <h6>4. Once you click View Watershed, the map will automatically zoom to that specific watershed.</h6>
-                <h6>5.Click on any of the stream reaches within the watershed.</h6>
+                <h6>2. Select a hydrologic model and a corresponding watershed of interest.</h6>
+                <h6>3. Once you click select a watershed, the map will automatically zoom to that specific watershed.</h6>
+                <h6>4. Click on any of the stream reaches within the watershed.</h6>
                 <h6>6. A hydrograph for the selected reach with the most current streamflow result will be displayed
-                    in the grapth area next to the map.</h6>
+                    in the graph area next to the map.</h6>
                 <h6>7. If previous dates are available, the Select Date dropdown will be displayed on top of the graph.
                     Select any of the available dates to display the forecast for that specific date in the graph.</h6>
-                <h6>8. To view the Ensemble and the Standard deviation for the forecast, click on the legend items below the graph.</h6>
-                <h6>9. Click the close button to exit the application.</h6>
+                <h6>8. Click the close button to exit the application.</h6>
 
                 <h5>Additional Resources:</h5>
                 <p><a href="https://www.ecmwf.int/en/about/what-we-do/global-forecasts" target="_blank">ECMWF Global Forecasts</a></p>
                 <p><a href="http://rapid-hub.org/" target="_blank">RAPID River Routing Model</a></p>
                 <p><a href="https://streamflow-prediction-tool.readthedocs.io/en/latest/" target="_blank">StreamFlow Prediction Tool</a></p>
-                <p><a href="https://servirglobal.net/about-servir" target="_blank">About SERVIR</a></p>
-                <p><a href="https://servirglobal.net/Privacy-Terms-of-Use" target="_blank">Privacy and Terms of Use</a></p>
             </div>
-
         </div>
     </div>
-</div>
 </div>
 {% endblock %}
 

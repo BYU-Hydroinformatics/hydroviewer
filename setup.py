@@ -6,13 +6,12 @@ from tethys_apps.app_installation import custom_develop_command, custom_install_
 ### Apps Definition ###
 app_package = 'hydroviewer_nepal'
 release_package = 'tethysapp-' + app_package
-app_class = 'hydroviewer_nepal.app:HydroviewerNepal'
+app_class = '{0}.app:Hydroviewer'.format(app_package)
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
 ### Python Dependencies ###
 dependencies = [
     'requests',
-    'json',
     'netCDF4',
     'numpy',
     'scipy',

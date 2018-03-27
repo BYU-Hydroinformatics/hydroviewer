@@ -16,7 +16,8 @@ import datetime as dt
 
 import plotly.graph_objs as go
 
-from .app import HydroviewerNepal as app
+from .app import Hydroviewer as app
+base_name = __package__.split('.')[-1]
 
 def home(request):
     """
@@ -35,11 +36,12 @@ def home(request):
                           disabled=True)
 
     context = {
+        "base_name": base_name,
         "model_input": model_input,
         "zoom_info": zoom_info
     }
 
-    return render(request, 'hydroviewer_nepal/home.html', context)
+    return render(request, '{0}/home.html'.format(base_name), context)
 
 
 def ecmwf(request):
@@ -53,7 +55,7 @@ def ecmwf(request):
                               initial=[request.GET['model'] if request.GET else 'Select Model'],
                               original=True)
 
-    # uncomment for displaying watershds in the SPT
+    # uncomment for displaying watersheds in the SPT
     # res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
     #                    headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
     #
@@ -99,13 +101,14 @@ def ecmwf(request):
                                    disabled=True)
 
     context = {
+        "base_name": base_name,
         "model_input": model_input,
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint
     }
 
-    return render(request, 'hydroviewer_nepal/ecmwf.html', context)
+    return render(request, '{0}/ecmwf.html'.format(base_name), context)
 
 
 def lis(request):
@@ -143,12 +146,13 @@ def lis(request):
                           name='zoom_info',
                           disabled=True)
     context = {
+        "base_name": base_name,
         "model_input": model_input,
         "watershed_select": watershed_select,
         "zoom_info": zoom_info
     }
 
-    return render(request, 'hydroviewer_nepal/lis.html', context)
+    return render(request, '{0}/lis.html'.format(base_name), context)
 
 
 def get_warning_points(request):
@@ -349,7 +353,7 @@ def ecmwf_get_time_series(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request, 'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print str(e)
@@ -412,7 +416,7 @@ def lis_get_time_series(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print str(e)
@@ -526,7 +530,7 @@ def get_historic_data(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print str(e)
@@ -591,7 +595,7 @@ def get_flow_duration_curve(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'hydroviewer_nepal/gizmo_ajax.html', context)
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print str(e)
