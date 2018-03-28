@@ -11,10 +11,10 @@ class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/logo.png'.format(base_name)
+    icon = '{0}/images/brazil_flag.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
-    color = '#425e17'
+    color = '#009b3a'
     description = 'Place a brief description of your app here.'
     tags = 'Hydrology'
     enable_feedback = False
