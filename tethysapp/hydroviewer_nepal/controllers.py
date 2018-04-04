@@ -2,12 +2,16 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
+from tethys_sdk.permissions import has_permission
+from tethys_sdk.base import TethysAppBase
+
 
 import os
 import requests
 import json
 import numpy as np
 import netCDF4 as nc
+
 from osgeo import ogr
 from osgeo import osr
 from csv import writer as csv_writer
@@ -19,7 +23,21 @@ import plotly.graph_objs as go
 from .app import Hydroviewer as app
 base_name = __package__.split('.')[-1]
 
+def set_custom_setting(defaultModelName, defaultWSName):
 
+    from tethys_apps.models import TethysApp
+    db_app = TethysApp.objects.get(package=app.package)
+    custom_settings = db_app.custom_settings
+
+
+    db_setting = db_app.custom_settings.get(name='default_model_type')
+    db_setting.value = defaultModelName
+    db_setting.save()
+
+    db_setting = db_app.custom_settings.get(name='default_watershed_name')
+    db_setting.value = defaultWSName
+    db_setting.save()
+        
 # When we support more models, we can expand this. 
 def switch_model(x):
     return {
@@ -65,6 +83,28 @@ def home_standard(request):
 def ecmwf(request):
 
 
+    #Can Set Default permissions : Only allowed for admin users
+    can_update_default = has_permission(request, 'update_default')
+    
+    if(can_update_default):
+        defaultUpdateButton = Button(
+        display_text='Save',
+        name='update_button',
+        style='success',
+        attributes={
+            'data-toggle':'tooltip',
+            'data-placement':'bottom',
+            'title':'Save as Default Options for WS'
+        })
+    else:
+        defaultUpdateButton = False
+
+
+    # Check if we need to hide the WS options dropdown. 
+    hiddenAttr=""
+    if app.get_custom_setting('show_dropdown'):
+        hiddenAttr="hidden"
+
     init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
     init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
 
@@ -73,6 +113,7 @@ def ecmwf(request):
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
                               initial=[init_model_val],
+                              classes = hiddenAttr,
                               original=True)
 
     # uncomment for displaying watersheds in the SPT
@@ -86,8 +127,11 @@ def ecmwf(request):
     #                   any(val in value[0].lower().replace(' ', '') for
     #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
 
+
+   
+
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-    print "Trying to get GeoServer"
+    
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
                         '/featuretypes.json')
 
@@ -108,7 +152,8 @@ def ecmwf(request):
                                    options=watershed_list,
                                    initial=[init_ws_val],
                                    original=True,
-                                   attributes = {'onchange':"javascript:view_watershed();"}
+                                   classes = hiddenAttr,
+                                   attributes = {'onchange':"javascript:view_watershed();"+hiddenAttr}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -124,12 +169,14 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
+
     context = {
         "base_name": base_name,
         "model_input": model_input,
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
-        "geoserver_endpoint": geoserver_endpoint
+        "geoserver_endpoint": geoserver_endpoint,
+        "defaultUpdateButton":defaultUpdateButton
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -1095,6 +1142,10 @@ def shp_to_geojson(request):
 #                   'streamflow_prediction_tool/gizmo_ajax.html',
 #                   context)
 
+def setDefault(request):
+    get_data = request.GET
+    set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
+    return JsonResponse({'success':True})
 
 def get_units_title(unit_type):
     """
