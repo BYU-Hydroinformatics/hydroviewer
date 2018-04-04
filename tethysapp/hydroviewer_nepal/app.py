@@ -1,13 +1,11 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
+from tethys_sdk.permissions import Permission, PermissionGroup
 
 base_name = __package__.split('.')[-1]
 base_url = base_name.replace('_', '-')
 
 class Hydroviewer(TethysAppBase):
-    """
-    Tethys app class for HydroViewer.
-    """
 
     name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
     index = '{0}:home'.format(base_name)
@@ -21,9 +19,6 @@ class Hydroviewer(TethysAppBase):
     feedback_emails = []
 
     def url_maps(self):
-        """
-        Add controllers
-        """
         UrlMap = url_map_maker(self.root_url)
 
         url_maps = (
@@ -83,15 +78,32 @@ class Hydroviewer(TethysAppBase):
                 name='get_lis_shp',
                 url='lis-rapid/get-lis-shp',
                 controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
+                name='set_def_ws',
+                url='admin/setdefault',
+                controller='{0}.controllers.setDefault'.format(base_name)),
         )
 
         return url_maps
 
+    def permissions(self):
+
+        update_default = Permission(
+            name='update_default',
+            description='Update Default Settings'
+        )
+
+        admin = PermissionGroup(
+            name='admin',
+            permissions=(update_default,)
+        )
+
+
+        permissions = (admin,)
+
+        return permissions
 
     def custom_settings(self):
-        """
-        Custom app settings.
-        """
         return (
             CustomSetting(
                 name='api_source',
@@ -145,6 +157,12 @@ class Hydroviewer(TethysAppBase):
                 name='default_watershed_name',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Watershed Name: (For ex: "South America (Brazil)") ',
+                required=False
+            ),
+            CustomSetting(
+                name='show_dropdown',
+                type=CustomSetting.TYPE_BOOLEAN,
+                description='Hide Watershed Options when default present (True or False) ',
                 required=False
             ),
             CustomSetting(
