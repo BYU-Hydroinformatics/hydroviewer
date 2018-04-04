@@ -19,10 +19,28 @@ import plotly.graph_objs as go
 from .app import Hydroviewer as app
 base_name = __package__.split('.')[-1]
 
+
+# When we support more models, we can expand this. 
+def switch_model(x):
+    return {
+        'ECMWF-RAPID': 'ecmwf',
+        'LIS-RAPID': 'lis'
+    }.get(x, 'invalid') 
+
 def home(request):
-    """
-    Controller for the app home page.
-    """
+
+    # Check if we have a default model. If we do, then redirect the user to the default model's page
+    default_model = app.get_custom_setting('default_model_type');
+    if default_model:
+        model_func = switch_model(default_model)
+        if model_func is not 'invalid':
+            return globals()[model_func](request)
+        else:
+            return home_standard(request)
+    else:
+        return home_standard(request)
+   
+def home_standard(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
@@ -45,14 +63,16 @@ def home(request):
 
 
 def ecmwf(request):
-    """
-    Controller for the app home page.
-    """
+
+
+    init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
+    init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
+
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
-                              initial=[request.GET['model'] if request.GET else 'Select Model'],
+                              initial=[init_model_val],
                               original=True)
 
     # uncomment for displaying watersheds in the SPT
@@ -67,7 +87,7 @@ def ecmwf(request):
     #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-
+    print "Trying to get GeoServer"
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
                         '/featuretypes.json')
 
@@ -79,10 +99,14 @@ def ecmwf(request):
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, feat_name])
 
+    # Add the default WS if present and not already in the list
+    if init_ws_val and init_ws_val not in str(watershed_list):
+        watershed_list.append([init_ws_val, init_ws_val])
+
     watershed_select = SelectInput(display_text='',
                                    name='watershed',
                                    options=watershed_list,
-                                   initial=['Select Watershed'],
+                                   initial=[init_ws_val],
                                    original=True,
                                    attributes = {'onchange':"javascript:view_watershed();"}
                                    )
@@ -112,14 +136,15 @@ def ecmwf(request):
 
 
 def lis(request):
-    """
-    Controller for the app home page.
-    """
+
+    init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
+    init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
+
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
-                              initial=[request.GET['model'] if request.GET else 'Select Model'],
+                              initial=[init_model_val],
                               original=True)
 
     watershed_list = [['Select Watershed', '']]
@@ -133,10 +158,15 @@ def lis(request):
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, i])
 
+    # Add the default WS if present and not already in the list
+    # Not sure if this will work with LIS type. Need to test it out. 
+    if init_ws_val and init_ws_val not in str(watershed_list):
+        watershed_list.append([init_ws_val, init_ws_val])
+
     watershed_select = SelectInput(display_text='',
                                    name='watershed',
                                    options=watershed_list,
-                                   initial=['Select Watershed'],
+                                   initial=[init_ws_val],
                                    original=True,
                                    attributes = {'onchange':"javascript:view_watershed();"}
                                    )

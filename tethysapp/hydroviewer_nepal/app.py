@@ -136,6 +136,18 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
+                name='default_model_type',
+                type=CustomSetting.TYPE_STRING,
+                description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID)',
+                required=False
+            ),
+            CustomSetting(
+                name='default_watershed_name',
+                type=CustomSetting.TYPE_STRING,
+                description='Default Watershed Name: (For ex: "South America (Brazil)") ',
+                required=False
+            ),
+            CustomSetting(
                 name='lis_path',
                 type=CustomSetting.TYPE_STRING,
                 description='Path to local LIS-RAPID directory',

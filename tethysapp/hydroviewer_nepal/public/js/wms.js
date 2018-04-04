@@ -779,6 +779,14 @@ $(function(){
     map_events();
     submit_model();
     resize_graphs();
+     // If there is a defined Watershed, then lets render it and hide the controls
+    let ws_val = $('#watershed').find(":selected").text();
+    if(ws_val && ws_val!=='Select Watershed')
+    {
+        $('#watershed').hide();
+        $('#model').hide();
+        view_watershed();
+    }
     $('#datesSelect').change(function() { //when date is changed
         var sel_val = ($('#datesSelect option:selected').val()).split(',');
         var startdate = sel_val[0];
