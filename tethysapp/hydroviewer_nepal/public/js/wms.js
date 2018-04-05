@@ -784,6 +784,7 @@ $(function(){
     if(ws_val && ws_val!=='Select Watershed')
     {
         view_watershed();
+        $("[name='update_button']").hide();
     }
     // If there is a button to save default WS, let's add handler
     $("[name='update_button']").click( () => {

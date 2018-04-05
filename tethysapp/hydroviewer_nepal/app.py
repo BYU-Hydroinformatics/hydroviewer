@@ -34,10 +34,18 @@ class Hydroviewer(TethysAppBase):
                 name='lis',
                 url='lis-rapid',
                 controller='{0}.controllers.lis'.format(base_name)),
+             UrlMap(
+                name='get-available-dates',
+                url='get-available-dates',
+                controller='{0}.controllers.get_available_dates'.format(base_name)),
             UrlMap(
                 name='get-available-dates',
                 url='ecmwf-rapid/get-available-dates',
                 controller='{0}.controllers.get_available_dates'.format(base_name)),
+            UrlMap(
+                name='get-time-series',
+                url='get-time-series',
+                controller='{0}.controllers.ecmwf_get_time_series'.format(base_name)),
             UrlMap(
                 name='get-time-series',
                 url='ecmwf-rapid/get-time-series',
@@ -48,12 +56,32 @@ class Hydroviewer(TethysAppBase):
                 controller='{0}.controllers.lis_get_time_series'.format(base_name)),
             UrlMap(
                 name='get-return-periods',
+                url='get-return-periods',
+                controller='{0}.controllers.get_return_periods'.format(base_name)),
+            UrlMap(
+                name='get-return-periods',
                 url='ecmwf-rapid/get-return-periods',
                 controller='{0}.controllers.get_return_periods'.format(base_name)),
             UrlMap(
                 name='get-warning-points',
-                url='ecmwf-rapid/get-warning-points',
+                url='get-warning-points',
                 controller='{0}.controllers.get_warning_points'.format(base_name)),
+            UrlMap(
+                name='get-historic-data',
+                url='get-historic-data',
+                controller='{0}.controllers.get_historic_data'.format(base_name)),
+            UrlMap(
+                name='get-flow-duration-curve',
+                url='get-flow-duration-curve',
+                controller='{0}.controllers.get_flow_duration_curve'.format(base_name)),
+            UrlMap(
+                name='get_historic_data_csv',
+                url='get-historic-data-csv',
+                controller='{0}.controllers.get_historic_data_csv'.format(base_name)),
+            UrlMap(
+                name='get_forecast_data_csv',
+                url='get-forecast-data-csv',
+                controller='{0}.controllers.get_forecast_data_csv'.format(base_name)),
             UrlMap(
                 name='get-historic-data',
                 url='ecmwf-rapid/get-historic-data',
@@ -79,8 +107,24 @@ class Hydroviewer(TethysAppBase):
                 url='lis-rapid/get-lis-shp',
                 controller='{0}.controllers.shp_to_geojson'.format(base_name)),
             UrlMap(
+                name='get_forecast_data_csv',
+                url='get-forecast-data-csv',
+                controller='{0}.controllers.get_lis_data_csv'.format(base_name)),
+            UrlMap(
+                name='get_lis_shp',
+                url='get-lis-shp',
+                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
                 name='set_def_ws',
                 url='admin/setdefault',
+                controller='{0}.controllers.setDefault'.format(base_name)),
+             UrlMap(
+                name='set_def_ws',
+                url='ecmwf-rapid/admin/setdefault',
+                controller='{0}.controllers.setDefault'.format(base_name)),
+              UrlMap(
+                name='set_def_ws',
+                url='lis-rapid/admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
         )
 
@@ -163,7 +207,8 @@ class Hydroviewer(TethysAppBase):
                 name='show_dropdown',
                 type=CustomSetting.TYPE_BOOLEAN,
                 description='Hide Watershed Options when default present (True or False) ',
-                required=False
+                required=True,
+                value=True
             ),
             CustomSetting(
                 name='lis_path',
