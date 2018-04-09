@@ -847,6 +847,32 @@ $(function(){
     map_events();
     submit_model();
     resize_graphs();
+     // If there is a defined Watershed, then lets render it and hide the controls
+    let ws_val = $('#watershed').find(":selected").text();
+    if(ws_val && ws_val!=='Select Watershed')
+    {
+        view_watershed();
+        $("[name='update_button']").hide();
+    }
+    // If there is a button to save default WS, let's add handler
+    $("[name='update_button']").click( () => {
+         $.ajax({
+            url:'admin/setdefault',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'ws_name':  $('#model').find(":selected").text(),
+                'model_name':  $('#watershed').find(":selected").text()
+            },
+            success: function () {
+                // Remove the set default button
+                $("[name='update_button']").hide(500);
+                console.log('Updated Defaults Successfully');
+            }
+        });
+    })
+
+
     $('#datesSelect').change(function() { //when date is changed
         var sel_val = ($('#datesSelect option:selected').val()).split(',');
         var startdate = sel_val[0];
