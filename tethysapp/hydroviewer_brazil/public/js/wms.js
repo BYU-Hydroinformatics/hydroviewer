@@ -142,14 +142,14 @@ function init_map () {
 
     layers = [base_layer,two_year_warning,ten_year_warning,twenty_year_warning,featureOverlay];
 
-    var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
-    var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
-    var zoomLevel = Number(JSON.parse($('#zoom_info').val()).split(',')[2]);
+//    var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
+//    var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
+//   var zoomLevel = Number(JSON.parse($('#zoom_info').val()).split(',')[2]);
     map = new ol.Map({
         target: 'map',
         view: new ol.View({
-            center: ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857'),
-            zoom: zoomLevel,
+            center: ol.proj.transform([-54, -12], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 7,
             minZoom: 2,
             maxZoom: 18,
         }),
@@ -188,9 +188,20 @@ function view_watershed(){
             })
         });
 
+        var wmsLayer2 = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+                url: 'http://tethys-staging.byu.edu:8181/geoserver/wms',
+                params: {'LAYERS': 'BrazilStationsJoined2000'},
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            })
+        });
+
         get_warning_points(model, watershed, subbasin);
 
         map.addLayer(wmsLayer);
+        map.addLayer(wmsLayer2);
+
 
         $loading.addClass('hidden');
         var ajax_url =JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
@@ -371,6 +382,7 @@ function get_available_dates(model, watershed, subbasin, comid) {
         });
     }
 }
+
 
 function get_return_periods(watershed, subbasin, comid) {
     $.ajax({
@@ -567,6 +579,34 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
 };
 
 
+
+function get_station_info (stationcode, startdateobs, enddateobs) {
+    $.ajax({
+        url: 'get-station-data',
+        type: 'GET',
+        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        error: function () {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#info').addClass('hidden')
+            }, 5000);
+        },
+        success: function (data) {
+            if (!data.error) {
+                $('#observed-loading').addClass('hidden');
+                $('#dates').removeClass('hidden');
+                $('#obsdates').removeClass('hidden');
+                $loading.addClass('hidden');
+                $('#observed-chart').removeClass('hidden');
+                $('#observed-chart').html(data);
+            }
+        }
+    })
+}
+
+
 function map_events(){
     map.on('pointermove', function(evt) {
         if (evt.dragging) {
@@ -595,77 +635,105 @@ function map_events(){
         var model = $('#model option:selected').text();
 
         if (map.getTargetElement().style.cursor == "pointer") {
-            $("#graph").modal('show');
 
-            $('#long-term-chart').addClass('hidden');
-            $('#historical-chart').addClass('hidden');
-            $('#fdc-chart').addClass('hidden');
-            $('#download_forecast').addClass('hidden');
-            $('#download_interim').addClass('hidden');
+                var view = map.getView();
+                var viewResolution = view.getResolution();
 
-            var view = map.getView();
-            var viewResolution = view.getResolution();
+                if (model === 'ECMWF-RAPID') {
 
-            if (model === 'ECMWF-RAPID') {
-                var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), {'INFO_FORMAT': 'application/json'}); //Get the wms url for the clicked point
+                    var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), {'INFO_FORMAT': 'application/json'}); //Get the wms url for the clicked point
 
-                if (wms_url) {
-                    $loading.removeClass('hidden');
-                    //Retrieving the details for clicked point via the url
-                    $('#dates').addClass('hidden');
-                    //$('#plot').addClass('hidden');
-                    $.ajax({
-                        type: "GET",
-                        url: wms_url,
-                        dataType: 'json',
-                        success: function (result) {
-                            var model = $('#model option:selected').text();
-                            var comid = result["features"][0]["properties"]["COMID"];
+                    if (current_layer["H"]["source"]["i"]["LAYERS"] == "BrazilStationsJoined2000") {
 
-                            var startdate = '';
-                            if ("derived_fr" in (result["features"][0]["properties"])) {
-                                var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
-                                var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
-                            } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
-                                var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
-                                var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
-                            } else {
-                                var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
-                                var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
+                        $("#obsgraph").modal('show');
+                        $('#observed-chart').addClass('hidden');
+                        $('#obsdates').addClass('hidden');
+                        $('#observed-loading').removeClass('hidden');
+                        $("#station-info").empty()
+
+                        $.ajax({
+                            type: "GET",
+                            url: wms_url,
+                            dataType: 'json',
+                            success: function (result) {
+                                stationcode = result["features"][0]["properties"]["CodEstacao"];
+                                stationname = result["features"][0]["properties"]["NomeEstaca"];
+                                var startdateobs = $('#startdateobs').val();
+                                var enddateobs = $('#enddateobs').val();
+                                $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
+                                get_station_info (stationcode, startdateobs, enddateobs, stationname)
+
                             }
+                        });
 
-                            get_available_dates(model, watershed, subbasin, comid);
-                            get_time_series(model, watershed, subbasin, comid, startdate);
-                            get_historic_data(model, watershed, subbasin, comid, startdate);
-                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+                    } else {
 
-                            var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
+                        $("#graph").modal('show');
 
-                            $('#info').addClass('hidden');
-                            add_feature(model, workspace, comid);
+                        $('#long-term-chart').addClass('hidden');
+                        $('#historical-chart').addClass('hidden');
+                        $('#fdc-chart').addClass('hidden');
+                        $('#download_forecast').addClass('hidden');
+                        $('#download_interim').addClass('hidden');
 
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            console.log(Error);
-                        }
-                    });
+
+                        $loading.removeClass('hidden');
+                        //Retrieving the details for clicked point via the url
+                        $('#dates').addClass('hidden');
+                        //$('#plot').addClass('hidden');
+                        $.ajax({
+                            type: "GET",
+                            url: wms_url,
+                            dataType: 'json',
+                            success: function (result) {
+                                var model = $('#model option:selected').text();
+                                var comid = result["features"][0]["properties"]["COMID"];
+
+                                var startdate = '';
+                                if ("derived_fr" in (result["features"][0]["properties"])) {
+                                    var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
+                                    var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
+                                } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
+                                    var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
+                                    var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
+                                } else {
+                                    var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
+                                    var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
+                                }
+
+                                get_available_dates(model, watershed, subbasin, comid);
+                                get_time_series(model, watershed, subbasin, comid, startdate);
+                                get_historic_data(model, watershed, subbasin, comid, startdate);
+                                get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+
+                                var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
+
+                                $('#info').addClass('hidden');
+                                add_feature(model, workspace, comid);
+
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                console.log(Error);
+                            }
+                        });
+                    }
+                } else if (model === 'LIS-RAPID') {
+                    var comid = current_layer.get('COMID');
+                    var watershed = $('#watershedSelect option:selected').val().split('-')[0]
+                    var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
+
+                    get_time_series(model, watershed, subbasin, comid);
+
+                    $('#info').addClass('hidden');
+                    var workspace = [watershed, subbasin];
+
+                    add_feature(model, workspace, comid);
                 }
-            } else if (model === 'LIS-RAPID') {
-                var comid = current_layer.get('COMID');
-                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
-                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
-
-                get_time_series(model, watershed, subbasin, comid);
-
-                $('#info').addClass('hidden');
-                var workspace = [watershed, subbasin];
-
-                add_feature(model, workspace, comid);
-            }
         };
     });
 
 }
+
 
 function add_feature(model,workspace,comid){
     map.removeLayer(featureOverlay);
@@ -788,5 +856,17 @@ $(function(){
         var model = 'ECMWF-RAPID';
         $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
+    });
+    $('#startdateobs').change(function() { //when date is changed
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs);
+    });
+    $('#enddateobs').change(function() { //when date is changed
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs);
     });
 });

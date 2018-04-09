@@ -73,6 +73,52 @@
 {% endblock %}
 
 {% block after_app_content %}
+<!-- Observed Data -->
+<div class="modal fade" id="obsgraph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div id="station-info" class="col-md-8"></div>
+                    <div class="col-md-4">
+                        <div align="right">
+                        <img class="obslogos" src="{% static base_name|add:'/images/byu_logo.png' %}">
+                        <img class="obslogos" src="{% static base_name|add:'/images/cemaden.jpg' %}">
+                        </div>
+                    </div>
+                </div>
+                <div id="obsdates">
+                    <div id="startdatepicker">
+                        {% gizmo startdateobs %}
+                    </div>
+                    <div id="enddatepicker">
+                        {% gizmo enddateobs %}
+                    </div>
+                </div>
+                <div id="interaction"></div>
+            </div>
+            <div class="modal-body">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="obs_tab">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="flex-container-row"><img id="observed-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                                <div id="observed-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div id="info" class="hidden"></div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <!-- Chart Modal -->
 <div class="modal fade" id="graph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
     <div class="modal-dialog" role="document">

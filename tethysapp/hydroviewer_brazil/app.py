@@ -83,7 +83,12 @@ class Hydroviewer(TethysAppBase):
                 name='get_lis_shp',
                 url='lis-rapid/get-lis-shp',
                 controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
+                name='get_station_data',
+                url='ecmwf-rapid/get-station-data',
+                controller='{0}.controllers.get_station_data'.format(base_name)),
         )
+
 
         return url_maps
 

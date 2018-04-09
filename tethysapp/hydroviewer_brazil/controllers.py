@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
+from .app import Hydroviewer as app
 
 import os
 import requests
@@ -13,10 +14,9 @@ from osgeo import osr
 from csv import writer as csv_writer
 import scipy.stats as sp
 import datetime as dt
-
+from bs4 import BeautifulSoup
 import plotly.graph_objs as go
 
-from .app import Hydroviewer as app
 base_name = __package__.split('.')[-1]
 
 def home(request):
@@ -30,15 +30,15 @@ def home(request):
                               initial=['Select Model'],
                               original=True)
 
-    zoom_info = TextInput(display_text='',
-                          initial=json.dumps(app.get_custom_setting('zoom_info')),
-                          name='zoom_info',
-                          disabled=True)
+    #zoom_info = TextInput(display_text='',
+    #                      initial=json.dumps(app.get_custom_setting('zoom_info')),
+    #                      name='zoom_info',
+    #                      disabled=True)
 
     context = {
         "base_name": base_name,
         "model_input": model_input,
-        "zoom_info": zoom_info
+        #"zoom_info": zoom_info
     }
 
     return render(request, '{0}/home.html'.format(base_name), context)
@@ -88,7 +88,7 @@ def ecmwf(request):
                                    )
 
     zoom_info = TextInput(display_text='',
-                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+#                          initial=json.dumps(app.get_custom_setting('zoom_info')),
                           name='zoom_info',
                           disabled=True)
 
@@ -100,12 +100,42 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
+    today = dt.datetime.now()
+    year = str(today.year)
+    month = str(today.strftime("%m"))
+    day = str(today.strftime("%d"))
+    date = day + '/' + month + '/' + year
+    lastyear = int(year) - 1
+    date2 = day + '/' + month + '/' + str(lastyear)
+
+    startdateobs = DatePicker(name='startdateobs',
+                             display_text='Start Date',
+                             autoclose=True,
+                             format='dd/mm/yyyy',
+                             start_date='01/01/1950',
+                             start_view='month',
+                             today_button=True,
+                             initial=date2,
+                             classes='datepicker')
+
+    enddateobs = DatePicker(name='enddateobs',
+                             display_text='End Date',
+                             autoclose=True,
+                             format='dd/mm/yyyy',
+                             start_date='01/01/1950',
+                             start_view='month',
+                             today_button=True,
+                             initial=date,
+                             classes='datepicker')
+
     context = {
         "base_name": base_name,
         "model_input": model_input,
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
-        "geoserver_endpoint": geoserver_endpoint
+        "geoserver_endpoint": geoserver_endpoint,
+        "startdateobs":startdateobs,
+        "enddateobs": enddateobs
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -176,6 +206,8 @@ def get_warning_points(request):
                 app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=2',
                 headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+
+
 
             return JsonResponse({
                 "success": "Data analysis complete!",
@@ -450,7 +482,6 @@ def get_available_dates(request):
         "success": "Data analysis complete!",
         "available_dates": json.dumps(dates)
     })
-
 
 def get_return_periods(request):
     get_data = request.GET
@@ -1074,3 +1105,63 @@ def get_units_title(unit_type):
     if unit_type == 'english':
         units_title = "ft"
     return units_title
+
+def get_station_data(request):
+    """
+    Get data from telemetric stations
+    """
+    get_data = request.GET
+
+    try:
+
+        codEstacao = get_data['stationcode']
+        # DD/MM/YYYY
+        DataInicio = get_data['startdateobs']
+        DataFim = get_data['enddateobs']
+
+
+        url = 'http://telemetriaws1.ana.gov.br/ServiceANA.asmx/DadosHidrometeorologicos?codEstacao=' + codEstacao + '&DataInicio=' + DataInicio + '&DataFim=' + DataFim
+
+        response = requests.get(url)
+
+        soup = BeautifulSoup(response.content, "xml")
+
+        times = soup.find_all('DataHora')
+        values = soup.find_all('Chuva')
+
+        dates = []
+        flows = []
+
+        for time in times:
+            dates.append(str(time.get_text()))
+
+        for value in values:
+            flows.append(str(value.get_text()))
+
+        observed_sc = go.Scatter(
+            x=dates,
+            y=flows,
+        )
+
+        layout = go.Layout(title='Telemetric Station Data',
+                           xaxis=dict(
+                               title='Dates',),
+                           yaxis=dict(
+                               title='Observed Streamflow (cms)',
+                               autorange=True),
+                           showlegend=False)
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[observed_sc],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
