@@ -63,6 +63,11 @@
     </div>
   {% endif %}
 
+  {% if defaultUpdateButton %}
+  <div id="defaultModelContainer" style="margin-right: 15px;">
+    {% gizmo defaultUpdateButton %}
+  </div>
+  {% endif %}
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
     <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
