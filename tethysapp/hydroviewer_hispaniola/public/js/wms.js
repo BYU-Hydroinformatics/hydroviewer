@@ -96,7 +96,6 @@ function init_map () {
         })
     });
 
-
     featureOverlay = new ol.layer.Vector({
         source: new ol.source.Vector()
     });
@@ -113,6 +112,7 @@ function init_map () {
             })
         })
     });
+    two_year_warning.setZIndex(2)
 
     ten_year_warning = new ol.layer.Vector({
         source: new ol.source.Vector(),
@@ -126,6 +126,7 @@ function init_map () {
             })
         })
     });
+    ten_year_warning.setZIndex(3)
 
     twenty_year_warning = new ol.layer.Vector({
         source: new ol.source.Vector(),
@@ -139,6 +140,7 @@ function init_map () {
             })
         })
     });
+    twenty_year_warning.setZIndex(4)
 
     layers = [base_layer,two_year_warning,ten_year_warning,twenty_year_warning,featureOverlay];
 
@@ -146,6 +148,9 @@ function init_map () {
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
     var zoomLevel = Number(JSON.parse($('#zoom_info').val()).split(',')[2]);
     map = new ol.Map({
+        controls: ol.control.defaults().extend([
+          new ol.control.OverviewMap()
+        ]),
         target: 'map',
         view: new ol.View({
             center: ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857'),
@@ -178,6 +183,19 @@ function view_watershed(){
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
         $("#watershed-info").append('<h3>Current Watershed: '+ watershed_display_name + '</h3><h5>Subbasin Name: '+ subbasin_display_name);
 
+        var layerNameCatchment = 'hydroviewer_hispaniola:ffgs_basin_view'
+        wmsLayerCatchment = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://localhost:8181/geoserver/wms',
+                params: {'LAYERS':layerNameCatchment},
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            }),
+            opacity: 0.7
+        });
+        wmsLayerCatchment.setZIndex(0)
+        map.addLayer(wmsLayerCatchment);
+
         var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
@@ -187,6 +205,7 @@ function view_watershed(){
                 crossOrigin: 'Anonymous'
             })
         });
+        wmsLayer.setZIndex(1)
 
         get_warning_points(model, watershed, subbasin);
 
@@ -773,8 +792,8 @@ function resize_graphs() {
 };
 
 $(function(){
-    $('#app-content-wrapper').removeClass('show-nav');
-    $(".toggle-nav").removeClass('toggle-nav');
+    //$('#app-content-wrapper').removeClass('show-nav');
+    //$(".toggle-nav").removeClass('toggle-nav');
     init_map();
     map_events();
     submit_model();
@@ -783,10 +802,28 @@ $(function(){
     let ws_val = $('#watershed').find(":selected").text();
     if(ws_val && ws_val!=='Select Watershed')
     {
-        $('#watershed').hide();
-        $('#model').hide();
         view_watershed();
+        $("[name='update_button']").hide();
     }
+    // If there is a button to save default WS, let's add handler
+    $("[name='update_button']").click( () => {
+         $.ajax({
+            url:'admin/setdefault',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'ws_name':  $('#model').find(":selected").text(),
+                'model_name':  $('#watershed').find(":selected").text()
+            },
+            success: function () {
+                // Remove the set default button
+                $("[name='update_button']").hide(500);
+                console.log('Updated Defaults Successfully');
+            }
+        });
+    })
+
+
     $('#datesSelect').change(function() { //when date is changed
         var sel_val = ($('#datesSelect option:selected').val()).split(',');
         var startdate = sel_val[0];
@@ -798,3 +835,55 @@ $(function(){
         get_time_series(model, watershed, subbasin, comid, startdate);
     });
 });
+
+prepareFilesForAjax = function (files) {
+    var data = new FormData();
+
+    Object.keys(files).forEach(function (file) {
+        data.append('files', files[file]);
+    });
+
+    return data;
+};
+
+getCookie = function(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+};
+
+$("#upload-file").on('click', updateFFGS);
+
+function updateFFGS() {
+    var files = $('#input-files')[0].files;
+    data = prepareFilesForAjax(files);
+    $.ajax({
+        url: '/apps/hydroviewer-hispaniola/update-ffgs/',
+        type: 'POST',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        data: data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        error: function (ignore, textStatus) {
+            console.log(textStatus)
+            map.removeLayer(wmsLayer);
+            map.addLayer(wmsLayer);
+        },
+        success: function (response) {
+            console.log("SUCCESS")
+            map.removeLayer(wmsLayer);
+            map.addLayer(wmsLayer);
+        }
+    });
+};

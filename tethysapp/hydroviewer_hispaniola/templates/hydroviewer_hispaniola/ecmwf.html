@@ -8,68 +8,122 @@
 
 {% block app_content %}
 <div id="map" class="map">
-    <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
-        <div>
-            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                 xmlns="http://www.w3.org/2000/svg">
-                <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
-            </svg>
-            Streams
-        </div>
-        <div>
-            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                 xmlns="http://www.w3.org/2000/svg">
-                <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
-            </svg>
-            20-Year Warnings
-        </div>
-        <div>
-            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                 xmlns="http://www.w3.org/2000/svg">
-                <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
-            </svg>
-            10-Year Warnings
-        </div>
-        <div>
-            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                 xmlns="http://www.w3.org/2000/svg">
-                <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
-            </svg>
-            2-Year Warnings
-        </div>
-    </div>
+
 </div>
 {% endblock %}
 
 {% block header_buttons %}
-  {% if zoom_info %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
+    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
+    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_navigation_items %}
+{% if zoom_info %}
   <div class="hidden" style="margin-right: 15px;">
     {% gizmo text_input zoom_info %}
   </div>
+  <br>
   {% endif %}
   {% if geoserver_endpoint %}
   <div class="hidden" style="margin-right: 15px;">
     {% gizmo text_input geoserver_endpoint %}
   </div>
+  <br>
   {% endif %}
   {% if model_input %}
     <div id="modelSelect" style="margin-right: 15px;">
       {% gizmo select_input model_input %}
     </div>
+    <br>
   {% endif %}
   {% if watershed_select %}
     <div id="watershedSelect" style="margin-right: 15px;">
       {% gizmo select_input watershed_select %}
     </div>
+    <br>
+        <h6><b>Update FFGS Data</b></h6>
+        <input id="input-files" type="file">
+        <button id="upload-file" type="button">Submit</button> 
+        <br>
+        <h6><b>Legend</b></h6>
+        <div id="stp-legend" class="col-sm-12">
+            <h6><b>Streamflow Prediction Tool</b></h6>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
+                </svg>
+                Streams
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
+                </svg>
+                20-Year Warnings
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
+                </svg>
+                10-Year Warnings
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
+                </svg>
+                2-Year Warnings
+            </div>
+        </div>
+        <br>
+        <br>
+        <div id="ndvi-legend" class="col-sm-12">
+            <h6><b>Flash Flood Guidance System</b></h6>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff00ff" fill="#ff00ff" stroke-width="2"/>
+                </svg>
+                0mm to 25mm
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff0000" fill="#ff0000" stroke-width="2"/>
+                </svg>
+                25mm to 50mm
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffff00" fill="#ffff00" stroke-width="2"/>
+                </svg>
+                50mm to 100mm
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#00ffff" fill="#00ffff" stroke-width="2"/>
+                </svg>
+                100mm to 300mm
+            </div>
+            <div>
+                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffffff" fill="#ffffff" stroke-width="2"/>
+                </svg>
+                No Data Available
+            </div>
+        </div>
+
+
   {% endif %}
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
-    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
-  </div>
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
-    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
-  </div>
 {% endblock %}
 
 {% block after_app_content %}
