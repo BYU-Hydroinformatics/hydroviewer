@@ -862,7 +862,18 @@ getCookie = function(name) {
     return cookieValue;
 };
 
-$("#upload-file").on('click', updateFFGS);
+$("#stp-stream-toggle").on('change', function(){
+    wmsLayer.setVisible($("#stp-stream-toggle").prop('checked'));
+});
+$("#stp-20-toggle").on('change', function(){
+    twenty_year_warning.setVisible($("#stp-20-toggle").prop('checked'));
+});
+$("#stp-10-toggle").on('change', function(){
+    ten_year_warning.setVisible($("#stp-10-toggle").prop('checked'));
+});
+$("#stp-2-toggle").on('change', function(){
+    two_year_warning.setVisible($("#stp-2-toggle").prop('checked'));
+});
 
 function updateFFGS() {
     var files = $('#input-files')[0].files;

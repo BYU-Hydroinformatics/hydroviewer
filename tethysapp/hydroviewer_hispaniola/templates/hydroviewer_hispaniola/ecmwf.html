@@ -13,6 +13,9 @@
 {% endblock %}
 
 {% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add FFGS Data">
+    <a data-toggle="modal" data-target="#ffgs-modal"><span class="glyphicon glyphicon-plus"></span></a>
+  </div>
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
     <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
@@ -22,105 +25,133 @@
 {% endblock %}
 
 {% block app_navigation_items %}
-{% if zoom_info %}
-  <div class="hidden" style="margin-right: 15px;">
-    {% gizmo text_input zoom_info %}
-  </div>
-  <br>
+  {% if zoom_info %}
+    <div class="hidden" style="margin-right: 15px;">
+      {% gizmo text_input zoom_info %}
+    </div>
   {% endif %}
   {% if geoserver_endpoint %}
-  <div class="hidden" style="margin-right: 15px;">
-    {% gizmo text_input geoserver_endpoint %}
-  </div>
-  <br>
-  {% endif %}
-  {% if model_input %}
-    <div id="modelSelect" style="margin-right: 15px;">
-      {% gizmo select_input model_input %}
+    <div class="hidden" style="margin-right: 15px;">
+      {% gizmo text_input geoserver_endpoint %}
     </div>
-    <br>
-  {% endif %}
-  {% if watershed_select %}
+    {% endif %}
+    {% if model_input %}
+      <div id="modelSelect" style="margin-right: 15px;">
+        {% gizmo select_input model_input %}
+      </div>
+    {% endif %}
+    {% if watershed_select %}
     <div id="watershedSelect" style="margin-right: 15px;">
-      {% gizmo select_input watershed_select %}
+        {% gizmo select_input watershed_select %}
     </div>
     <br>
-        <h6><b>Update FFGS Data</b></h6>
-        <input id="input-files" type="file">
-        <button id="upload-file" type="button">Submit</button> 
-        <br>
-        <h6><b>Legend</b></h6>
-        <div id="stp-legend" class="col-sm-12">
-            <h6><b>Streamflow Prediction Tool</b></h6>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
-                </svg>
-                Streams
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
-                </svg>
-                20-Year Warnings
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
-                </svg>
-                10-Year Warnings
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
-                </svg>
-                2-Year Warnings
-            </div>
+    <h4><b>Legend</b></h4>
+    <div id="stp-legend" class="col-sm-12">
+        <h6><b>Streamflow Prediction Tool</b></h6>
+        <table style="width:100%">
+          <tr>
+            <td>
+                <div>
+                    <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" 
+                         xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
+                    </svg>
+                    Streams
+                </div>
+            </td>
+            <td>
+                <input id="stp-stream-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+            </td> 
+          </tr>
+          <tr>
+            <td>
+                <div>
+                    <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
+                    </svg>
+                    20-Year Warnings
+                </div>
+            </td>
+            <td>
+                <input id="stp-20-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+            </td> 
+          </tr>
+          <tr>
+            <td>
+                <div>
+                    <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
+                    </svg>
+                    10-Year Warnings
+                </div>
+            </td>
+            <td>
+                <input id="stp-10-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+            </td> 
+          </tr>
+          <tr>
+            <td>
+                <div>
+                    <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
+                    </svg>
+                    2-Year Warnings
+                </div>
+            </td>
+            <td>
+                <input id="stp-2-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+            </td> 
+          </tr>
+        </table>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div id="ffgs-legend" class="col-sm-12">
+        <h6><b>Flash Flood Guidance System</b></h6>
+        <div>
+            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff00ff" fill="#ff00ff" stroke-width="2"/>
+            </svg>
+            0mm to 25mm
+        </div>
+        <div>
+            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff0000" fill="#ff0000" stroke-width="2"/>
+            </svg>
+            25mm to 50mm
+        </div>
+        <div>
+            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffff00" fill="#ffff00" stroke-width="2"/>
+            </svg>
+            50mm to 100mm
+        </div>
+        <div>
+            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0 0, 20 0, 20 20,0 20" stroke="#00ffff" fill="#00ffff" stroke-width="2"/>
+            </svg>
+            100mm to 300mm
+        </div>
+        <div>
+            <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffffff" fill="#ffffff" stroke-width="2"/>
+            </svg>
+            No Data Available
         </div>
         <br>
-        <br>
-        <div id="ndvi-legend" class="col-sm-12">
-            <h6><b>Flash Flood Guidance System</b></h6>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff00ff" fill="#ff00ff" stroke-width="2"/>
-                </svg>
-                0mm to 25mm
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff0000" fill="#ff0000" stroke-width="2"/>
-                </svg>
-                25mm to 50mm
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffff00" fill="#ffff00" stroke-width="2"/>
-                </svg>
-                50mm to 100mm
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#00ffff" fill="#00ffff" stroke-width="2"/>
-                </svg>
-                100mm to 300mm
-            </div>
-            <div>
-                <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffffff" fill="#ffffff" stroke-width="2"/>
-                </svg>
-                No Data Available
-            </div>
-        </div>
+        <p>Change Layer Opacity</p>
+        <input id="slider" type="range" min="0" max="1" 
+            step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+    </div>
 
 
   {% endif %}
@@ -232,6 +263,27 @@
                 <p><a href="https://www.ecmwf.int/en/about/what-we-do/global-forecasts" target="_blank">ECMWF Global Forecasts</a></p>
                 <p><a href="http://rapid-hub.org/" target="_blank">RAPID River Routing Model</a></p>
                 <p><a href="https://streamflow-prediction-tool.readthedocs.io/en/latest/" target="_blank">StreamFlow Prediction Tool</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add FFGS Data Modal -->
+<div class="modal fade" id="ffgs-modal" tabindex="-1" role="dialog" aria-labelledby="ffgs-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="about-modal-label">Add Flash Flood Guidance Data</h2>
+            </div>
+            <div class="modal-body">
+                <div>Please upload a valid Flash Flood Guidance System text file below to update the map.</div>
+                <br>
+                <input id="input-files" type="file">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="submit-ffgf-data" onclick="" data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-default" id="close-login-popup" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
