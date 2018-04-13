@@ -148,7 +148,7 @@
             No Data Available
         </div>
         <br>
-        <p>Change Layer Opacity</p>
+        <p>Change FFGS Layer Transparency</p>
         <input id="slider" type="range" min="0" max="1" 
             step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
     </div>
@@ -280,9 +280,11 @@
                 <div>Please upload a valid Flash Flood Guidance System text file below to update the map.</div>
                 <br>
                 <input id="input-files" type="file">
+                <br>
+                <div>Once you've selected a file, click submit to upload it.</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="submit-ffgf-data" onclick="" data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-default" id="submit-ffgf-data" onclick="updateFFGS()" data-dismiss="modal">Submit</button>
                 <button type="button" class="btn btn-default" id="close-login-popup" data-dismiss="modal">Close</button>
             </div>
         </div>

@@ -877,24 +877,30 @@ $("#stp-2-toggle").on('change', function(){
 
 function updateFFGS() {
     var files = $('#input-files')[0].files;
-    data = prepareFilesForAjax(files);
-    $.ajax({
-        url: '/apps/hydroviewer-hispaniola/update-ffgs/',
-        type: 'POST',
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        data: data,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        error: function (ignore, textStatus) {
-            console.log(textStatus)
-            map.removeLayer(wmsLayer);
-            map.addLayer(wmsLayer);
-        },
-        success: function (response) {
-            console.log("SUCCESS")
-            map.removeLayer(wmsLayer);
-            map.addLayer(wmsLayer);
-        }
-    });
+    if (files.length === 0) {
+        alert("Please select a file to upload.")
+    }
+    else
+    {
+        data = prepareFilesForAjax(files);
+        $.ajax({
+            url: '/apps/hydroviewer-hispaniola/update-ffgs/',
+            type: 'POST',
+            headers: {'X-CSRFToken': getCookie('csrftoken')},
+            data: data,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            error: function (ignore, textStatus) {
+                console.log(textStatus)
+                map.removeLayer(wmsLayer);
+                map.addLayer(wmsLayer);
+            },
+            success: function (response) {
+                console.log("SUCCESS")
+                map.removeLayer(wmsLayer);
+                map.addLayer(wmsLayer);
+            }
+        });
+    };
 };

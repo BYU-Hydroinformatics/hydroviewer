@@ -15,7 +15,15 @@ def update_ffgs(request):
     if request.is_ajax() and request.method == 'POST':
         params = request.POST
         file_list = request.FILES.getlist('files')
+        uploaded_file = file_list[0]
+        if str(uploaded_file).lower().endswith(".txt"):
+            print "TEXT FILE"
+        elif str(uploaded_file).lower().endswith(".csv"):
+            print "CSV FILE"
+        else:
+            print "INVALID FILE"
 
+        '''
         conn = pg.connect('host=localhost dbname=hydroviewer_hispaniola user=tethys_default password=pass port=5435')
 
         cur = conn.cursor()
@@ -26,12 +34,12 @@ def update_ffgs(request):
 
         cur.execute("""truncate table public.ffgs_precip;""")
 
-        cur.copy_from(file_list[0], '"ffgs_precip"', sep=',')
+        cur.copy_from(csv_file, '"ffgs_precip"', sep=',')
 
         conn.commit()
 
         conn.close()
-
+        '''
         return_obj['success'] = True
 
-    return JsonResponse(return_obj)
+    #return JsonResponse(return_obj)
