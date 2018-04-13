@@ -579,10 +579,9 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
 };
 
 
-
 function get_station_info (stationcode, startdateobs, enddateobs) {
     $.ajax({
-        url: 'get-station-data',
+        url: 'ecmwf-rapid/get-station-data',
         type: 'GET',
         data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
@@ -597,7 +596,7 @@ function get_station_info (stationcode, startdateobs, enddateobs) {
             if (!data.error) {
                 $('#observed-loading').addClass('hidden');
                 $('#dates').removeClass('hidden');
-                $('#obsdates').removeClass('hidden');
+//                $('#obsdates').removeClass('hidden');
                 $loading.addClass('hidden');
                 $('#observed-chart').removeClass('hidden');
                 $('#observed-chart').html(data);
@@ -658,6 +657,7 @@ function map_events(){
                             success: function (result) {
                                 stationcode = result["features"][0]["properties"]["CodEstacao"];
                                 stationname = result["features"][0]["properties"]["NomeEstaca"];
+                                $('#obsdates').removeClass('hidden');
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
                                 $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);

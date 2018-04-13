@@ -65,15 +65,15 @@ def home_standard(request):
                               initial=['Select Model'],
                               original=True)
 
-    #zoom_info = TextInput(display_text='',
-    #                      initial=json.dumps(app.get_custom_setting('zoom_info')),
-    #                      name='zoom_info',
-    #                      disabled=True)
+    zoom_info = TextInput(display_text='',
+                         initial=json.dumps(app.get_custom_setting('zoom_info')),
+                         name='zoom_info',
+                         disabled=True)
 
     context = {
         "base_name": base_name,
         "model_input": model_input,
-        #"zoom_info": zoom_info
+        "zoom_info": zoom_info
     }
 
     return render(request, '{0}/home.html'.format(base_name), context)
@@ -156,7 +156,7 @@ def ecmwf(request):
                                    )
 
     zoom_info = TextInput(display_text='',
-#                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+                         initial=json.dumps(app.get_custom_setting('zoom_info')),
                           name='zoom_info',
                           disabled=True)
 
@@ -168,13 +168,18 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
-    today = dt.datetime.now()
+    today = dt.date.today()
+    day = today.day
+    first = today.replace(day=1)
+    month = first - dt.timedelta(days=1)
+    lastmonth = month.replace(day=day)
+
     year = str(today.year)
-    month = str(today.strftime("%m"))
+    month1 = str(today.strftime("%m"))
+    month2 = str(lastmonth.strftime("%m"))
     day = str(today.strftime("%d"))
-    date = day + '/' + month + '/' + year
-    lastyear = int(year) - 1
-    date2 = day + '/' + month + '/' + str(lastyear)
+    date = day + '/' + month1 + '/' + year
+    date2 = day + '/' + month2 + '/' + year
 
     startdateobs = DatePicker(name='startdateobs',
                              display_text='Start Date',
