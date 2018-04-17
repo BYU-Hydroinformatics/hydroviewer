@@ -1211,7 +1211,7 @@ def get_station_data(request):
         soup = BeautifulSoup(response.content, "xml")
 
         times = soup.find_all('DataHora')
-        values = soup.find_all('Chuva')
+        values = soup.find_all('Nivel')
 
         dates = []
         flows = []
@@ -1231,7 +1231,7 @@ def get_station_data(request):
                            xaxis=dict(
                                title='Dates',),
                            yaxis=dict(
-                               title='Observed Streamflow (cms)',
+                               title='Level (m)',
                                autorange=True),
                            showlegend=False)
 
