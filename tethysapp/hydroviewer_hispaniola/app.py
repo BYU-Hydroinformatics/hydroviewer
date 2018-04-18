@@ -137,6 +137,10 @@ class Hydroviewer(TethysAppBase):
                 name='update_ffgs',
                 url='hydroviewer-hispaniola/update-ffgs',
                 controller='{0}.controllers_ajax.update_ffgs'.format(base_name)),
+            UrlMap(
+                name='forecastpercent',
+                url='hydroviewer-hispaniola/forecastpercent',
+                controller='{0}.controllers_ajax.forecastpercent'.format(base_name)),
 
         )
 
