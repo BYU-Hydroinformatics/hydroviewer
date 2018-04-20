@@ -13,7 +13,7 @@ from osgeo import osr
 from csv import writer as csv_writer
 import scipy.stats as sp
 import datetime as dt
-
+import ast
 import plotly.graph_objs as go
 
 from .app import Hydroviewer as app
@@ -1074,3 +1074,96 @@ def get_units_title(unit_type):
     if unit_type == 'english':
         units_title = "ft"
     return units_title
+
+def forecastpercent(request):
+
+
+    # Check if its an ajax post request
+    if request.is_ajax() and request.method == 'GET':
+
+        watershed = request.GET.get('watershed')
+        subbasin = request.GET.get('subbasin')
+        reach = request.GET.get('comid')
+        date = request.GET.get('startdate')
+        if date == '':
+            forecast = 'most_recent'
+        else:
+            forecast = str(date)
+
+        request_params = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach,
+                              forecast_folder=forecast)
+        request_headers = dict(Authorization='Token fa7fa9f7d35eddb64011913ef8a27129c9740f3c')
+        ens = requests.get('http://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetEnsemble/',
+                           params=request_params, headers=request_headers)
+
+        request_params1 = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach)
+        request_headers1 = dict(Authorization='Token fa7fa9f7d35eddb64011913ef8a27129c9740f3c')
+        rpall = requests.get('http://tethys-staging.byu.edu/apps/streamflow-prediction-tool/api/GetReturnPeriods/',
+                             params=request_params1, headers=request_headers1)
+
+        dicts = ens.content.splitlines()
+        dictstr = []
+
+        rpdict = ast.literal_eval(rpall.content)
+        rpdict.pop('max', None)
+
+        rivperc = {}
+        riverpercent = {}
+        rivpercorder = {}
+
+        for q in rpdict:
+            rivperc[q] = {}
+            riverpercent[q] = {}
+
+        dictlen = len(dicts)
+        for i in range(1, dictlen):
+            dictstr.append(dicts[i].split(","))
+
+        for rps in rivperc:
+            rp = float(rpdict[rps])
+            for b in dictstr:
+                date = b[0][:10]
+                if date not in rivperc[rps]:
+                    rivperc[rps][date] = []
+                length = len(b)
+                for x in range(1, length):
+                    flow = float(b[x])
+                    if x not in rivperc[rps][date] and flow > rp:
+                        rivperc[rps][date].append(x)
+            for e in rivperc[rps]:
+                riverpercent[rps][e] = float(len(rivperc[rps][e])) / 51.0 * 100
+
+        for keyss in rivperc:
+            data = riverpercent[keyss]
+            ordered_data = sorted(data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            rivpercorder[keyss] = ordered_data
+
+        rivdates = []
+        rivperctwo = []
+        rivpercten = []
+        rivperctwenty = []
+
+        for a in rivpercorder['two']:
+            rivdates.append(a[0])
+            rivperctwo.append(a[1])
+
+        for s in rivpercorder['ten']:
+            rivpercten.append(s[1])
+
+        for d in rivpercorder['twenty']:
+            rivperctwenty.append(d[1])
+
+        formatteddates = [str(elem)[-4:] for elem in rivdates]
+        formattedtwo = ["%.0f" % elem for elem in rivperctwo]
+        formattedten = ["%.0f" % elem for elem in rivpercten]
+        formattedtwenty = ["%.0f" % elem for elem in rivperctwenty]
+
+        formatteddates = formatteddates[:len(formatteddates) - 5]
+        formattedtwo = formattedtwo[:len(formattedtwo) - 5]
+        formattedten = formattedten[:len(formattedten) - 5]
+        formattedtwenty = formattedtwenty[:len(formattedtwenty) - 5]
+
+        dataformatted = {'percdates': formatteddates, 'two': formattedtwo, 'ten': formattedten,
+                         'twenty': formattedtwenty}
+
+        return JsonResponse(dataformatted)
