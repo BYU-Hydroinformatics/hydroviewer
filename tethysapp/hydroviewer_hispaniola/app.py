@@ -163,6 +163,7 @@ class Hydroviewer(TethysAppBase):
 
         return permissions
 
+
     def custom_settings(self):
         return (
             CustomSetting(

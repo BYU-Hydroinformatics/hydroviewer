@@ -74,7 +74,7 @@ def update_ffgs(request):
                 
                 with open(data_staging_file, 'r') as g:
                     
-                    conn = pg.connect('host=localhost dbname=hydroviewer_hispaniola user=tethys_default password=pass port=5435')
+                    conn = pg.connect('host=tethys-staging.byu.edu dbname=hydroviewer_hispaniola user=tethys_super password=pass port=5435')
 
                     cur = conn.cursor()
 

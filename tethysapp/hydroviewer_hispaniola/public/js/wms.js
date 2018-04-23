@@ -249,10 +249,10 @@ function view_watershed(){
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
         $("#watershed-info").append('<h3>Current Watershed: '+ watershed_display_name + '</h3><h5>Subbasin Name: '+ subbasin_display_name);
 
-        var layerNameCatchment = 'hydroviewer_hispaniola:ffgs_basin_view'
+        var layerNameCatchment = 'hispaniola_hydroviewer:ffgs_basin_view'
         wmsLayerCatchment = new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'http://localhost:8181/geoserver/wms',
+                url: 'http://tethys-staging.byu.edu:8181/geoserver/wms',
                 params: {'LAYERS':layerNameCatchment},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
