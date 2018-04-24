@@ -93,11 +93,11 @@ function toggleAcc(layerID) {
     let layer = wms_layers[layerID];
     if (document.getElementById(`wmsToggle${layerID}`).checked) {
         // Turn the layer and legend on
-        map.addLayer(layer);
-        $("#wmslegend"+layerID).show(200);
+        layer.setVisible(true);
+        $("#wmslegend" + layerID).show(200);
     } else {
-        map.removeLayer(layer);
-        $("#wmslegend"+layerID).hide(200);
+        layer.setVisible(false);
+        $("#wmslegend" + layerID).hide(200);
 
     }
 }
@@ -120,33 +120,37 @@ function init_map() {
             source: new ol.source.TileWMS({
                 url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
                 params: { 'LAYERS': 'AccRainEGE', 'TILED': true },
-                serverType: 'mapserver',
+                serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
-            })
+            }),
+            visible: false
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
                 params: { 'LAYERS': 'EGE_probRgt50', 'TILED': true },
-                serverType: 'mapserver',
+                serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
-            })
+            }),
+            visible: false
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
                 params: { 'LAYERS': 'EGE_probRgt150', 'TILED': true },
-                serverType: 'mapserver',
+                serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
-            })
+            }),
+            visible: false
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
                 params: { 'LAYERS': 'EGE_probRgt300', 'TILED': true },
-                serverType: 'mapserver',
+                serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
-            })
+            }),
+            visible: false
         })
     ];
 
@@ -194,10 +198,7 @@ function init_map() {
         })
     });
 
-    // layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning, featureOverlay];
-
-    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning];
-
+    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
