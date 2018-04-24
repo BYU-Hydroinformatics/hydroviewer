@@ -21,6 +21,7 @@ import ast
 import plotly.graph_objs as go
 
 from .app import Hydroviewer as app
+from .helpers import *
 base_name = __package__.split('.')[-1]
 
 def set_custom_setting(defaultModelName, defaultWSName):
@@ -38,12 +39,6 @@ def set_custom_setting(defaultModelName, defaultWSName):
     db_setting.value = defaultWSName
     db_setting.save()
         
-# When we support more models, we can expand this. 
-def switch_model(x):
-    return {
-        'ECMWF-RAPID': 'ecmwf',
-        'LIS-RAPID': 'lis'
-    }.get(x, 'invalid') 
 
 def home(request):
 
@@ -102,7 +97,7 @@ def ecmwf(request):
 
     # Check if we need to hide the WS options dropdown. 
     hiddenAttr=""
-    if app.get_custom_setting('show_dropdown'):
+    if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
         hiddenAttr="hidden"
 
     init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'

@@ -12,7 +12,10 @@ var default_extent,
     two_year_warning,
     ten_year_warning,
     twenty_year_warning,
-    map;
+    map,
+    wms_layers;
+
+
 var $loading = $('#view-file-loading');
 var m_downloaded_historical_streamflow = false;
 var m_downloaded_flow_duration = false;
@@ -27,7 +30,7 @@ var twenty_symbols = [new ol.style.RegularShape({
         color: 'rgba(128,0,128,1)',
         width: 1
     })
-}),new ol.style.RegularShape({
+}), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
@@ -50,7 +53,7 @@ var ten_symbols = [new ol.style.RegularShape({
         color: 'rgba(255,0,0,1)',
         width: 1
     })
-}),new ol.style.RegularShape({
+}), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
@@ -73,7 +76,7 @@ var two_symbols = [new ol.style.RegularShape({
         color: 'rgba(255,255,0,1)',
         width: 1
     })
-}),new ol.style.RegularShape({
+}), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
@@ -86,7 +89,22 @@ var two_symbols = [new ol.style.RegularShape({
 })];
 
 
-function init_map () {
+function toggleAcc(layerID) {
+    let layer = wms_layers[layerID];
+    if (document.getElementById(`wmsToggle${layerID}`).checked) {
+        // Turn the layer and legend on
+        map.addLayer(layer);
+        $("#wmslegend"+layerID).show(200);
+    } else {
+        map.removeLayer(layer);
+        $("#wmslegend"+layerID).hide(200);
+
+    }
+}
+
+
+
+function init_map() {
 
 
     var base_layer = new ol.layer.Tile({
@@ -97,6 +115,42 @@ function init_map () {
     });
 
 
+    wms_layers = [
+        new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
+                params: { 'LAYERS': 'AccRainEGE', 'TILED': true },
+                serverType: 'mapserver',
+                // crossOrigin: 'Anonymous'
+            })
+        }),
+        new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
+                params: { 'LAYERS': 'EGE_probRgt50', 'TILED': true },
+                serverType: 'mapserver',
+                // crossOrigin: 'Anonymous'
+            })
+        }),
+        new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
+                params: { 'LAYERS': 'EGE_probRgt150', 'TILED': true },
+                serverType: 'mapserver',
+                // crossOrigin: 'Anonymous'
+            })
+        }),
+        new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
+                params: { 'LAYERS': 'EGE_probRgt300', 'TILED': true },
+                serverType: 'mapserver',
+                // crossOrigin: 'Anonymous'
+            })
+        })
+    ];
+
+
     featureOverlay = new ol.layer.Vector({
         source: new ol.source.Vector()
     });
@@ -105,8 +159,8 @@ function init_map () {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: 'yellow'}),
-                stroke: new ol.style.Stroke({color: 'black', width: 0.5}),
+                fill: new ol.style.Fill({ color: 'yellow' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
                 angle: 0
@@ -118,8 +172,8 @@ function init_map () {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: 'red'}),
-                stroke: new ol.style.Stroke({color: 'black', width: 0.5}),
+                fill: new ol.style.Fill({ color: 'red' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
                 angle: 0
@@ -131,8 +185,8 @@ function init_map () {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: 'rgba(128,0,128,0.8)'}),
-                stroke: new ol.style.Stroke({color: 'black', width: 0.5}),
+                fill: new ol.style.Fill({ color: 'rgba(128,0,128,0.8)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
                 angle: 0
@@ -140,7 +194,10 @@ function init_map () {
         })
     });
 
-    layers = [base_layer,two_year_warning,ten_year_warning,twenty_year_warning,featureOverlay];
+    // layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning, featureOverlay];
+
+    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning];
+
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
@@ -153,14 +210,14 @@ function init_map () {
             minZoom: 2,
             maxZoom: 18,
         }),
-        layers:layers
+        layers: layers
     });
 
     default_extent = map.getView().calculateExtent(map.getSize());
 
 }
 
-function view_watershed(){
+function view_watershed() {
     map.removeInteraction(select_interaction);
     map.removeLayer(wmsLayer);
     $("#get-started").modal('hide');
@@ -176,13 +233,13 @@ function view_watershed(){
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
-        $("#watershed-info").append('<h3>Current Watershed: '+ watershed_display_name + '</h3><h5>Subbasin Name: '+ subbasin_display_name);
+        $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
+        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                params: {'LAYERS':layerName},
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                params: { 'LAYERS': layerName },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             })
@@ -193,7 +250,7 @@ function view_watershed(){
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
-        var ajax_url =JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/'+workspace+'/'+watershed+'-'+subbasin+'-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -203,7 +260,7 @@ function view_watershed(){
                 request: 'GetCapabilities',
                 outputFormat: 'text/javascript'
             },
-            success: function () {
+            success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
                     .split(workspace + ':' + watershed + '-' + subbasin)[1]
@@ -220,7 +277,7 @@ function view_watershed(){
             }
         });
 
-    } else  if ($('#model option:selected').text() === 'LIS-RAPID' && $('#watershedSelect option:selected').val() !== "") {
+    } else if ($('#model option:selected').text() === 'LIS-RAPID' && $('#watershedSelect option:selected').val() !== "") {
         $("#watershed-info").empty();
 
         $('#dates').addClass('hidden');
@@ -230,9 +287,9 @@ function view_watershed(){
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
-        $("#watershed-info").append('<h3>Current Watershed: '+ watershed_display_name + '</h3><h5>Subbasin Name: '+ subbasin_display_name);
+        $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace+':'+watershed+'-'+subbasin+'-drainage_line';
+        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
         $.ajax({
             type: 'GET',
             url: 'get-lis-shp/',
@@ -242,7 +299,7 @@ function view_watershed(){
                 'watershed': watershed,
                 'subbasin': subbasin
             },
-            success: function (result) {
+            success: function(result) {
                 wmsLayer = new ol.layer.Vector({
                     renderMode: 'image',
                     source: new ol.source.Vector({
@@ -270,7 +327,7 @@ function view_watershed(){
     }
 }
 
-function get_warning_points(model, watershed, subbasin){
+function get_warning_points(model, watershed, subbasin) {
     $.ajax({
         type: 'GET',
         url: 'get-warning-points/',
@@ -280,20 +337,21 @@ function get_warning_points(model, watershed, subbasin){
             'watershed': watershed,
             'subbasin': subbasin
         },
-        error: function (error) {
+        error: function(error) {
             console.log(error);
         },
-        success: function (result) {
+        success: function(result) {
 
             map.getLayers().item(1).getSource().clear();
             map.getLayers().item(2).getSource().clear();
             map.getLayers().item(3).getSource().clear();
 
-            if(result.warning2 != 'undefined'){
+            if (result.warning2 != 'undefined') {
                 var warLen2 = result.warning2.length;
                 for (var i = 0; i < warLen2; ++i) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning2[i].geometry.coordinates[0],
-                            result.warning2[i].geometry.coordinates[1]],
+                            result.warning2[i].geometry.coordinates[1]
+                        ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
@@ -304,11 +362,12 @@ function get_warning_points(model, watershed, subbasin){
                 map.getLayers().item(1).setVisible(true);
             }
 
-            if(result.warning10 != 'undefined'){
+            if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
                 for (var j = 0; j < warLen10; ++j) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[j].geometry.coordinates[0],
-                            result.warning10[j].geometry.coordinates[1]],
+                            result.warning10[j].geometry.coordinates[1]
+                        ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
@@ -319,11 +378,12 @@ function get_warning_points(model, watershed, subbasin){
                 map.getLayers().item(2).setVisible(true);
             }
 
-            if(result.warning20 != 'undefined'){
+            if (result.warning20 != 'undefined') {
                 var warLen20 = result.warning20.length;
                 for (var k = 0; k < warLen20; ++k) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning20[k].geometry.coordinates[0],
-                            result.warning20[k].geometry.coordinates[1]],
+                            result.warning20[k].geometry.coordinates[1]
+                        ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
@@ -349,20 +409,20 @@ function get_available_dates(model, watershed, subbasin, comid) {
                 'subbasin': subbasin,
                 'comid': comid
             },
-            error: function () {
+            error: function() {
                 $('#dates').html(
                     '<p class="alert alert-danger" style="text-align: center"><strong>An error occurred while retrieving the available dates</strong></p>'
                 );
 
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#dates').addClass('hidden')
                 }, 5000);
             },
-            success: function (dates) {
+            success: function(dates) {
                 datesParsed = JSON.parse(dates.available_dates);
                 $('#datesSelect').empty();
 
-                $.each(datesParsed, function (i, p) {
+                $.each(datesParsed, function(i, p) {
                     var val_str = p.slice(1).join();
                     $('#datesSelect').append($('<option></option>').val(val_str).html(p[0]));
                 });
@@ -382,18 +442,18 @@ function get_return_periods(watershed, subbasin, comid) {
             'subbasin': subbasin,
             'comid': comid
         },
-        error: function () {
+        error: function() {
             $('#info').html(
                 '<p class="alert alert-warning" style="text-align: center"><strong>Return Periods are not available for this dataset.</strong></p>'
             );
 
             $('#info').removeClass('hidden');
 
-            setTimeout(function () {
+            setTimeout(function() {
                 $('#info').addClass('hidden')
             }, 5000);
         },
-        success: function (data) {
+        success: function(data) {
             $("#container").highcharts().yAxis[0].addPlotBand({
                 from: parseFloat(data.return_periods.twenty),
                 to: parseFloat(data.return_periods.max),
@@ -442,15 +502,15 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
             'comid': comid,
             'startdate': startdate
         },
-        error: function () {
+        error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
             $('#info').removeClass('hidden');
 
-            setTimeout(function () {
+            setTimeout(function() {
                 $('#info').addClass('hidden')
             }, 5000);
         },
-        success: function (data) {
+        success: function(data) {
             if (!data.error) {
                 $('#dates').removeClass('hidden');
                 $loading.addClass('hidden');
@@ -466,7 +526,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
 
                 $('#submit-download-forecast').attr({
                     target: '_blank',
-                    href: 'get-forecast-data-csv?' + jQuery.param( params )
+                    href: 'get-forecast-data-csv?' + jQuery.param(params)
                 });
 
                 $('#download_forecast').removeClass('hidden');
@@ -475,7 +535,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
                 $('#info').removeClass('hidden');
 
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
             } else {
@@ -486,7 +546,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
 }
 
 
-function get_historic_data (model, watershed, subbasin, comid, startdate) {
+function get_historic_data(model, watershed, subbasin, comid, startdate) {
     $('#his-view-file-loading').removeClass('hidden');
     m_downloaded_historical_streamflow = true;
     $.ajax({
@@ -499,7 +559,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
             'comid': comid,
             'startdate': startdate
         },
-        success: function (data) {
+        success: function(data) {
             if (!data.error) {
                 $('#his-view-file-loading').addClass('hidden');
                 $('#historical-chart').removeClass('hidden');
@@ -514,7 +574,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
 
                 $('#submit-download-interim-csv').attr({
                     target: '_blank',
-                    href: 'get-historic-data-csv?' + jQuery.param( params )
+                    href: 'get-historic-data-csv?' + jQuery.param(params)
                 });
 
                 $('#download_interim').removeClass('hidden');
@@ -523,7 +583,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
 
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
             } else {
@@ -534,7 +594,7 @@ function get_historic_data (model, watershed, subbasin, comid, startdate) {
 };
 
 
-function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) {
+function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
     $('#fdc-view-file-loading').removeClass('hidden');
     m_downloaded_flow_duration = true;
     $.ajax({
@@ -547,7 +607,7 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
             'comid': comid,
             'startdate': startdate
         },
-        success: function (data) {
+        success: function(data) {
             if (!data.error) {
                 $('#fdc-view-file-loading').addClass('hidden');
                 $('#fdc-chart').removeClass('hidden');
@@ -556,7 +616,7 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
 
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
             } else {
@@ -571,20 +631,21 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     $.ajax({
         url: 'forecastpercent/',
         type: 'GET',
-        data: {'comid' : comid,
-               'watershed': watershed,
-               'subbasin': subbasin,
-               'startdate': startdate
-               },
-        error: function () {
+        data: {
+            'comid': comid,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'startdate': startdate
+        },
+        error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast table</strong></p>');
             $('#info').removeClass('hidden');
 
-            setTimeout(function () {
+            setTimeout(function() {
                 $('#info').addClass('hidden')
             }, 5000);
         },
-        success: function (data) {
+        success: function(data) {
             $("#tbody").empty()
             var tbody = document.getElementById('tbody');
 
@@ -612,17 +673,17 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
                     tr += "</tr>";
                     tbody.innerHTML += tr;
                 } else {
-                    var tr = "<tr id=" + object1.toString() + "><td>" + columNames[object1.toString()]  + "</td>";
+                    var tr = "<tr id=" + object1.toString() + "><td>" + columNames[object1.toString()] + "</td>";
                     for (var value1 in data[object1]) {
-                        if (parseInt(data[object1][value1]) == 0)  {
+                        if (parseInt(data[object1][value1]) == 0) {
                             tr += "<td class=" + cellcolor + "zero>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 20)  {
+                        } else if (parseInt(data[object1][value1]) <= 20) {
                             tr += "<td class=" + cellcolor + "twenty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 40)  {
+                        } else if (parseInt(data[object1][value1]) <= 40) {
                             tr += "<td class=" + cellcolor + "fourty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 60)  {
+                        } else if (parseInt(data[object1][value1]) <= 60) {
                             tr += "<td class=" + cellcolor + "sixty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 80)  {
+                        } else if (parseInt(data[object1][value1]) <= 80) {
                             tr += "<td class=" + cellcolor + "eighty>" + data[object1][value1].toString() + "</td>"
                         } else {
                             tr += "<td class=" + cellcolor + "hundred>" + data[object1][value1].toString() + "</td>"
@@ -643,7 +704,7 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     })
 }
 
-function map_events(){
+function map_events() {
     map.on('pointermove', function(evt) {
         if (evt.dragging) {
             return;
@@ -652,22 +713,24 @@ function map_events(){
         var pixel = map.getEventPixel(evt.originalEvent);
         if (model === 'ECMWF-RAPID') {
             var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]){
+                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]) {
                     current_layer = layer;
-                    return true;}
+                    return true;
+                }
             });
         } else if (model === 'LIS-RAPID') {
             var hit = map.forEachFeatureAtPixel(pixel, function(layer) {
-                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]){
+                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]) {
                     current_layer = layer;
-                    return true;}
+                    return true;
+                }
             });
         }
 
         map.getTargetElement().style.cursor = hit ? 'pointer' : '';
     });
 
-    map.on("singleclick",function(evt) {
+    map.on("singleclick", function(evt) {
         var model = $('#model option:selected').text();
 
         if (map.getTargetElement().style.cursor == "pointer") {
@@ -683,7 +746,7 @@ function map_events(){
             var viewResolution = view.getResolution();
 
             if (model === 'ECMWF-RAPID') {
-                var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), {'INFO_FORMAT': 'application/json'}); //Get the wms url for the clicked point
+                var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
                 if (wms_url) {
                     $loading.removeClass('hidden');
@@ -694,7 +757,7 @@ function map_events(){
                         type: "GET",
                         url: wms_url,
                         dataType: 'json',
-                        success: function (result) {
+                        success: function(result) {
                             var model = $('#model option:selected').text();
                             var comid = result["features"][0]["properties"]["COMID"];
 
@@ -724,7 +787,7 @@ function map_events(){
                             add_feature(model, workspace, comid);
 
                         },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
                             console.log(Error);
                         }
                     });
@@ -746,7 +809,7 @@ function map_events(){
 
 }
 
-function add_feature(model,workspace,comid){
+function add_feature(model, workspace, comid) {
     map.removeLayer(featureOverlay);
 
     var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
@@ -755,7 +818,7 @@ function add_feature(model,workspace,comid){
     if (model === 'ECMWF-RAPID') {
         var vectorSource = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
-            url: function (extent) {
+            url: function(extent) {
                 return JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + 'ows?service=wfs&' +
                     'version=2.0.0&request=getfeature&typename=' + workspace + ':' + watershed + '-' + subbasin + '-drainage_line' + '&CQL_FILTER=COMID=' + comid + '&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
             },
@@ -785,7 +848,7 @@ function add_feature(model,workspace,comid){
                 'watershed': workspace[0],
                 'subbasin': workspace[1]
             },
-            success: function (result) {
+            success: function(result) {
                 JSON.parse(result.options).features.forEach(function(elm) {
                     if (elm.properties.COMID === parseInt(comid)) {
                         var filtered_json = {
@@ -815,7 +878,7 @@ function add_feature(model,workspace,comid){
 }
 
 function submit_model() {
-    $('#model').on('change', function () {
+    $('#model').on('change', function() {
         var base_path = location.pathname;
 
         if (base_path.includes('ecmwf-rapid') || base_path.includes('lis-rapid')) {
@@ -834,48 +897,47 @@ function submit_model() {
 };
 
 function resize_graphs() {
-    $("#forecast_tab_link").click(function(){
+    $("#forecast_tab_link").click(function() {
         Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
     });
 
-    $("#historical_tab_link").click(function(){
+    $("#historical_tab_link").click(function() {
         if (m_downloaded_historical_streamflow) {
             Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
         }
     });
 
-    $("#flow_duration_tab_link").click(function(){
+    $("#flow_duration_tab_link").click(function() {
         if (m_downloaded_flow_duration) {
             Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
         }
     });
 };
 
-$(function(){
+$(function() {
     $('#app-content-wrapper').removeClass('show-nav');
     $(".toggle-nav").removeClass('toggle-nav');
     init_map();
     map_events();
     submit_model();
     resize_graphs();
-     // If there is a defined Watershed, then lets render it and hide the controls
+    // If there is a defined Watershed, then lets render it and hide the controls
     let ws_val = $('#watershed').find(":selected").text();
-    if(ws_val && ws_val!=='Select Watershed')
-    {
+    if (ws_val && ws_val !== 'Select Watershed') {
         view_watershed();
         $("[name='update_button']").hide();
     }
     // If there is a button to save default WS, let's add handler
-    $("[name='update_button']").click( () => {
-         $.ajax({
-            url:'admin/setdefault',
+    $("[name='update_button']").click(() => {
+        $.ajax({
+            url: 'admin/setdefault',
             type: 'GET',
             dataType: 'json',
             data: {
-                'ws_name':  $('#model').find(":selected").text(),
-                'model_name':  $('#watershed').find(":selected").text()
+                'ws_name': $('#model').find(":selected").text(),
+                'model_name': $('#watershed').find(":selected").text()
             },
-            success: function () {
+            success: function() {
                 // Remove the set default button
                 $("[name='update_button']").hide(500);
                 console.log('Updated Defaults Successfully');

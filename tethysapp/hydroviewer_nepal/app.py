@@ -67,6 +67,10 @@ class Hydroviewer(TethysAppBase):
                 url='get-warning-points',
                 controller='{0}.controllers.get_warning_points'.format(base_name)),
             UrlMap(
+                name='get-warning-points',
+                url='ecmwf-rapid/get-warning-points',
+                controller='{0}.controllers.get_warning_points'.format(base_name)),
+            UrlMap(
                 name='get-historic-data',
                 url='get-historic-data',
                 controller='{0}.controllers.get_historic_data'.format(base_name)),
