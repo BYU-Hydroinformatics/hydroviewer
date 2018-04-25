@@ -92,7 +92,8 @@ function init_map () {
     var base_layer = new ol.layer.Tile({
         source: new ol.source.BingMaps({
             key: 'eLVu8tDRPeQqmBlKAjcw~82nOqZJe2EpKmqd-kQrSmg~AocUZ43djJ-hMBHQdYDyMbT-Enfsk0mtUIGws1WeDuOvjY4EXCH-9OK3edNLDgkc',
-            imagerySet: 'AerialWithLabels'
+            imagerySet: 'Road'
+//            imagerySet: 'AerialWithLabels'
         })
     });
 
@@ -140,7 +141,16 @@ function init_map () {
         })
     });
 
-    layers = [base_layer,two_year_warning,ten_year_warning,twenty_year_warning,featureOverlay];
+    var wmsLayer = new ol.layer.Image({
+        source: new ol.source.ImageWMS({
+            url: 'http://tethys-staging.byu.edu:8181/geoserver/wms',
+            params: {'LAYERS': 'province_boundaries'},
+            serverType: 'geoserver',
+            crossOrigin: 'Anonymous'
+        })
+    });
+
+    layers = [base_layer,ten_year_warning,twenty_year_warning,featureOverlay, wmsLayer];
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
@@ -288,6 +298,8 @@ function get_warning_points(model, watershed, subbasin){
             map.getLayers().item(1).getSource().clear();
             map.getLayers().item(2).getSource().clear();
             map.getLayers().item(3).getSource().clear();
+
+            console.log(result)
 
             if(result.warning2 != 'undefined'){
                 var warLen2 = result.warning2.length;
