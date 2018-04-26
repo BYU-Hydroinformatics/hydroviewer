@@ -37,7 +37,7 @@
 .map-view-legend {
     bottom: 50px;
     /*right: 20px;*/
-    width: 170px;
+    width: 150px;
     max-height: 90%;
     overflow-y: auto;
     margin: 5px;

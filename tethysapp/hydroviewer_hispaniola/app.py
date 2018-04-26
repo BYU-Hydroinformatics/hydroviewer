@@ -6,9 +6,6 @@ base_name = __package__.split('.')[-1]
 base_url = base_name.replace('_', '-')
 
 class Hydroviewer(TethysAppBase):
-    """
-    Tethys app class for HydroViewer.
-    """
 
     name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
     index = '{0}:home'.format(base_name)
@@ -23,9 +20,6 @@ class Hydroviewer(TethysAppBase):
     print icon
 
     def url_maps(self):
-        """
-        Add controllers
-        """
         UrlMap = url_map_maker(self.root_url)
 
         url_maps = (
@@ -42,6 +36,10 @@ class Hydroviewer(TethysAppBase):
                 url='lis-rapid',
                 controller='{0}.controllers.lis'.format(base_name)),
              UrlMap(
+                name='get-available-dates',
+                url='get-available-dates',
+                controller='{0}.controllers.get_available_dates'.format(base_name)),
+            UrlMap(
                 name='get-available-dates',
                 url='get-available-dates',
                 controller='{0}.controllers.get_available_dates'.format(base_name)),
@@ -72,6 +70,10 @@ class Hydroviewer(TethysAppBase):
             UrlMap(
                 name='get-warning-points',
                 url='get-warning-points',
+                controller='{0}.controllers.get_warning_points'.format(base_name)),
+            UrlMap(
+                name='get-warning-points',
+                url='ecmwf-rapid/get-warning-points',
                 controller='{0}.controllers.get_warning_points'.format(base_name)),
             UrlMap(
                 name='get-historic-data',
@@ -125,23 +127,30 @@ class Hydroviewer(TethysAppBase):
                 name='set_def_ws',
                 url='admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
-             UrlMap(
+            UrlMap(
                 name='set_def_ws',
                 url='ecmwf-rapid/admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
-              UrlMap(
+            UrlMap(
                 name='set_def_ws',
                 url='lis-rapid/admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
             UrlMap(
                 name='update_ffgs',
-                url='hydroviewer-hispaniola/update-ffgs',
+                url='ecmwf-rapid/update-ffgs',
+                controller='{0}.controllers_ajax.update_ffgs'.format(base_name)),
+            UrlMap(
+                name='update_ffgs',
+                url='update-ffgs',
                 controller='{0}.controllers_ajax.update_ffgs'.format(base_name)),
             UrlMap(
                 name='forecastpercent',
-                url='hydroviewer-hispaniola/forecastpercent',
-                controller='{0}.controllers_ajax.forecastpercent'.format(base_name)),
-
+                url='ecmwf-rapid/forecastpercent',
+                controller='{0}.controllers.forecastpercent'.format(base_name)),
+            UrlMap(
+                name='forecastpercent',
+                url='forecastpercent',
+                controller='{0}.controllers.forecastpercent'.format(base_name)),
         )
 
         return url_maps
