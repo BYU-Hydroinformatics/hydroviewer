@@ -1,6 +1,7 @@
 /* Global Variables */
 var default_extent,
     current_layer,
+    feature_layer,
     stream_geom,
     layers,
     wmsLayer,
@@ -263,6 +264,7 @@ function view_watershed() {
                 crossOrigin: 'Anonymous'
             })
         });
+        feature_layer = wmsLayer;
         wmsLayer.setZIndex(1)
 
         get_warning_points(model, watershed, subbasin);
@@ -725,22 +727,22 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 }
 
 function map_events() {
-    map.on('pointermove', function(evt) {
+    map.on('pointermove', (evt) => {
         if (evt.dragging) {
             return;
         }
         var model = $('#model option:selected').text();
         var pixel = map.getEventPixel(evt.originalEvent);
         if (model === 'ECMWF-RAPID') {
-            var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]) {
+            var hit = map.forEachLayerAtPixel(pixel, (layer) => {
+                if (layer == feature_layer) {
                     current_layer = layer;
                     return true;
                 }
             });
         } else if (model === 'LIS-RAPID') {
-            var hit = map.forEachFeatureAtPixel(pixel, function(layer) {
-                if (layer != layers[0] && layer != layers[1] && layer != layers[2] && layer != layers[3]) {
+            var hit = map.forEachFeatureAtPixel(pixel, (layer) => {
+                if (layer == feature_layer) {
                     current_layer = layer;
                     return true;
                 }

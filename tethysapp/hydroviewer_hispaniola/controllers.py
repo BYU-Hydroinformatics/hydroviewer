@@ -97,7 +97,7 @@ def ecmwf(request):
     hiddenAttr=""
     if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
         hiddenAttr="hidden"
-
+    print hiddenAttr
     init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
     init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
 

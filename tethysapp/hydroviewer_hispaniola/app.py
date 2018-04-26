@@ -17,7 +17,6 @@ class Hydroviewer(TethysAppBase):
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []
-    print icon
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)

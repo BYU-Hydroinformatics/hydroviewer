@@ -11,6 +11,32 @@
 {% endblock %}
 
 {% block header_buttons %}
+  {% if zoom_info %}
+  <div class="hidden" style="margin-right: 15px;">
+    {% gizmo text_input zoom_info %}
+  </div>
+  {% endif %}
+  {% if geoserver_endpoint %}
+  <div class="hidden" style="margin-right: 15px;">
+    {% gizmo text_input geoserver_endpoint %}
+  </div>
+  {% endif %}
+  {% if model_input %}
+    <div id="modelSelect" style="margin-right: 15px;">
+      {% gizmo select_input model_input %}
+    </div>
+  {% endif %}
+  {% if watershed_select %}
+    <div id="watershedSelect" style="margin-right: 15px;">
+      {% gizmo select_input watershed_select %}
+    </div>
+  {% endif %}
+
+  {% if defaultUpdateButton %}
+  <div id="defaultModelContainer" style="margin-right: 15px;">
+    {% gizmo defaultUpdateButton %}
+  </div>
+  {% endif %}
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add FFGS Data">
     <a data-toggle="modal" data-target="#ffgs-modal"><span class="glyphicon glyphicon-plus"></span></a>
   </div>
@@ -23,25 +49,6 @@
 {% endblock %}
 
 {% block app_navigation_items %}
-  {% if zoom_info %}
-    <div class="hidden" style="margin-right: 15px;">
-      {% gizmo text_input zoom_info %}
-    </div>
-  {% endif %}
-  {% if geoserver_endpoint %}
-    <div class="hidden" style="margin-right: 15px;">
-      {% gizmo text_input geoserver_endpoint %}
-    </div>
-    {% endif %}
-    {% if model_input %}
-      <div id="modelSelect" style="margin-right: 15px;">
-        {% gizmo select_input model_input %}
-      </div>
-    {% endif %}
-    {% if watershed_select %}
-    <div id="watershedSelect" style="margin-right: 15px;">
-        {% gizmo select_input watershed_select %}
-    </div>
     <br>
     <h4><b>Legend</b></h4>
     <div id="stp-legend" class="col-sm-12">
@@ -163,25 +170,6 @@
         <input id="slider" type="range" min="0" max="1" 
             step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
     </div>
-
-
-  {% endif %}
-  {% if defaultUpdateButton %}
-  <div id="defaultModelContainer" style="margin-right: 15px;">
-    {% gizmo defaultUpdateButton %}
-  </div>
-  {% endif %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
-    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
-  </div>
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
-    <a data-toggle="modal" data-target="#toc_modal"><span class="glyphicon glyphicon-list-alt"></span></a>
-  </div>
-
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
-    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
-  </div>
 {% endblock %}
 
 {% block after_app_content %}
@@ -259,9 +247,7 @@
                             </div>
                         </div>
                     </div>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="forecast_tab">
+         <div role="tabpanel" class="tab-pane active" id="forecast_tab">
             <div class="panel panel-default">
               <div class="panel-body">
                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
@@ -307,7 +293,6 @@
             </div>
           </div>
         </div>
-      </div>
       <div id="info" class="hidden"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
