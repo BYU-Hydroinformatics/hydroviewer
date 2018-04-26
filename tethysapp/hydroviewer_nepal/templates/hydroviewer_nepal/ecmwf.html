@@ -9,6 +9,18 @@
 {% block app_content %}
 <div id="map" class="map">
     <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
+        <div id="wmslegend0" hidden>
+           <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=AccRainEGE&amp;format=image/png&amp;STYLE=default"/>
+        </div>
+        <div id="wmslegend1" hidden>
+           <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt50&amp;format=image/png&amp;STYLE=default"/>
+        </div>
+        <div id="wmslegend2" hidden>
+           <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt150&amp;format=image/png&amp;STYLE=default"/>
+        </div>
+        <div id="wmslegend3" hidden>
+           <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt300&amp;format=image/png&amp;STYLE=default"/>
+        </div>
         <div>
             <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                  xmlns="http://www.w3.org/2000/svg">
@@ -216,28 +228,28 @@
           <li class="list-group-item">
             Accumulated Rainfall
             <div class="pull-right">
-              <input id="AccRainEGE" name="AccRainEGE" type="checkbox"/>
+              <input id="wmsToggle0" name="AccRainEGE" type="checkbox" onclick="toggleAcc(0);"/>
               <label for="AccRainEGE" class="label-default"></label>
             </div>
           </li>
           <li class="list-group-item">
             Rainfall Probability > 50mm
             <div class="pull-right">
-              <input id="EGE_probRgt50" name="EGE_probRgt50" type="checkbox"/>
+              <input id="wmsToggle1" name="EGE_probRgt50" type="checkbox" onclick="toggleAcc(1);"/>
               <label for="EGE_probRgt50" class="label-default"></label>
             </div>
           </li>
           <li class="list-group-item">
             Rainfall Probability > 150mm
             <div class="pull-right">
-              <input id="EGE_probRgt150" name="EGE_probRgt150" type="checkbox"/>
+              <input id="wmsToggle2" name="EGE_probRgt150" type="checkbox" onclick="toggleAcc(2);"/>
               <label for="EGE_probRgt150" class="label-default"></label>
             </div>
           </li>
           <li class="list-group-item">
             Rainfall Probability > 300mm
             <div class="pull-right">
-              <input id="EGE_probRgt300" name="EGE_probRgt300" type="checkbox"/>
+              <input id="wmsToggle3" name="EGE_probRgt300" type="checkbox" onclick="toggleAcc(3);"/>
               <label for="EGE_probRgt300" class="label-default"></label>
             </div>
           </li>
