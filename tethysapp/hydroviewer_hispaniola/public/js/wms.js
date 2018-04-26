@@ -938,8 +938,8 @@ function resize_graphs() {
 
 
 $(function() {
-    $('#app-content-wrapper').removeClass('show-nav');
-    $(".toggle-nav").removeClass('toggle-nav');
+    // $('#app-content-wrapper').removeClass('show-nav');
+    // $(".toggle-nav").removeClass('toggle-nav');
     init_map();
     map_events();
     submit_model();
