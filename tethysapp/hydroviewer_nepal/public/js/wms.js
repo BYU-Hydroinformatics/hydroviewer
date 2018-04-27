@@ -200,17 +200,9 @@ function init_map() {
         })
     });
 
-    var wmsLayer = new ol.layer.Image({
-        source: new ol.source.ImageWMS({
-            url: 'http://tethys-staging.byu.edu:8181/geoserver/wms',
-            params: { 'LAYERS': 'province_boundaries' },
-            serverType: 'geoserver',
-            crossOrigin: 'Anonymous'
-        })
-    });
+   
 
-
-    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
+    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
