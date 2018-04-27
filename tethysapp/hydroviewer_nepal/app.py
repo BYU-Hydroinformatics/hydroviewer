@@ -34,7 +34,7 @@ class Hydroviewer(TethysAppBase):
                 name='lis',
                 url='lis-rapid',
                 controller='{0}.controllers.lis'.format(base_name)),
-             UrlMap(
+            UrlMap(
                 name='get-available-dates',
                 url='get-available-dates',
                 controller='{0}.controllers.get_available_dates'.format(base_name)),
@@ -65,6 +65,10 @@ class Hydroviewer(TethysAppBase):
             UrlMap(
                 name='get-warning-points',
                 url='get-warning-points',
+                controller='{0}.controllers.get_warning_points'.format(base_name)),
+            UrlMap(
+                name='get-warning-points',
+                url='ecmwf-rapid/get-warning-points',
                 controller='{0}.controllers.get_warning_points'.format(base_name)),
             UrlMap(
                 name='get-historic-data',
@@ -118,14 +122,22 @@ class Hydroviewer(TethysAppBase):
                 name='set_def_ws',
                 url='admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
-             UrlMap(
+            UrlMap(
                 name='set_def_ws',
                 url='ecmwf-rapid/admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
-              UrlMap(
+            UrlMap(
                 name='set_def_ws',
                 url='lis-rapid/admin/setdefault',
                 controller='{0}.controllers.setDefault'.format(base_name)),
+            UrlMap(
+                name='forecastpercent',
+                url='ecmwf-rapid/forecastpercent',
+                controller='{0}.controllers.forecastpercent'.format(base_name)),
+            UrlMap(
+                name='forecastpercent',
+                url='forecastpercent',
+                controller='{0}.controllers.forecastpercent'.format(base_name)),
         )
 
         return url_maps
