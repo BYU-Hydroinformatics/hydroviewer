@@ -579,11 +579,11 @@ function get_flow_duration_curve (model, watershed, subbasin, comid, startdate) 
 };
 
 
-function get_station_info (stationcode, startdateobs, enddateobs) {
+function get_station_info (stationcode, startdateobs, enddateobs, attribute) {
     $.ajax({
         url: 'ecmwf-rapid/get-station-data',
         type: 'GET',
-        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs, 'attribute':attribute},
         error: function () {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
             $('#info').removeClass('hidden');
@@ -661,7 +661,7 @@ function map_events(){
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
                                 $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
-                                get_station_info (stationcode, startdateobs, enddateobs, stationname)
+                                get_station_info (stationcode, startdateobs, enddateobs, 'level')
 
                             }
                         });
@@ -840,6 +840,8 @@ function resize_graphs() {
     });
 };
 
+
+
 $(function(){
     $('#app-content-wrapper').removeClass('show-nav');
     $(".toggle-nav").removeClass('toggle-nav');
@@ -894,5 +896,29 @@ $(function(){
         var enddateobs = $('#enddateobs').val();
         $('#observed-loading').removeClass('hidden');
         get_station_info (stationcode, startdateobs, enddateobs);
+    });
+    $('#level').change(function() { //when date is changed
+        $('#flow').prop('checked', false);
+        $('#rain').prop('checked', false);
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs, 'level');
+    });
+    $('#flow').change(function() { //when date is changed
+        $('#level').prop('checked', false);
+        $('#rain').prop('checked', false);
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs, 'flow');
+    });
+    $('#rain').change(function() { //when date is changed
+        $('#flow').prop('checked', false);
+        $('#level').prop('checked', false);
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs, 'rain');
     });
 });

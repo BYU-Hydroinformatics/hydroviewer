@@ -1202,6 +1202,17 @@ def get_station_data(request):
         # DD/MM/YYYY
         DataInicio = get_data['startdateobs']
         DataFim = get_data['enddateobs']
+        attribute = get_data['attribute']
+
+        if attribute == 'level':
+            attribute = 'Nivel'
+            yaxistitle = 'Level (m)'
+        elif attribute == 'flow':
+            attribute = 'Vazao'
+            yaxistitle = 'Flow (cms)'
+        elif attribute == 'rain':
+            attribute = 'Chuva'
+            yaxistitle = 'Depth (mm)'
 
 
         url = 'http://telemetriaws1.ana.gov.br/ServiceANA.asmx/DadosHidrometeorologicos?codEstacao=' + codEstacao + '&DataInicio=' + DataInicio + '&DataFim=' + DataFim
@@ -1211,7 +1222,7 @@ def get_station_data(request):
         soup = BeautifulSoup(response.content, "xml")
 
         times = soup.find_all('DataHora')
-        values = soup.find_all('Nivel')
+        values = soup.find_all(attribute)
 
         dates = []
         flows = []
@@ -1231,7 +1242,7 @@ def get_station_data(request):
                            xaxis=dict(
                                title='Dates',),
                            yaxis=dict(
-                               title='Level (m)',
+                               title=yaxistitle,
                                autorange=True),
                            showlegend=False)
 
