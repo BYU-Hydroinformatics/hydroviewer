@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
-from tethys_sdk.permissions import has_permission
 from tethys_sdk.base import TethysAppBase
 
 
@@ -77,7 +76,7 @@ def ecmwf(request):
 
 
     #Can Set Default permissions : Only allowed for admin users
-    can_update_default = has_permission(request, 'update_default')
+    can_update_default = True
     
     if(can_update_default):
         defaultUpdateButton = Button(
