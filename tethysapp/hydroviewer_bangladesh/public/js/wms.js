@@ -199,20 +199,7 @@ function init_map() {
         })
     });
 
-    if ($('#model option:selected').text() === 'ECMWF-RAPID') {
-        var wmsLayer = new ol.layer.Image({
-            source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                params: { 'LAYERS': 'province_boundaries' },
-                serverType: 'geoserver',
-                crossOrigin: 'Anonymous'
-            })
-        });
-
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
-    } else {
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
-    }
+    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning, featureOverlay]
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
