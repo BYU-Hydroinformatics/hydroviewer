@@ -179,7 +179,8 @@ def ecmwf(request):
 
 def lis(request):
 
-    init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
+    default_model = app.get_custom_setting('default_model_type')
+    init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
     init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
 
     model_input = SelectInput(display_text='',
@@ -202,7 +203,7 @@ def lis(request):
 
     # Add the default WS if present and not already in the list
     # Not sure if this will work with LIS type. Need to test it out. 
-    if init_ws_val and init_ws_val not in str(watershed_list):
+    if default_model == 'LIS-RAPID' and init_ws_val and init_ws_val not in str(watershed_list):
         watershed_list.append([init_ws_val, init_ws_val])
 
     watershed_select = SelectInput(display_text='',
@@ -896,13 +897,13 @@ def get_lis_data_csv(request):
 
         init_time = pairs[0][0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=lis_forecast_{0}_{1}_{2}_{3}.csv'.format(watershed,
+        response['Content-Disposition'] = 'attachment; filename=lis_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
                                                                                                                 subbasin,
                                                                                                                 comid,
                                                                                                                 init_time)
 
         writer = csv_writer(response)
-        writer.writerow(['datetime', 'lis_forecast (m3/s)'])
+        writer.writerow(['datetime', 'flow (m3/s)'])
 
         for row_data in pairs:
             writer.writerow(row_data)
@@ -925,9 +926,9 @@ def shp_to_geojson(request):
 
         reprojected_shp_path = os.path.join(
                 app.get_custom_setting('lis_path'),
-                '-'.join([watershed, subbasin]),
-                '-'.join([watershed, subbasin, 'drainage_line']),
-                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp'])
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
         )
 
         if not os.path.exists(reprojected_shp_path):
@@ -996,8 +997,8 @@ def shp_to_geojson(request):
                 # set the geometry and attribute
                 out_feature.SetGeometry(geom)
                 out_feature.SetField('COMID', in_feature.GetField(in_feature.GetFieldIndex('COMID')))
-                out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
-                out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
+                #out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
+                #out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
                 # add the feature to the shapefile
                 reprojected_shp.CreateFeature(out_feature)
                 # dereference the features and get the next input feature
