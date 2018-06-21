@@ -926,9 +926,9 @@ def shp_to_geojson(request):
 
         reprojected_shp_path = os.path.join(
                 app.get_custom_setting('lis_path'),
-                '-'.join([watershed, subbasin]),
-                '-'.join([watershed, subbasin, 'drainage_line']),
-                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp'])
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
         )
 
         if not os.path.exists(reprojected_shp_path):
