@@ -897,13 +897,13 @@ def get_lis_data_csv(request):
 
         init_time = pairs[0][0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=lis_forecast_{0}_{1}_{2}_{3}.csv'.format(watershed,
+        response['Content-Disposition'] = 'attachment; filename=lis_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
                                                                                                                 subbasin,
                                                                                                                 comid,
                                                                                                                 init_time)
 
         writer = csv_writer(response)
-        writer.writerow(['datetime', 'lis_forecast (m3/s)'])
+        writer.writerow(['datetime', 'flow (m3/s)'])
 
         for row_data in pairs:
             writer.writerow(row_data)
