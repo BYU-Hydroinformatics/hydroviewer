@@ -1,6 +1,7 @@
 /* Global Variables */
 var default_extent,
     current_layer,
+    current_feature,
     feature_layer,
     stream_geom,
     layers,
@@ -106,8 +107,6 @@ function toggleAcc(layerID) {
 
 
 function init_map() {
-
-
     var base_layer = new ol.layer.Tile({
         source: new ol.source.BingMaps({
             key: 'eLVu8tDRPeQqmBlKAjcw~82nOqZJe2EpKmqd-kQrSmg~AocUZ43djJ-hMBHQdYDyMbT-Enfsk0mtUIGws1WeDuOvjY4EXCH-9OK3edNLDgkc',
@@ -200,9 +199,21 @@ function init_map() {
         })
     });
 
-   
 
-    layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
+    if ($('#model option:selected').text() === 'ECMWF-RAPID') {
+        var wmsLayer = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                params: { 'LAYERS': 'province_boundaries' },
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            })
+        });
+
+        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
+    } else {
+        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
+    }
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
     var lat = Number(JSON.parse($('#zoom_info').val()).split(',')[1]);
@@ -320,6 +331,8 @@ function view_watershed() {
                 });
 
                 map.addLayer(wmsLayer);
+
+                feature_layer = wmsLayer;
 
                 map.getView().fit(result.legend_extent, map.getSize())
             }
@@ -725,9 +738,9 @@ function map_events() {
                 }
             });
         } else if (model === 'LIS-RAPID') {
-            var hit = map.forEachFeatureAtPixel(pixel, function(layer) {
+            var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
                 if (layer == feature_layer) {
-                    current_layer = layer;
+                    current_feature = feature;
                     return true;
                 }
             });
@@ -799,7 +812,7 @@ function map_events() {
                     });
                 }
             } else if (model === 'LIS-RAPID') {
-                var comid = current_layer.get('COMID');
+                var comid = current_feature.get('COMID');
                 var watershed = $('#watershedSelect option:selected').val().split('-')[0]
                 var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
 
@@ -923,6 +936,14 @@ function resize_graphs() {
 $(function() {
     $('#app-content-wrapper').removeClass('show-nav');
     $(".toggle-nav").removeClass('toggle-nav');
+
+    //make sure active Plotly plots resize on window resize
+    window.onresize = function() {
+        $('#graph .modal-body .tab-pane.active .js-plotly-plot').each(function(){
+            Plotly.Plots.resize($(this)[0]);
+        });
+    };
+
     init_map();
     map_events();
     submit_model();
