@@ -199,6 +199,7 @@ function init_map() {
         })
     });
 
+
     if ($('#model option:selected').text() === 'ECMWF-RAPID') {
         var wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
