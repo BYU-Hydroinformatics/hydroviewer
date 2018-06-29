@@ -35,6 +35,10 @@ class Hydroviewer(TethysAppBase):
                 url='lis-rapid',
                 controller='{0}.controllers.lis'.format(base_name)),
             UrlMap(
+                name='hiwat',
+                url='hiwat-rapid',
+                controller='{0}.controllers.hiwat'.format(base_name)),
+            UrlMap(
                 name='get-available-dates',
                 url='get-available-dates',
                 controller='{0}.controllers.get_available_dates'.format(base_name)),
@@ -54,6 +58,10 @@ class Hydroviewer(TethysAppBase):
                 name='get-time-series',
                 url='lis-rapid/get-time-series',
                 controller='{0}.controllers.lis_get_time_series'.format(base_name)),
+            UrlMap(
+                name='get-time-series',
+                url='hiwat-rapid/get-time-series',
+                controller='{0}.controllers.hiwat_get_time_series'.format(base_name)),
             UrlMap(
                 name='get-return-periods',
                 url='get-return-periods',
@@ -107,9 +115,9 @@ class Hydroviewer(TethysAppBase):
                 url='lis-rapid/get-forecast-data-csv',
                 controller='{0}.controllers.get_lis_data_csv'.format(base_name)),
             UrlMap(
-                name='get_lis_shp',
-                url='lis-rapid/get-lis-shp',
-                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+                name='get_forecast_data_csv',
+                url='hiwat-rapid/get-forecast-data-csv',
+                controller='{0}.controllers.get_hiwat_data_csv'.format(base_name)),
             UrlMap(
                 name='get_forecast_data_csv',
                 url='get-forecast-data-csv',
@@ -117,6 +125,18 @@ class Hydroviewer(TethysAppBase):
             UrlMap(
                 name='get_lis_shp',
                 url='get-lis-shp',
+                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
+                name='get_lis_shp',
+                url='lis-rapid/get-lis-shp',
+                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
+                name='get_hiwat_shp',
+                url='get-hiwat-shp',
+                controller='{0}.controllers.shp_to_geojson'.format(base_name)),
+            UrlMap(
+                name='get_hiwat_shp',
+                url='hiwat-rapid/get-hiwat-shp',
                 controller='{0}.controllers.shp_to_geojson'.format(base_name)),
             UrlMap(
                 name='set_def_ws',
@@ -226,6 +246,12 @@ class Hydroviewer(TethysAppBase):
                 name='lis_path',
                 type=CustomSetting.TYPE_STRING,
                 description='Path to local LIS-RAPID directory',
+                required=False
+            ),
+            CustomSetting(
+                name='hiwat_path',
+                type=CustomSetting.TYPE_STRING,
+                description='Path to local HIWAT-RAPID directory',
                 required=False
             ),
         )
