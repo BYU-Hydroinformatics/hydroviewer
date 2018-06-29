@@ -316,6 +316,9 @@ function view_watershed() {
                 'watershed': watershed,
                 'subbasin': subbasin
             },
+            beforeSend: function () {
+                $('#featureLoader').show();
+            },
             success: function(result) {
                 wmsLayer = new ol.layer.Vector({
                     renderMode: 'image',
@@ -335,8 +338,62 @@ function view_watershed() {
                 feature_layer = wmsLayer;
 
                 map.getView().fit(result.legend_extent, map.getSize())
+            },
+            complete: function(){
+                $('#featureLoader').hide();
             }
         });
+
+    } else if ($('#model option:selected').text() === 'HIWAT-RAPID' && $('#watershedSelect option:selected').val() !== "") {
+        $("#watershed-info").empty();
+
+        $('#dates').addClass('hidden');
+
+        var model = $('#model option:selected').text();
+        var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
+        var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
+        var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
+        var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
+
+        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        $.ajax({
+            type: 'GET',
+            url: 'get-hiwat-shp/',
+            dataType: 'json',
+            data: {
+                'model': model,
+                'watershed': watershed,
+                'subbasin': subbasin
+            },
+            beforeSend: function () {
+                $('#featureLoader').show();
+            },
+            success: function(result) {
+                wmsLayer = new ol.layer.Vector({
+                    renderMode: 'image',
+                    source: new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(result.options)
+                    }),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'blue',
+                            width: 1
+                        })
+                    })
+                });
+
+                map.addLayer(wmsLayer);
+
+                feature_layer = wmsLayer;
+
+                map.getView().fit(result.legend_extent, map.getSize())
+            },
+            complete: function(){
+                $('#featureLoader').hide();
+            }
+        });
+
     } else {
 
         map.updateSize();
@@ -744,6 +801,13 @@ function map_events() {
                     return true;
                 }
             });
+        } else if (model === 'HIWAT-RAPID') {
+            var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                if (layer == feature_layer) {
+                    current_feature = feature;
+                    return true;
+                }
+            });
         }
 
         map.getTargetElement().style.cursor = hit ? 'pointer' : '';
@@ -812,6 +876,17 @@ function map_events() {
                     });
                 }
             } else if (model === 'LIS-RAPID') {
+                var comid = current_feature.get('COMID');
+                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
+                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
+
+                get_time_series(model, watershed, subbasin, comid);
+
+                $('#info').addClass('hidden');
+                var workspace = [watershed, subbasin];
+
+                add_feature(model, workspace, comid);
+            } else if (model === 'HIWAT-RAPID') {
                 var comid = current_feature.get('COMID');
                 var watershed = $('#watershedSelect option:selected').val().split('-')[0]
                 var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
@@ -893,6 +968,44 @@ function add_feature(model, workspace, comid) {
                 map.getLayers().item(5);
             }
         });
+
+    } else if (model === 'HIWAT-RAPID') {
+        var vectorSource;
+        $.ajax({
+            type: 'GET',
+            url: 'get-hiwat-shp/',
+            dataType: 'json',
+            data: {
+                'model': model,
+                'watershed': workspace[0],
+                'subbasin': workspace[1]
+            },
+            success: function(result) {
+                JSON.parse(result.options).features.forEach(function(elm) {
+                    if (elm.properties.COMID === parseInt(comid)) {
+                        var filtered_json = {
+                            "type": "FeatureCollection",
+                            "features": [elm]
+                        };
+                        vectorSource = new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(filtered_json)
+                        });
+                    }
+                });
+
+                featureOverlay = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: '#00BFFF',
+                            width: 8
+                        })
+                    })
+                });
+                map.addLayer(featureOverlay);
+                map.getLayers().item(5);
+            }
+        });
     }
 }
 
@@ -900,15 +1013,16 @@ function submit_model() {
     $('#model').on('change', function() {
         var base_path = location.pathname;
 
-        if (base_path.includes('ecmwf-rapid') || base_path.includes('lis-rapid')) {
-            console.log('yes');
-            base_path = base_path.replace('/ecmwf-rapid', '').replace('/lis-rapid', '');
+        if (base_path.includes('ecmwf-rapid') || base_path.includes('lis-rapid') || base_path.includes('hiwat-rapid')) {
+            base_path = base_path.replace('/ecmwf-rapid', '').replace('/lis-rapid', '').replace('/hiwat-rapid', '');
         }
 
         if ($('#model option:selected').val() === 'ecmwf') {
             location.href = 'http://' + location.host + base_path + 'ecmwf-rapid/?model=ECMWF-RAPID';
         } else if ($('#model option:selected').val() === 'lis') {
             location.href = 'http://' + location.host + base_path + 'lis-rapid/?model=LIS-RAPID';
+        } else if ($('#model option:selected').val() === 'hiwat') {
+            location.href = 'http://' + location.host + base_path + 'hiwat-rapid/?model=HIWAT-RAPID';
         } else {
             location.href = 'http://' + location.host + base_path;
         }

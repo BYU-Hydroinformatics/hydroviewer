@@ -106,7 +106,7 @@ def ecmwf(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               classes = hiddenAttr,
                               original=True)
@@ -186,7 +186,7 @@ def lis(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               original=True)
 
@@ -226,6 +226,56 @@ def lis(request):
     }
 
     return render(request, '{0}/lis.html'.format(base_name), context)
+
+
+def hiwat(request):
+    default_model = app.get_custom_setting('default_model_type')
+    init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
+    init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
+
+    model_input = SelectInput(display_text='',
+                              name='model',
+                              multiple=False,
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              initial=[init_model_val],
+                              original=True)
+
+    watershed_list = [['Select Watershed', '']]
+
+    if app.get_custom_setting('lis_path'):
+        res = os.listdir(app.get_custom_setting('hiwat_path'))
+
+        for i in res:
+            feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
+                        i.split('-')[1].replace('_', ' ').title() + ')'
+            if feat_name not in str(watershed_list):
+                watershed_list.append([feat_name, i])
+
+    # Add the default WS if present and not already in the list
+    # Not sure if this will work with LIS type. Need to test it out.
+    if default_model == 'HIWAT-RAPID' and init_ws_val and init_ws_val not in str(watershed_list):
+        watershed_list.append([init_ws_val, init_ws_val])
+
+    watershed_select = SelectInput(display_text='',
+                                   name='watershed',
+                                   options=watershed_list,
+                                   initial=[init_ws_val],
+                                   original=True,
+                                   attributes = {'onchange':"javascript:view_watershed();"}
+                                   )
+
+    zoom_info = TextInput(display_text='',
+                          initial=json.dumps(app.get_custom_setting('zoom_info')),
+                          name='zoom_info',
+                          disabled=True)
+    context = {
+        "base_name": base_name,
+        "model_input": model_input,
+        "watershed_select": watershed_select,
+        "zoom_info": zoom_info
+    }
+
+    return render(request, '{0}/hiwat.html'.format(base_name), context)
 
 
 def get_warning_points(request):
@@ -494,6 +544,69 @@ def lis_get_time_series(request):
     except Exception as e:
         print str(e)
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
+
+
+def hiwat_get_time_series(request):
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+        comid = get_data['comid']
+        units = 'metric'
+
+        path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
+        filename = [f for f in os.listdir(path) if 'Qout' in f]
+        res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+
+        dates_raw = res.variables['time'][:]
+        dates = []
+        for d in dates_raw:
+            dates.append(dt.datetime.fromtimestamp(d))
+
+        comid_list = res.variables['rivid'][:]
+        comid_index = int(np.where(comid_list == int(comid))[0])
+
+        values = []
+        for l in list(res.variables['Qout'][:]):
+            values.append(float(l[comid_index]))
+
+        # --------------------------------------
+        # Chart Section
+        # --------------------------------------
+        series = go.Scatter(
+            name='HIWAT',
+            x=dates,
+            y=values,
+        )
+
+        layout = go.Layout(
+            title="HIWAT Streamflow<br><sub>{0} ({1}): {2}</sub>".format(
+                watershed, subbasin, comid),
+            xaxis=dict(
+                title='Date',
+            ),
+            yaxis=dict(
+                title='Streamflow ({}<sup>3</sup>/s)'
+                      .format(get_units_title(units))
+            )
+        )
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[series],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No HIWAT data found for the selected reach.'})
 
 
 def get_available_dates(request):
@@ -915,21 +1028,84 @@ def get_lis_data_csv(request):
         return JsonResponse({'error': 'No forecast data found.'})
 
 
+def get_hiwat_data_csv(request):
+    """""
+    Returns HIWAT data as csv
+    """""
+
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed_name']
+        subbasin = get_data['subbasin_name']
+        comid = get_data['reach_id']
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+        else:
+            startdate = 'most_recent'
+
+        path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
+        filename = [f for f in os.listdir(path) if 'Qout' in f]
+        res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+
+        dates_raw = res.variables['time'][:]
+        dates = []
+        for d in dates_raw:
+            dates.append(dt.datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
+
+        comid_list = res.variables['rivid'][:]
+        comid_index = int(np.where(comid_list == int(comid))[0])
+
+        values = []
+        for l in list(res.variables['Qout'][:]):
+            values.append(float(l[comid_index]))
+
+        pairs = [list(a) for a in zip(dates, values)]
+
+        init_time = pairs[0][0].split(' ')[0]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=hiwat_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
+                                                                                                             subbasin,
+                                                                                                             comid,
+                                                                                                             init_time)
+
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'flow (m3/s)'])
+
+        for row_data in pairs:
+            writer.writerow(row_data)
+
+        return response
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No forecast data found.'})
+
+
 def shp_to_geojson(request):
     get_data = request.GET
 
     try:
+        model = get_data['model']
         watershed = get_data['watershed']
         subbasin = get_data['subbasin']
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
-
-        reprojected_shp_path = os.path.join(
-                app.get_custom_setting('lis_path'),
-                '-'.join([watershed, subbasin]).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
-        )
+        if model == 'LIS-RAPID':
+            reprojected_shp_path = os.path.join(
+                    app.get_custom_setting('lis_path'),
+                    '-'.join([watershed, subbasin]).replace(' ', '_'),
+                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+            )
+        elif model == 'HIWAT-RAPID':
+            reprojected_shp_path = os.path.join(
+                    app.get_custom_setting('hiwat_path'),
+                    '-'.join([watershed, subbasin]).replace(' ', '_'),
+                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+            )
 
         if not os.path.exists(reprojected_shp_path):
 
