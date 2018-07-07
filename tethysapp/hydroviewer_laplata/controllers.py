@@ -9,12 +9,14 @@ from tethys_sdk.base import TethysAppBase
 import os
 import requests
 import json
+import urllib2
 import numpy as np
 import netCDF4 as nc
 
 from osgeo import ogr
 from osgeo import osr
 from csv import writer as csv_writer
+import csv
 import scipy.stats as sp
 import datetime as dt
 import ast
@@ -164,6 +166,33 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
+    today = dt.datetime.now()
+    year = str(today.year)
+    month = str(today.strftime("%m"))
+    day = str(today.strftime("%d"))
+    date = day + '/' + month + '/' + year
+    lastyear = int(year) - 1
+    date2 = day + '/' + month + '/' + str(lastyear)
+
+    startdateobs = DatePicker(name='startdateobs',
+                              display_text='Start Date',
+                              autoclose=True,
+                              format='dd/mm/yyyy',
+                              start_date='01/01/1950',
+                              start_view='month',
+                              today_button=True,
+                              initial=date2,
+                              classes='datepicker')
+
+    enddateobs = DatePicker(name='enddateobs',
+                            display_text='End Date',
+                            autoclose=True,
+                            format='dd/mm/yyyy',
+                            start_date='01/01/1950',
+                            start_view='month',
+                            today_button=True,
+                            initial=date,
+                            classes='datepicker')
 
     context = {
         "base_name": base_name,
@@ -171,7 +200,9 @@ def ecmwf(request):
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
-        "defaultUpdateButton":defaultUpdateButton
+        "defaultUpdateButton":defaultUpdateButton,
+        "startdateobs": startdateobs,
+        "enddateobs": enddateobs
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -1420,3 +1451,118 @@ def forecastpercent(request):
                          'twenty': formattedtwenty}
 
         return JsonResponse(dataformatted)
+
+def get_station_data(request):
+    """
+    Get data from csv files
+    """
+    get_data = request.GET
+
+    try:
+
+        codEstacion = get_data['stationcode']
+        # YYYY/MM/DD
+
+        dir_base = os.path.dirname(__file__)
+        url = os.path.join(dir_base, 'public/Discharge_Data', codEstacion + '.csv')
+
+        with open(url) as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            readCSV.next()
+            datesDischarge = []
+            dataDischarge = []
+            for row in readCSV:
+                da = row[0]
+                year = int(da[0:4])
+                month = int(da[5:7])
+                day = int(da[8:10])
+                hh = int(da[11:13])
+                mm = int(da[14:16])
+                ss = int(da[17:19])
+                datesDischarge.append(dt.datetime(year, month, day, hh, mm, ss))
+                dat = row[1]
+                dataDischarge.append(dat)
+
+        observed_discharge = go.Scatter(
+            x=datesDischarge,
+            y=dataDischarge,
+            name='Discharge',
+        )
+
+        layout = go.Layout(title='Observed Data',
+                           xaxis=dict(
+                               title='Dates', ),
+                           yaxis=dict(
+                               title='Discharge (m3/s)',
+                               autorange=True),
+                           showlegend=False)
+
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[observed_discharge],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+
+        try:
+            codEstacion = get_data['stationcode']
+            # YYYY/MM/DD
+
+            dir_base = os.path.dirname(__file__)
+
+            url2 = os.path.join(dir_base, 'public/Water_Level_Data', codEstacion + '.csv')
+
+            with open(url2) as csvfile:
+                readCSV = csv.reader(csvfile, delimiter=',')
+                readCSV.next()
+                datesWaterLevel = []
+                dataWaterLevel = []
+                for row in readCSV:
+                   da = row[0]
+                   year = int(da[0:4])
+                   month = int(da[5:7])
+                   day = int(da[8:10])
+                   hh = int(da[11:13])
+                   mm = int(da[14:16])
+                   ss = int(da[17:19])
+                   datesWaterLevel.append(dt.datetime(year, month, day, hh, mm, ss))
+                   dat = row[1]
+                   dataWaterLevel.append(dat)
+
+            observed_waterLevel = go.Scatter(
+               x=datesWaterLevel,
+               y=dataWaterLevel,
+               name='Water Level',
+               yaxis='y2'
+            )
+
+            layout = go.Layout(title='Observed Data',
+                               xaxis=dict(
+                                   title='Dates', ),
+                               yaxis=dict(
+                                   title='Water Level',
+                                   autorange=True),
+                               showlegend=False)
+
+            chart_obj = PlotlyView(
+                go.Figure(data=[observed_waterLevel],
+                          layout=layout)
+            )
+
+            context = {
+                'gizmo_object': chart_obj,
+            }
+
+            return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+
+        except Exception as e:
+
+            print str(e)
+            return JsonResponse({'error': 'No  data found for the station.'})
