@@ -9,11 +9,11 @@ class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/logo.png'.format(base_name)
+    icon = '{0}/images/colombia-icon.jpg'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
-    color = '#425e17'
-    description = 'Place a brief description of your app here.'
+    color = '#00374b'
+    description = 'This is the Hydroviewer App customized for Colombia.'
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []
@@ -158,6 +158,10 @@ class Hydroviewer(TethysAppBase):
                 name='forecastpercent',
                 url='forecastpercent',
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
+            UrlMap(
+                name='get_station_data',
+                url='ecmwf-rapid/get-station-data',
+                controller='{0}.controllers.get_station_data'.format(base_name)),
         )
 
         return url_maps
