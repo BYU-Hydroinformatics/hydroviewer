@@ -49,7 +49,7 @@ class Hydroviewer(TethysAppBase):
             UrlMap(
                 name='get-time-series',
                 url='get-time-series',
-                controller='{0}.controllers.ecmwf_get_time_series'.format(base_name)),
+                controller='{0}.controllers.get_time_series'.format(base_name)),
             UrlMap(
                 name='get-time-series',
                 url='ecmwf-rapid/get-time-series',
@@ -224,15 +224,21 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
+                name='extra_feature',
+                type=CustomSetting.TYPE_STRING,
+                description='Name of an additional feature to load from  the provided geoserver (e.g. a boundary layer).',
+                required=False,
+            ),
+            CustomSetting(
                 name='default_model_type',
                 type=CustomSetting.TYPE_STRING,
-                description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID)',
+                description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID, HIWAT-RAPID)',
                 required=False
             ),
             CustomSetting(
                 name='default_watershed_name',
                 type=CustomSetting.TYPE_STRING,
-                description='Default Watershed Name: (For ex: "South America (Brazil)") ',
+                description='Default Watershed Name: (e.g. "South America (Brazil)") ',
                 required=False
             ),
             CustomSetting(
@@ -240,7 +246,7 @@ class Hydroviewer(TethysAppBase):
                 type=CustomSetting.TYPE_BOOLEAN,
                 description='Hide Watershed Options when default present (True or False) ',
                 required=True,
-                value=True
+                value=False
             ),
             CustomSetting(
                 name='lis_path',

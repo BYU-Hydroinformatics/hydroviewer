@@ -200,11 +200,11 @@ function init_map() {
     });
 
 
-    if ($('#model option:selected').text() === 'ECMWF-RAPID') {
+    if (JSON.parse($('#geoserver_endpoint').val())[3]) {
         var wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                params: { 'LAYERS': 'province_boundaries' },
+                params: { 'LAYERS': JSON.parse($('#geoserver_endpoint').val())[3] },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             })
