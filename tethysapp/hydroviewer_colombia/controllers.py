@@ -9,12 +9,14 @@ from tethys_sdk.base import TethysAppBase
 import os
 import requests
 import json
+import urllib2
 import numpy as np
 import netCDF4 as nc
 
 from osgeo import ogr
 from osgeo import osr
 from csv import writer as csv_writer
+import csv
 import scipy.stats as sp
 import datetime as dt
 import ast
@@ -164,6 +166,33 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
+    today = dt.datetime.now()
+    year = str(today.year)
+    month = str(today.strftime("%m"))
+    day = str(today.strftime("%d"))
+    date = day + '/' + month + '/' + year
+    lastyear = int(year) - 1
+    date2 = day + '/' + month + '/' + str(lastyear)
+
+    startdateobs = DatePicker(name='startdateobs',
+                              display_text='Start Date',
+                              autoclose=True,
+                              format='dd/mm/yyyy',
+                              start_date='01/01/1950',
+                              start_view='month',
+                              today_button=True,
+                              initial=date2,
+                              classes='datepicker')
+
+    enddateobs = DatePicker(name='enddateobs',
+                            display_text='End Date',
+                            autoclose=True,
+                            format='dd/mm/yyyy',
+                            start_date='01/01/1950',
+                            start_view='month',
+                            today_button=True,
+                            initial=date,
+                            classes='datepicker')
 
     context = {
         "base_name": base_name,
@@ -171,7 +200,9 @@ def ecmwf(request):
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
-        "defaultUpdateButton":defaultUpdateButton
+        "defaultUpdateButton":defaultUpdateButton,
+        "startdateobs": startdateobs,
+        "enddateobs": enddateobs
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -1420,3 +1451,97 @@ def forecastpercent(request):
                          'twenty': formattedtwenty}
 
         return JsonResponse(dataformatted)
+
+def get_station_data(request):
+    """
+    Get data from telemetric stations
+    """
+    get_data = request.GET
+
+    try:
+
+        codEstacion = get_data['stationcode']
+        # YYYY/MM/DD
+
+        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+
+        req = urllib2.Request(url)
+        opener = urllib2.build_opener()
+        f = opener.open(req)
+
+        data = json.loads(f.read())
+
+        observedWaterLevel = (data.get('obs'))
+        sensorWaterLevel = (data.get('sen'))
+
+        observedWaterLevel = (observedWaterLevel.get('data'))
+        sensorWaterLevel = (sensorWaterLevel.get('data'))
+
+        datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
+        observedWaterLevel = [row[1] for row in observedWaterLevel]
+
+        datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
+        sensorWaterLevel = [row[1] for row in sensorWaterLevel]
+
+        dates = []
+        waterLevel = []
+
+        for i in range(0, len(datesObservedWaterLevel) - 1):
+            year = int(datesObservedWaterLevel[i][0:4])
+            month = int(datesObservedWaterLevel[i][5:7])
+            day = int(datesObservedWaterLevel[i][8:10])
+            hh = int(datesObservedWaterLevel[i][11:13])
+            mm = int(datesObservedWaterLevel[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            waterLevel.append(observedWaterLevel[i])
+
+        datesObservedWaterLevel = dates
+        observedWaterLevel = waterLevel
+
+        dates = []
+        waterLevel = []
+
+        for i in range(0, len(datesSensorWaterLevel) - 1):
+            year = int(datesSensorWaterLevel[i][0:4])
+            month = int(datesSensorWaterLevel[i][5:7])
+            day = int(datesSensorWaterLevel[i][8:10])
+            hh = int(datesSensorWaterLevel[i][11:13])
+            mm = int(datesSensorWaterLevel[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            waterLevel.append(sensorWaterLevel[i])
+
+        datesSensorWaterLevel = dates
+        sensorWaterLevel = waterLevel
+
+        observed_sc = go.Scatter(
+            x=datesObservedWaterLevel,
+            y=observedWaterLevel,
+        )
+
+        sensor_sc = go.Scatter(
+            x=datesSensorWaterLevel,
+            y=sensorWaterLevel,
+        )
+
+        layout = go.Layout(title='Station Data',
+                           xaxis=dict(
+                               title='Dates',),
+                           yaxis=dict(
+                               title='Water Level (m)',
+                               autorange=True),
+                           showlegend=False)
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[observed_sc, sensor_sc],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No  data found for the station.'})

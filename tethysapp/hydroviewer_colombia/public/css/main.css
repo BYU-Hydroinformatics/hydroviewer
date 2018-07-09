@@ -189,3 +189,20 @@
 .purplehundred {
     background-color: #B000FF;
 }
+
+.obslogos {
+    width: 40%;
+    padding: 0 5px 0 5px;
+}
+.datepicker{
+    width: 80%;
+    padding: 0 5px 0 5px;
+}
+#startdatepicker{
+    align-items:center;
+    float: left;
+}
+#enddatepicker{
+    align-items:center;
+    float: right;
+}

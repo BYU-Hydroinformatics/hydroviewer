@@ -6,6 +6,7 @@ var default_extent,
     stream_geom,
     layers,
     wmsLayer,
+    wmsLayer2,
     vectorLayer,
     feature,
     featureOverlay,
@@ -262,9 +263,21 @@ function view_watershed() {
         });
         feature_layer = wmsLayer;
 
+
         get_warning_points(model, watershed, subbasin);
 
+        wmsLayer2 = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                params: {'LAYERS':"fews_stations"},
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            })
+        });
+        feature_layer2 = wmsLayer2;
+
         map.addLayer(wmsLayer);
+        map.addLayer(wmsLayer2);
 
         $loading.addClass('hidden');
         var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
@@ -780,6 +793,33 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     })
 }
 
+function get_station_info (stationcode, startdateobs, enddateobs) {
+    $.ajax({
+        url: 'ecmwf-rapid/get-station-data',
+        type: 'GET',
+        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        error: function () {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#info').addClass('hidden')
+            }, 5000);
+        },
+        success: function (data) {
+            if (!data.error) {
+                $('#observed-loading').addClass('hidden');
+                $('#dates').removeClass('hidden');
+//                $('#obsdates').removeClass('hidden');
+                $loading.addClass('hidden');
+                $('#observed-chart').removeClass('hidden');
+                $('#observed-chart').html(data);
+            }
+        }
+    })
+}
+
+
 function map_events() {
     map.on('pointermove', function(evt) {
         if (evt.dragging) {
@@ -789,7 +829,7 @@ function map_events() {
         var pixel = map.getEventPixel(evt.originalEvent);
         if (model === 'ECMWF-RAPID') {
             var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-                if (layer == feature_layer) {
+                if (layer == feature_layer || layer == feature_layer2) {
                     current_layer = layer;
                     return true;
                 }
@@ -817,13 +857,6 @@ function map_events() {
         var model = $('#model option:selected').text();
 
         if (map.getTargetElement().style.cursor == "pointer") {
-            $("#graph").modal('show');
-            $("#tbody").empty()
-            $('#long-term-chart').addClass('hidden');
-            $('#historical-chart').addClass('hidden');
-            $('#fdc-chart').addClass('hidden');
-            $('#download_forecast').addClass('hidden');
-            $('#download_interim').addClass('hidden');
 
             var view = map.getView();
             var viewResolution = view.getResolution();
@@ -831,7 +864,43 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (wms_url) {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "fews_stations") {
+
+                        $("#obsgraph").modal('show');
+                        $('#observed-chart').addClass('hidden');
+                        $('#obsdates').addClass('hidden');
+                        $('#observed-loading').removeClass('hidden');
+                        $("#station-info").empty()
+
+                        $.ajax({
+                            type: "GET",
+                            url: wms_url,
+                            dataType: 'json',
+                            success: function (result) {
+                                stationcode = result["features"][0]["properties"]["id"];
+                                stationname = result["features"][0]["properties"]["nombre"];
+                                $('#obsdates').removeClass('hidden');
+                                var startdateobs = $('#startdateobs').val();
+                                var enddateobs = $('#enddateobs').val();
+                                $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
+                                get_station_info (stationcode, startdateobs, enddateobs, stationname)
+
+                            }
+                        });
+
+                }
+
+                //if (wms_url) {
+                else {
+
+                    $("#graph").modal('show');
+                    $("#tbody").empty()
+                    $('#long-term-chart').addClass('hidden');
+                    $('#historical-chart').addClass('hidden');
+                    $('#fdc-chart').addClass('hidden');
+                    $('#download_forecast').addClass('hidden');
+                    $('#download_interim').addClass('hidden');
+
                     $loading.removeClass('hidden');
                     //Retrieving the details for clicked point via the url
                     $('#dates').addClass('hidden');
@@ -875,6 +944,9 @@ function map_events() {
                         }
                     });
                 }
+
+
+
             } else if (model === 'LIS-RAPID') {
                 var comid = current_feature.get('COMID');
                 var watershed = $('#watershedSelect option:selected').val().split('-')[0]
@@ -1097,5 +1169,17 @@ $(function() {
         $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
         get_forecast_percent(watershed, subbasin, comid, startdate);
+    });
+    $('#startdateobs').change(function() { //when date is changed
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs);
+    });
+    $('#enddateobs').change(function() { //when date is changed
+        var startdateobs = $('#startdateobs').val();
+        var enddateobs = $('#enddateobs').val();
+        $('#observed-loading').removeClass('hidden');
+        get_station_info (stationcode, startdateobs, enddateobs);
     });
 });
