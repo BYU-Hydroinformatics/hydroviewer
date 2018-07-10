@@ -593,6 +593,9 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
                 $('#long-term-chart').removeClass('hidden');
                 $('#long-term-chart').html(data);
 
+                //resize main graph
+                Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
+
                 var params = {
                     watershed_name: watershed,
                     subbasin_name: subbasin,

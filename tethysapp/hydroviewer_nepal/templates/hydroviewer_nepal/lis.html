@@ -88,8 +88,10 @@
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane active" id="forecast_tab">
             <div class="panel panel-default">
-              <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-              <div id="long-term-chart" class="panel-body"></div>
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="long-term-chart"></div>
+              </div>
             </div>
           </div><!-- /.tab-pane -->
           <div role="tabpanel" class="tab-pane" id="download">
