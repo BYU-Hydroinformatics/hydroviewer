@@ -166,22 +166,22 @@ class Hydroviewer(TethysAppBase):
 
         return url_maps
 
-    def permissions(self):
-
-        update_default = Permission(
-            name='update_default',
-            description='Update Default Settings'
-        )
-
-        admin = PermissionGroup(
-            name='admin',
-            permissions=(update_default,)
-        )
-
-
-        permissions = (admin,)
-
-        return permissions
+    # def permissions(self):
+    #
+    #     update_default = Permission(
+    #         name='update_default',
+    #         description='Update Default Settings'
+    #     )
+    #
+    #     admin = PermissionGroup(
+    #         name='admin',
+    #         permissions=(update_default,)
+    #     )
+    #
+    #
+    #     permissions = (admin,)
+    #
+    #     return permissions
 
     def custom_settings(self):
         return (
