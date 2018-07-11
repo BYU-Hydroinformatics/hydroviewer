@@ -366,17 +366,17 @@ def get_warning_points(request):
             res20 = requests.get(
                 app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
             res10 = requests.get(
                 app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
             res2 = requests.get(
                 app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
             return JsonResponse({
                 "success": "Data analysis complete!",
@@ -408,7 +408,7 @@ def ecmwf_get_time_series(request):
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
             startdate + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
         pairs = res.content.splitlines()
         header = pairs.pop(0)
@@ -700,10 +700,12 @@ def get_available_dates(request):
     watershed = get_data['watershed']
     subbasin = get_data['subbasin']
     comid = get_data['comid']
+    
     res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin,
+            watershed + '&subbasin_name=' + subbasin,verify=False,
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+
 
     dates = []
     for date in eval(res.content):
@@ -733,7 +735,7 @@ def get_return_periods(request):
     res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
     return eval(res.content)
 
@@ -755,7 +757,7 @@ def get_historic_data(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
         era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
@@ -821,7 +823,7 @@ def get_flow_duration_curve(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
         era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
@@ -987,7 +989,7 @@ def get_historic_data_csv(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
         qout_data = era_res.content.splitlines()
         qout_data.pop(0)
@@ -1032,7 +1034,7 @@ def get_forecast_data_csv(request):
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
             startdate + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
 
         qout_data = res.content.splitlines()
         qout_data.pop(0)
@@ -1433,11 +1435,11 @@ def forecastpercent(request):
                               forecast_folder=forecast)
         request_headers = dict(Authorization='Token ' + app.get_custom_setting('spt_token'))
         ens = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetEnsemble/',
-                           params=request_params, headers=request_headers)
+                           params=request_params, headers=request_headers,verify=False)
 
         request_params1 = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach)
         rpall = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/',
-                             params=request_params1, headers=request_headers)
+                             params=request_params1, headers=request_headers,verify=False)
 
         dicts = ens.content.splitlines()
         dictstr = []
