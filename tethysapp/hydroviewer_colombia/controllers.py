@@ -1452,7 +1452,7 @@ def forecastpercent(request):
 
         return JsonResponse(dataformatted)
 
-def get_station_data(request):
+def get_discharge_data(request):
     """
     Get data from telemetric stations
     """
@@ -1463,16 +1463,108 @@ def get_station_data(request):
         codEstacion = get_data['stationcode']
         # YYYY/MM/DD
 
-        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
         req = urllib2.Request(url)
         opener = urllib2.build_opener()
         f = opener.open(req)
-
         data = json.loads(f.read())
 
-        observedWaterLevel = (data.get('obs'))
-        sensorWaterLevel = (data.get('sen'))
+        observedDischarge = (data.get('obs'))
+        sensorDischarge = (data.get('sen'))
+
+        observedDischarge = (observedDischarge.get('data'))
+        sensorDischarge = (sensorDischarge.get('data'))
+
+        datesObservedDischarge = [row[0] for row in observedDischarge]
+        observedDischarge = [row[1] for row in observedDischarge]
+
+        datesSensorDischarge = [row[0] for row in sensorDischarge]
+        sensorDischarge = [row[1] for row in sensorDischarge]
+
+        dates = []
+        discharge = []
+
+        for i in range(0, len(datesObservedDischarge) - 1):
+            year = int(datesObservedDischarge[i][0:4])
+            month = int(datesObservedDischarge[i][5:7])
+            day = int(datesObservedDischarge[i][8:10])
+            hh = int(datesObservedDischarge[i][11:13])
+            mm = int(datesObservedDischarge[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            discharge.append(observedDischarge[i])
+
+        datesObservedDischarge = dates
+        observedDischarge = discharge
+
+        dates = []
+        discharge = []
+
+        for i in range(0, len(datesSensorDischarge) - 1):
+            year = int(datesSensorDischarge[i][0:4])
+            month = int(datesSensorDischarge[i][5:7])
+            day = int(datesSensorDischarge[i][8:10])
+            hh = int(datesSensorDischarge[i][11:13])
+            mm = int(datesSensorDischarge[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            discharge.append(sensorDischarge[i])
+
+        datesSensorDischarge = dates
+        sensorDischarge = discharge
+
+        observed_Q = go.Scatter(
+            x=datesObservedDischarge,
+            y=observedDischarge,
+        )
+
+        sensor_Q = go.Scatter(
+            x=datesSensorDischarge,
+            y=sensorDischarge,
+        )
+
+        layout = go.Layout(title='Observed Discharge',
+                           xaxis=dict(
+                               title='Dates',),
+                           yaxis=dict(
+                               title='Discharge (m3/s)',
+                               autorange=True),
+                           showlegend=False)
+
+        chart_obj = PlotlyView(
+            go.Figure(data=[observed_Q, sensor_Q],
+                      layout=layout)
+        )
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print str(e)
+        return JsonResponse({'error': 'No  data found for the station.'})
+
+def get_waterlevel_data(request):
+    """
+    Get data from telemetric stations
+    """
+    get_data = request.GET
+
+    try:
+
+        codEstacion = get_data['stationcode']
+        # YYYY/MM/DD
+
+        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+
+        req2 = urllib2.Request(url2)
+        opener2 = urllib2.build_opener()
+        f2 = opener2.open(req2)
+        data2 = json.loads(f2.read())
+
+        observedWaterLevel = (data2.get('obs'))
+        sensorWaterLevel = (data2.get('sen'))
 
         observedWaterLevel = (observedWaterLevel.get('data'))
         sensorWaterLevel = (sensorWaterLevel.get('data'))
@@ -1513,26 +1605,26 @@ def get_station_data(request):
         datesSensorWaterLevel = dates
         sensorWaterLevel = waterLevel
 
-        observed_sc = go.Scatter(
+        observed_WL = go.Scatter(
             x=datesObservedWaterLevel,
             y=observedWaterLevel,
         )
 
-        sensor_sc = go.Scatter(
+        sensor_WL = go.Scatter(
             x=datesSensorWaterLevel,
             y=sensorWaterLevel,
         )
 
-        layout = go.Layout(title='Station Data',
+        layout = go.Layout(title='Observed Water Level',
                            xaxis=dict(
-                               title='Dates',),
+                               title='Dates', ),
                            yaxis=dict(
                                title='Water Level (m)',
                                autorange=True),
                            showlegend=False)
 
         chart_obj = PlotlyView(
-            go.Figure(data=[observed_sc, sensor_sc],
+            go.Figure(data=[observed_WL, sensor_WL],
                       layout=layout)
         )
 
