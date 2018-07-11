@@ -159,9 +159,13 @@ class Hydroviewer(TethysAppBase):
                 url='forecastpercent',
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
             UrlMap(
-                name='get_station_data',
-                url='ecmwf-rapid/get-station-data',
-                controller='{0}.controllers.get_station_data'.format(base_name)),
+                name='get_discharge_data',
+                url='ecmwf-rapid/get-discharge-data',
+                controller='{0}.controllers.get_discharge_data'.format(base_name)),
+            UrlMap(
+                name='get_waterlevel_data',
+                url='ecmwf-rapid/get-waterlevel-data',
+                controller='{0}.controllers.get_waterlevel_data'.format(base_name)),
         )
 
         return url_maps

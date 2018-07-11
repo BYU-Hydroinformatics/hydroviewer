@@ -190,6 +190,10 @@
     background-color: #B000FF;
 }
 
+#obsgraph {
+    height: 100%;
+}
+
 .obslogos {
     width: 40%;
     padding: 0 5px 0 5px;

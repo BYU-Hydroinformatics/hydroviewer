@@ -606,6 +606,9 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
                 $('#long-term-chart').removeClass('hidden');
                 $('#long-term-chart').html(data);
 
+                //resize main graph
+                Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
+
                 var params = {
                     watershed_name: watershed,
                     subbasin_name: subbasin,
@@ -793,13 +796,14 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     })
 }
 
-function get_station_info (stationcode, startdateobs, enddateobs) {
+function get_discharge_info (stationcode, startdateobs, enddateobs) {
+    $('#observed-loading-Q').removeClass('hidden');
     $.ajax({
-        url: 'ecmwf-rapid/get-station-data',
+        url: 'ecmwf-rapid/get-discharge-data',
         type: 'GET',
         data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
-            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
             $('#info').removeClass('hidden');
 
             setTimeout(function () {
@@ -808,12 +812,45 @@ function get_station_info (stationcode, startdateobs, enddateobs) {
         },
         success: function (data) {
             if (!data.error) {
-                $('#observed-loading').addClass('hidden');
+                $('#observed-loading-Q').addClass('hidden');
                 $('#dates').removeClass('hidden');
 //                $('#obsdates').removeClass('hidden');
                 $loading.addClass('hidden');
-                $('#observed-chart').removeClass('hidden');
-                $('#observed-chart').html(data);
+                $('#observed-chart-Q').removeClass('hidden');
+                $('#observed-chart-Q').html(data);
+
+                //resize main graph
+                Plotly.Plots.resize($("#observed-chart-Q .js-plotly-plot")[0]);
+            }
+        }
+    })
+}
+
+function get_waterlevel_info (stationcode, startdateobs, enddateobs) {
+    $('#observed-loading-WL').removeClass('hidden');
+    $.ajax({
+        url: 'ecmwf-rapid/get-waterlevel-data',
+        type: 'GET',
+        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        error: function () {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#info').addClass('hidden')
+            }, 5000);
+        },
+        success: function (data) {
+            if (!data.error) {
+                $('#observed-loading-WL').addClass('hidden');
+                $('#dates').removeClass('hidden');
+//                $('#obsdates').removeClass('hidden');
+                $loading.addClass('hidden');
+                $('#observed-chart-WL').removeClass('hidden');
+                $('#observed-chart-WL').html(data);
+
+                //resize main graph
+                Plotly.Plots.resize($("#observed-chart-WL .js-plotly-plot")[0]);
             }
         }
     })
@@ -867,9 +904,11 @@ function map_events() {
                 if (current_layer["H"]["source"]["i"]["LAYERS"] == "fews_stations") {
 
                         $("#obsgraph").modal('show');
-                        $('#observed-chart').addClass('hidden');
+                        $('#observed-chart-Q').addClass('hidden');
+                        $('#observed-chart-WL').addClass('hidden');
                         $('#obsdates').addClass('hidden');
-                        $('#observed-loading').removeClass('hidden');
+                        $('#observed-loading-Q').removeClass('hidden');
+                        $('#observed-loading-WL').removeClass('hidden');
                         $("#station-info").empty()
 
                         $.ajax({
@@ -883,7 +922,8 @@ function map_events() {
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
                                 $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
-                                get_station_info (stationcode, startdateobs, enddateobs, stationname)
+                                get_discharge_info (stationcode, startdateobs, enddateobs, stationname);
+                                get_waterlevel_info (stationcode, startdateobs, enddateobs, stationname);
 
                             }
                         });
@@ -1108,7 +1148,7 @@ function resize_graphs() {
 
     $("#historical_tab_link").click(function() {
         if (m_downloaded_historical_streamflow) {
-            Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
+        	Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
         }
     });
 
@@ -1116,6 +1156,12 @@ function resize_graphs() {
         if (m_downloaded_flow_duration) {
             Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
         }
+    });
+    $("#observedQ_tab_link").click(function() {
+        Plotly.Plots.resize($("#observed-chart-Q .js-plotly-plot")[0]);
+    });
+    $("#observedWL_tab_link").click(function() {
+        Plotly.Plots.resize($("#observed-chart-WL .js-plotly-plot")[0]);
     });
 };
 
@@ -1173,13 +1219,17 @@ $(function() {
     $('#startdateobs').change(function() { //when date is changed
         var startdateobs = $('#startdateobs').val();
         var enddateobs = $('#enddateobs').val();
-        $('#observed-loading').removeClass('hidden');
-        get_station_info (stationcode, startdateobs, enddateobs);
+        $('#observed-loading-Q').removeClass('hidden');
+        $('#observed-loading-WL').removeClass('hidden');
+        get_discharge_info_info (stationcode, startdateobs, enddateobs);
+        get_waterlevel_info_info (stationcode, startdateobs, enddateobs);
     });
     $('#enddateobs').change(function() { //when date is changed
         var startdateobs = $('#startdateobs').val();
         var enddateobs = $('#enddateobs').val();
-        $('#observed-loading').removeClass('hidden');
-        get_station_info (stationcode, startdateobs, enddateobs);
+        $('#observed-loading-Q').removeClass('hidden');
+        $('#observed-loading-WL').removeClass('hidden');
+        get_discharge_info (stationcode, startdateobs, enddateobs);
+        get_waterlevel_info (stationcode, startdateobs, enddateobs);
     });
 });

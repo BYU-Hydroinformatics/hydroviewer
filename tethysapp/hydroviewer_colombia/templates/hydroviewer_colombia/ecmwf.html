@@ -120,19 +120,35 @@
                 <div id="interaction"></div>
             </div>
             <div class="modal-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a id="observedQ_tab_link" href="#observedQ" aria-controls="observedQ" role="tab" data-toggle="tab">Observed Discharge</a></li>
+                  <li role="presentation"><a id="observedWL_tab_link" href="#observedWL" aria-controls="observedWL" role="tab" data-toggle="tab">Observed Water Level</a></li>
+                </ul>
+
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="obs_tab">
+                    <div role="tabpanel" class="tab-pane active" id="observedQ">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <div class="flex-container-row"><img id="observed-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-                                <div id="observed-chart"></div>
+                                <div class="flex-container-row"><img id="observed-loading-Q" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                                <div id="observed-chart-Q"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="observedWL"> <!-- /.tab-pane -->
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="flex-container-row"><img id="observed-loading-WL" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                                <div id="observed-chart-WL"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         <div id="info" class="hidden"></div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
         </div>
     </div>
