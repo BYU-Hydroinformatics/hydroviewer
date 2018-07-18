@@ -796,12 +796,12 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     })
 }
 
-function get_discharge_info (stationcode, startdateobs, enddateobs) {
+function get_discharge_info (stationcode, stationname, startdateobs, enddateobs) {
     $('#observed-loading-Q').removeClass('hidden');
     $.ajax({
         url: 'ecmwf-rapid/get-discharge-data',
         type: 'GET',
-        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
             $('#info').removeClass('hidden');
@@ -821,17 +821,46 @@ function get_discharge_info (stationcode, startdateobs, enddateobs) {
 
                 //resize main graph
                 Plotly.Plots.resize($("#observed-chart-Q .js-plotly-plot")[0]);
+
+                var params = {
+                    stationcode: stationcode,
+                    stationname: stationname,
+                };
+
+                $('#submit-download-observed-discharge').attr({
+                    target: '_blank',
+                    href: 'ecmwf-rapid/get-observed-discharge-csv?' + jQuery.param(params)
+                });
+
+                $('#download_observed_discharge').removeClass('hidden');
+
+                $('#submit-download-sensor-discharge').attr({
+                    target: '_blank',
+                    href: 'ecmwf-rapid/get-sensor-discharge-csv?' + jQuery.param(params)
+                });
+
+                $('#download_sensor_discharge').removeClass('hidden');
+
+                } else if (data.error) {
+                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
+                	$('#info').removeClass('hidden');
+
+                	setTimeout(function() {
+                    	$('#info').addClass('hidden')
+                	}, 5000);
+            	} else {
+                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            	}
             }
-        }
     })
 }
 
-function get_waterlevel_info (stationcode, startdateobs, enddateobs) {
+function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs) {
     $('#observed-loading-WL').removeClass('hidden');
     $.ajax({
         url: 'ecmwf-rapid/get-waterlevel-data',
         type: 'GET',
-        data: {'stationcode' : stationcode, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
+        data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
             $('#info').removeClass('hidden');
@@ -851,7 +880,36 @@ function get_waterlevel_info (stationcode, startdateobs, enddateobs) {
 
                 //resize main graph
                 Plotly.Plots.resize($("#observed-chart-WL .js-plotly-plot")[0]);
-            }
+
+                var params = {
+                    stationcode: stationcode,
+                    stationname: stationname,
+                };
+
+                $('#submit-download-observed-waterlevel').attr({
+                    target: '_blank',
+                    href: 'ecmwf-rapid/get-observed-waterlevel-csv?' + jQuery.param(params)
+                });
+
+                $('#download_observed_waterlevel').removeClass('hidden');
+
+                $('#submit-download-sensor-waterlevel').attr({
+                    target: '_blank',
+                    href: 'ecmwf-rapid/get-sensor-waterlevel-csv?' + jQuery.param(params)
+                });
+
+                $('#download_sensor_waterlevel').removeClass('hidden');
+
+                } else if (data.error) {
+                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
+                	$('#info').removeClass('hidden');
+
+                	setTimeout(function() {
+                    	$('#info').addClass('hidden')
+                	}, 5000);
+            	} else {
+                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            	}
         }
     })
 }
@@ -910,6 +968,10 @@ function map_events() {
                         $('#observed-loading-Q').removeClass('hidden');
                         $('#observed-loading-WL').removeClass('hidden');
                         $("#station-info").empty()
+                        $('#download_observed_discharge').addClass('hidden');
+                        $('#download_sensor_discharge').addClass('hidden');
+                        $('#download_observed_waterlevel').addClass('hidden');
+                        $('#download_sensor_waterlevel').addClass('hidden');
 
                         $.ajax({
                             type: "GET",
@@ -922,8 +984,8 @@ function map_events() {
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
                                 $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
-                                get_discharge_info (stationcode, startdateobs, enddateobs, stationname);
-                                get_waterlevel_info (stationcode, startdateobs, enddateobs, stationname);
+                                get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
+                                get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
 
                             }
                         });
@@ -1221,15 +1283,15 @@ $(function() {
         var enddateobs = $('#enddateobs').val();
         $('#observed-loading-Q').removeClass('hidden');
         $('#observed-loading-WL').removeClass('hidden');
-        get_discharge_info_info (stationcode, startdateobs, enddateobs);
-        get_waterlevel_info_info (stationcode, startdateobs, enddateobs);
+        get_discharge_info_info (stationcode, stationname, startdateobs, enddateobs);
+        get_waterlevel_info_info (stationcode, stationname, startdateobs, enddateobs);
     });
     $('#enddateobs').change(function() { //when date is changed
         var startdateobs = $('#startdateobs').val();
         var enddateobs = $('#enddateobs').val();
         $('#observed-loading-Q').removeClass('hidden');
         $('#observed-loading-WL').removeClass('hidden');
-        get_discharge_info (stationcode, startdateobs, enddateobs);
-        get_waterlevel_info (stationcode, startdateobs, enddateobs);
+        get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
+        get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
     });
 });
