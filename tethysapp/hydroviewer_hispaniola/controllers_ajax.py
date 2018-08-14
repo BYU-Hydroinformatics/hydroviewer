@@ -8,6 +8,7 @@ import requests
 import ast
 
 
+
 @csrf_exempt
 def update_ffgs(request):
 
@@ -101,6 +102,9 @@ def update_ffgs(request):
         return JsonResponse({'success': 'false'})
 
 
+
+
+
 def forecastpercent(request):
 
 
@@ -189,3 +193,5 @@ def forecastpercent(request):
                          'twenty': formattedtwenty}
 
         return JsonResponse(dataformatted)
+
+

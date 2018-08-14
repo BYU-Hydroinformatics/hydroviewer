@@ -41,6 +41,9 @@
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add FFGS Data">
       <a data-toggle="modal" data-target="#ffgs-modal"><span class="glyphicon glyphicon-plus"></span></a>
   </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add ONAMET Data">
+      <a data-toggle="modal" data-target="#onamet-modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
+  </div>
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
       <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
@@ -57,7 +60,7 @@
 <br>
 <h4><b>Legend</b></h4>
 <div id="stp-legend" class="col-sm-12">
-    <h6><b>Streamflow Prediction Tool</b></h6>
+    <h7><b>Streamflow Prediction Tool</b></h7>
     <table style="width:100%">
         <tr>
             <td>
@@ -117,7 +120,7 @@
 <br>
 <br>
 <div id="ffgs-legend" class="col-sm-12">
-    <h6><b>Flash Flood Guidance System</b></h6>
+    <h7><b>Flash Flood Guidance System</b></h7>
     <div>
         <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff00ff" fill="#ff00ff" stroke-width="2" />
@@ -151,6 +154,11 @@
     <br>
     <p>Change FFGS Layer Transparency</p>
     <input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+</div>
+<div id="onamet-legend" class="col-sm-12">
+    <h7><p id="onamet_title" class="hidden"><b>ONAMET Precipitation Data</b></h7></p>
+    <p id="onamet_transparency" class="hidden">Change ONAMET Lyr Transparency</p>
+    <input id="ONAMETslider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="mapLayers.setOpacity(this.value)">
 </div>
 
 
@@ -356,10 +364,38 @@
                 <div>Once you've selected a file, click submit to upload it.</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="submit-ffgf-data" onclick="updateFFGS()" data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-default" id="submit-ffgs-data" onclick="updateFFGS()" data-dismiss="modal">Submit</button>
                 <button type="button" class="btn btn-default" id="close-login-popup" data-dismiss="modal">Close</button>
             </div>
         </div>
+    </div>
+</div>
+<!-- Add ONAMET Precip Forecast Data Modal -->
+<div class="modal fade" id="onamet-modal" tabindex="-1" role="dialog" aria-labelledby="onamet-modal-label">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post" enctype="multipart/form-data">.
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="about-modal-onamet-label">Add ONAMET Precipitation Forecast Shapefile</h2>
+                </div>
+                <div class="modal-body">
+                    <div>Please upload a valid ONAMET shapefile below to update the map. (Remember that for a shapefile to be valid, you need to select at least the files with the extensions "shp", "shx", and "dbf".)</div>
+                    <br>
+                        <div class="form-group">
+                            <input name="files" type="file" class="local-file-upload" id="shapefile-upload" accept=".shp,.prj,.shx,.dbf" multiple>
+                        </div>
+                    <br>
+                    <div>Once you've selected a shapefile, click submit to upload it.</div>
+
+                </div>
+                <div class="modal-footer">
+                    <button name="submit" type="button" class="btn btn-default" id="upload-file-button" data-dismiss="modal">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <!-- Table of Contents Modal -->

@@ -3,13 +3,15 @@ from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
 from tethys_sdk.base import TethysAppBase
-
+from .app import Hydroviewer as app
+from .utilities import get_user_workspace
 
 import os
 import requests
 import json
 import numpy as np
 import netCDF4 as nc
+import shutil
 
 from osgeo import ogr
 from osgeo import osr
@@ -19,9 +21,17 @@ import datetime as dt
 import ast
 import plotly.graph_objs as go
 
+import random
+import string
+
 from .app import Hydroviewer as app
 from .helpers import *
 base_name = __package__.split('.')[-1]
+
+
+WORKSPACE = 'hispaniola_hydroviewer'
+GEOSERVER_URI = 'http://www.example.com/hispaniola_hydroviewer'
+
 
 def set_custom_setting(defaultModelName, defaultWSName):
 
@@ -37,7 +47,7 @@ def set_custom_setting(defaultModelName, defaultWSName):
     db_setting.value = defaultWSName
     db_setting.save()
         
-
+@login_required()
 def home(request):
 
     # Check if we have a default model. If we do, then redirect the user to the default model's page
@@ -160,6 +170,7 @@ def ecmwf(request):
                                    initial=json.dumps([geoserver_base_url, geoserver_workspace, region]),
                                    name='geoserver_endpoint',
                                    disabled=True)
+
 
 
     context = {
@@ -1240,3 +1251,83 @@ def forecastpercent(request):
                          'twenty': formattedtwenty}
 
         return JsonResponse(dataformatted)
+
+
+# This function retrieves the files from the browser, writes them to the user's workspace directory, and then uploads them to GeoServer.
+def ajax_add_layer(request):
+
+    return_obj = {
+        "success": "",
+        "message": None,
+        "results": {}
+    }
+
+    # -------------------- #
+    #   VERIFIES REQUEST   #
+    # -------------------- #
+
+    if not (request.is_ajax() and request.method == "POST"):
+
+        return_obj["success"] = "false"
+        return_obj["message"] = "Unable to communicate with server."
+        return_obj["results"] = {}
+
+        return JsonResponse(return_obj)
+
+    # ----------------------------- #
+    #   GETS DATA FROM JAVASCRIPT   #
+    # ----------------------------- #
+
+    file_list = request.FILES.getlist('files')
+    layer_code = str(request.POST.get('layerCode'))
+
+    user_workspace = get_user_workspace(request)
+
+    layer_dir = os.path.join(user_workspace, layer_code)
+
+    if not os.path.exists(layer_dir):
+        os.makedirs(layer_dir)
+
+    for n, uploaded_file in enumerate(file_list):
+        with open(os.path.join(layer_dir, uploaded_file.name), 'w+') as destination:
+            for chunk in file_list[n].chunks():
+                destination.write(chunk)
+
+    geoserver_engine = app.get_spatial_dataset_service(name='main_geoserver', as_engine=True)
+
+    response = geoserver_engine.list_workspaces()
+
+    if response['success']:
+        workspaces = response['result']
+
+        if WORKSPACE not in workspaces:
+            geoserver_engine.create_workspace(workspace_id=WORKSPACE, uri=GEOSERVER_URI)
+
+    store_id = WORKSPACE + ':' + layer_code
+
+    res_base = os.path.join(layer_dir, ".".join(str(file_list[0]).split(".")[:-1]))
+
+    # Deletes store before adding new store on GeoServer.
+    response2 = geoserver_engine.delete_store(
+        store_id=store_id,
+        purge=True,
+        recurse=True,
+        debug=False
+    )
+
+    response2
+
+    layer_response = geoserver_engine.create_shapefile_resource(
+        store_id=store_id,
+        shapefile_base=res_base,
+        overwrite=True
+    )
+
+    if layer_response['success'] is True:
+        return_obj["success"] = 'true'
+        return_obj["results"]["workspace"] = WORKSPACE
+        return_obj["results"]["layer_code"] = layer_code
+        return JsonResponse(return_obj)
+
+    else:
+        return JsonResponse(return_obj)

@@ -1,5 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
-from tethys_sdk.app_settings import CustomSetting
+from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting
 from tethys_sdk.permissions import Permission, PermissionGroup
 
 base_name = __package__.split('.')[-1]
@@ -13,10 +13,25 @@ class Hydroviewer(TethysAppBase):
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#000099'
-    description = 'Place a brief description of your app here.'
+    description = 'View the FFGS and Streamflow Prediction Tool, along with ONAMET data on the Dominican Republic.'
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []
+
+    def spatial_dataset_service_settings(self):
+        """
+        Spatial_dataset_service_settings method.
+        """
+        sds_settings = (
+            SpatialDatasetServiceSetting(
+                name='main_geoserver',
+                description='spatial dataset service for app to use',
+                engine=SpatialDatasetServiceSetting.GEOSERVER,
+                required=True,
+            ),
+        )
+
+        return sds_settings
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
@@ -150,6 +165,10 @@ class Hydroviewer(TethysAppBase):
                 name='forecastpercent',
                 url='forecastpercent',
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
+            UrlMap(
+                name='add-layer',
+                url='ajax-add-layer',
+                controller='{0}.controllers.ajax_add_layer'.format(base_name)),
         )
 
         return url_maps
