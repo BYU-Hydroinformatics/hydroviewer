@@ -52,7 +52,7 @@ def get_model_input(init_model_val=None):
                        name='model',
                        multiple=False,
                        options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                                ('LIS-RAPID', 'lis')],
                        initial=[init_model_val],
                        original=True)
 
