@@ -44,6 +44,9 @@
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add ONAMET Data">
       <a data-toggle="modal" data-target="#onamet-modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
   </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Upload CSV File">
+      <a data-toggle="modal" data-target="#csv-modal"><span class="glyphicon glyphicon-file"></span></a>
+  </div>
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
       <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
@@ -154,6 +157,8 @@
     <br>
     <p>Change FFGS Layer Transparency</p>
     <input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+    <div class="flex-container-row"><img id="onamet-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+
 </div>
 <div id="onamet-legend" class="col-sm-12">
     <h7><p id="onamet_title" class="hidden"><b>ONAMET Precipitation Data</b></h7></p>
@@ -193,7 +198,7 @@
                         <div align="right">
                             <img class="logos" src="{% static base_name|add:'/images/byu_logo.png' %}">
                             <img class="logos" src="{% static base_name|add:'/images/glofas_logo.png' %}">
-                            <img class="logos" src="{% static base_name|add:'/images/copernicus_logo.png' %}">
+                            <img class="logos" src="{% static base_name|add:'/images/Copernicus_logo.png' %}">
                         </div>
                     </div>
                 </div>
@@ -388,10 +393,36 @@
                         </div>
                     <br>
                     <div>Once you've selected a shapefile, click submit to upload it.</div>
-
                 </div>
                 <div class="modal-footer">
                     <button name="submit" type="button" class="btn btn-default" id="upload-file-button" data-dismiss="modal">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Upload CSV File Modal -->
+<div class="modal fade" id="csv-modal" tabindex="-1" role="dialog" aria-labelledby="csv-modal-label">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post" enctype="multipart/form-data">.
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="about-modal-csv-label">Upload a CSV File</h2>
+                </div>
+                <div class="modal-body">
+                    <div>Please upload a valid CSV file below to update the map.</div>
+                    <br>
+                        <div class="form-group">
+                            <input name="files" type="file" class="local-file-upload" id="csv-upload" accept=".csv">
+                        </div>
+                    <br>
+                    <div>Once you've selected a CSV file, click submit to upload it.</div>
+                </div>
+                <div class="modal-footer">
+                    <button name="submit" type="button" class="btn btn-default" id="upload-csv-button" data-dismiss="modal">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

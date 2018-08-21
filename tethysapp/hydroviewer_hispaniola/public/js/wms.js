@@ -1368,16 +1368,16 @@ addLayerToMap = function(layerWorkspace, layerCode) {
         opacity: 0.7
     });
 
-
-
     map.addLayer(mapLayers);
     map.renderSync();
-
+    $("#onamet-view-file-loading").addClass("hidden")
 
 };
 
 /* This function uploads the user's shapefile to the Tethys server */
 ajaxUploadShapefile = function() {
+
+    $("#onamet-view-file-loading").removeClass("hidden")
 
     var files = $('#shapefile-upload')[0].files;
 
