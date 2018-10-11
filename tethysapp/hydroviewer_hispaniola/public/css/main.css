@@ -99,6 +99,10 @@
   display: none;
 }
 
+.popover-content {
+    min-width: 180px;
+}
+
 #mytable {
     display: block;
     margin-left: auto;

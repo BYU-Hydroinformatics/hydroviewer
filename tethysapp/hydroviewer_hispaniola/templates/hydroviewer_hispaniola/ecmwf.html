@@ -38,13 +38,13 @@
   </div>
   {% endif %}
 
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add FFGS Data">
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add FFG Data">
       <a data-toggle="modal" data-target="#ffgs-modal"><span class="glyphicon glyphicon-plus"></span></a>
   </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Add ONAMET Data">
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Upload Shapefile">
       <a data-toggle="modal" data-target="#onamet-modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
   </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Upload CSV File">
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Update Station Information">
       <a data-toggle="modal" data-target="#csv-modal"><span class="glyphicon glyphicon-file"></span></a>
   </div>
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
@@ -155,17 +155,22 @@
         No Data Available
     </div>
     <br>
-    <p>Change FFGS Layer Transparency</p>
+    <p>Change FFG Layer Transparency</p>
     <input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
     <div class="flex-container-row"><img id="onamet-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
 
 </div>
 <div id="onamet-legend" class="col-sm-12">
-    <h7><p id="onamet_title" class="hidden"><b>ONAMET Precipitation Data</b></h7></p>
-    <p id="onamet_transparency" class="hidden">Change ONAMET Lyr Transparency</p>
+    <h7><p id="onamet_title" class="hidden"><b>Uploaded Shapefile Data</b></h7></p>
+    <p id="onamet_transparency" class="hidden">Change Shapefile Lyr Transparency</p>
     <input id="ONAMETslider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="mapLayers.setOpacity(this.value)">
 </div>
 
+<div id="stations-legend" class="col-sm-12">
+    <h7><p id="stations_title" class="hidden"><b>Stations</b></h7></p>
+    <p id="stations_transparency" class="hidden">Change Stations Transparency</p>
+    <input id="stations_slider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="StationsLayerVectorLayer.setOpacity(this.value)">
+</div>
 
 <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
     <div id="wmslegend0" hidden>
@@ -375,7 +380,7 @@
         </div>
     </div>
 </div>
-<!-- Add ONAMET Precip Forecast Data Modal -->
+<!-- Add Shapefile Data Modal -->
 <div class="modal fade" id="onamet-modal" tabindex="-1" role="dialog" aria-labelledby="onamet-modal-label">
     <div class="modal-dialog" role="document">
         <form action="" method="post" enctype="multipart/form-data">.
@@ -383,10 +388,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h2 class="modal-title" id="about-modal-onamet-label">Add ONAMET Precipitation Forecast Shapefile</h2>
+                    <h2 class="modal-title" id="about-modal-onamet-label">Add Shapefile</h2>
                 </div>
                 <div class="modal-body">
-                    <div>Please upload a valid ONAMET shapefile below to update the map. (Remember that for a shapefile to be valid, you need to select at least the files with the extensions "shp", "shx", and "dbf".)</div>
+                    <div>Please upload a valid shapefile below to update the map. (Remember that for a shapefile to be valid, you need to select at least the files with the extensions "shp", "shx", and "dbf".)</div>
                     <br>
                         <div class="form-group">
                             <input name="files" type="file" class="local-file-upload" id="shapefile-upload" accept=".shp,.prj,.shx,.dbf" multiple>
@@ -413,10 +418,10 @@
                     <h2 class="modal-title" id="about-modal-csv-label">Upload a CSV File</h2>
                 </div>
                 <div class="modal-body">
-                    <div>Please upload a valid CSV file below to update the map.</div>
+                    <div>Please upload a valid CSV file below to update the precipitation values for the stations on the map.</div>
                     <br>
                         <div class="form-group">
-                            <input name="files" type="file" class="local-file-upload" id="csv-upload" accept=".csv">
+                            <input name="csv-file" type="file" class="local-file-upload" id="csv-upload" accept=".csv">
                         </div>
                     <br>
                     <div>Once you've selected a CSV file, click submit to upload it.</div>

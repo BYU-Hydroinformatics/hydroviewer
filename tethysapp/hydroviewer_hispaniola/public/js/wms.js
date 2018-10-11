@@ -17,7 +17,8 @@ var default_extent,
     wms_layers,
     mapLayers = {},
     mapLayers,
-    layerCode;
+    layerCode,
+    out;
 
 var $loading = $("#view-file-loading")
 var m_downloaded_historical_streamflow = false
@@ -286,6 +287,10 @@ function view_watershed() {
         })
         wmsLayerCatchment.setZIndex(0)
         map.addLayer(wmsLayerCatchment)
+
+
+
+
 
         var layerName =
             workspace + ":" + watershed + "-" + subbasin + "-drainage_line"
@@ -1354,6 +1359,224 @@ function updateFFGS() {
 }
 
 
+updateCSV = function() {
+
+    $("#onamet-view-file-loading").removeClass("hidden")
+
+    var files = $("#csv-upload")[0].files
+
+    /*if (!(validateCSV(files) === 'VALID')) {
+        alert('Please upload a valid CSV file.')
+        $("#onamet-view-file-loading").addClass("hidden")
+    };*/
+
+    if (files.length === 0) {
+        alert("Please select a file to upload.")
+        $("#onamet-view-file-loading").addClass("hidden")
+    } else {
+        data = prepareFilesForAjax(files)
+        $.ajax({
+            url: "/apps/hydroviewer-hispaniola/update-csv/",
+            type: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            data: data,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            error: function(ignore, textStatus) {
+                console.log(textStatus)
+                location.reload()
+                $("#onamet-view-file-loading").addClass("hidden")
+            },
+            success: function(response) {
+                if (response["success"] === "false") {
+                    alert("Uploaded file is not valid.")
+                    $("#onamet-view-file-loading").addClass("hidden")
+                } else {
+                    console.log("SUCCESS")
+                    //location.reload()
+
+                    var stationgeojson = response['stationgeojson']
+                    console.log("hey there, the geojson object returned")
+                    console.log(stationgeojson)
+
+
+                    var image = new ol.style.Circle({
+                        radius: 4,
+                        fill: new ol.style.Fill({
+                            color: 'rgba(255,0,0,0.8)'
+                        }),
+                        stroke: new ol.style.Stroke({ color: 'red', width: 1 })
+                    });
+                    var styles = {
+                        'Point': new ol.style.Style({
+                            image: image
+                        }),
+                        'MultiPoint': new ol.style.Style({
+                            image: image
+                        }),
+                    };
+                    var styleFunction = function (feature) {
+                        return styles[feature.getGeometry().getType()];
+                    };
+
+                    var StationsLayerVectorSource = new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(stationgeojson)
+                    });
+
+                    StationsLayerVectorLayer = new ol.layer.Vector({
+                        source: StationsLayerVectorSource,
+                        style: styleFunction
+                    });
+
+                    // Remove existing Stations Layer
+                    if (StationsLayerVectorLayer) {
+                        map.removeLayer(StationsLayerVectorLayer)
+                    };
+
+                    map.addLayer(StationsLayerVectorLayer);
+
+                    console.log("GeoJSON added to map.")
+
+
+
+
+
+                    // Making stations clickable with a popup.
+                    var element = document.getElementById('popup');
+
+                    var popup = new ol.Overlay({
+                        element: element,
+                        positioning: 'bottom-center',
+                        stopEvent: false
+                    });
+                    map.addOverlay(popup);
+
+                    // Display popup on click
+                    map.on('singleclick', function(evt) {
+                        $(element).popover('destroy');
+                        var feature = map.forEachFeatureAtPixel(evt.pixel,
+                            function(feature, layer) {
+                                return feature;
+                        });
+                        if (feature) {
+                            console.log("There's a feature")
+                            var geometry = feature.getGeometry();
+                            var coord = geometry.getCoordinates();
+
+                            var content = '<h3>' + feature.get('CODIGO') + '</h3>';
+                            content += '<h5>' + feature.get('NOMBRE') + '</h5>';
+                            content += '<h5>' + feature.get('REGION') + '</h5>';
+                            content += '<h5>' + '<p>Location:</p>' + coord + '</h5>';
+
+                            console.log(coord)
+                            console.log(content)
+
+                            setTimeout(function() {
+
+                                popup.setPosition(coord);
+
+                                $(element).popover({
+                                    placement: 'top',
+                                    html: true,
+                                    content: content
+                                });
+                                $(element).popover('show');
+                                console.log("popup in 1 second?")
+                            }, 1000);
+
+                        } else {
+                            $(element).popover('destroy');
+                        }
+                    });
+
+
+
+/*
+                    // display popup on click
+                    map.on("singleclick", function(evt) {
+                        $(element).popover("destroy")
+
+                        var feature = map.forEachFeatureAtPixel(
+                            evt.pixel,
+                            (feature, layer) => feature
+                        )
+                        if (feature) {console.log("Yes Feature")};
+
+                        if (feature) {
+                            var geometry = feature.getGeometry()
+                            var coord = geometry.getCoordinates()
+
+                            station_code = feature.get("CODIGO"),
+                            station_name = feature.get("NOMBRE"),
+                            Z_elevation = feature.get("Z"),
+                            northing = feature.get("X"),
+                            easting = feature.get("Y"),
+                            network = feature.get("network"),
+                            hs_url = encodeURIComponent(feature.get("hs_url")),
+                            details_html =
+                                `${apiServer}/details/?sitename=${encodeURIComponent(
+                                    site_name
+                                )}` +
+                                `&sitecode=${encodeURIComponent(
+                                    site_code
+                                )}&network=${network}&hsurl=${hs_url}&hidenav=true`
+                        //passing the information through the url
+
+
+                            popupContent = `<table border="1"><tbody><tr><th>Station Code</th><th>Station Name</th><th>Details</th></tr>
+                        <tr><td>${station_code}</td><td>${station_name}</td>
+                        <td><button type="button" class="mod_link btn-primary" >Site Details</button>
+                        </td></tr>`
+
+                            setTimeout(function() {
+                                popup.setPosition(coord)
+                                $(element).popover({
+                                    placement: "top",
+                                    html: true,
+                                    content: popupContent
+                                })
+                                $(element).popover("show")
+                                $(".mod_link").on("click", function() {
+                                    var $loading = $("#view-file-loading")
+                                    $("#iframe-container").addClass("hidden")
+                                    $loading.removeClass("hidden")
+                                    var details_url = $(this).data("html")
+                                    $("#iframe-container")
+                                        .empty()
+                                        .append(
+                                            `<iframe id="iframe-details-viewer" src="${details_url}" allowfullscreen></iframe>`
+                                        )
+                                    $("#modalViewDetails").modal("show")
+                                    $("#iframe-details-viewer").one("load", function() {
+                                        $loading.addClass("hidden")
+                                        $("#iframe-container").removeClass("hidden")
+                                        $loading.addClass("hidden")
+                                    })
+                                })
+                            }, 200)
+                        } else {
+                            $(element).popover("destroy")
+                            popup.setPosition(undefined)
+                        };
+
+                    });
+*/
+
+
+
+
+                    $("#stations_title").removeClass("hidden")
+                    $("#stations_transparency").removeClass("hidden")
+                    $("#stations_slider").removeClass("hidden")
+                    $("#onamet-view-file-loading").addClass("hidden")
+                }
+            }
+        })
+    }
+}
+
+
 /* This function adds the layer to the map after it's been uploaded to geoserver */
 addLayerToMap = function(layerWorkspace, layerCode) {
     var geoserverUrl = $('#geoserver-endpoint').text() + '/wms'
@@ -1371,6 +1594,7 @@ addLayerToMap = function(layerWorkspace, layerCode) {
     map.addLayer(mapLayers);
     map.renderSync();
     $("#onamet-view-file-loading").addClass("hidden")
+    console.log("Shapefile layer added to map")
 
 };
 
@@ -1383,6 +1607,7 @@ ajaxUploadShapefile = function() {
 
     if (!(validateShapefile(files) === 'VALID')) {
         alert('Please upload a valid shapefile.')
+        $("#onamet-view-file-loading").addClass("hidden")
     };
 
     var layerCode = generateLayerCode;
@@ -1409,10 +1634,12 @@ ajaxUploadShapefile = function() {
         contentType: false,
         error: function () {
             alert('File upload error.')
+            $("#onamet-view-file-loading").addClass("hidden")
         },
         success: function (response) {
             if (response['success'] === 'false') {
                 alert('File upload error.')
+
             } else {
                 var layerWorkspace = response['results']['workspace'];
                 var layerCode = response['results']['layer_code'];
@@ -1480,6 +1707,55 @@ validateShapefile = function(files) {
 
 };
 
+
+/* This function performs some basic CSV file validation.
+   It only checks to make sure the file extensions are correct, it doesn't check the file contents. */
+validateCSV = function(files) {
+
+    if (files.length === 0) {
+        return 'INVALID';
+    };
+
+    var fileNames = [];
+    var fileTypes = [];
+    var nameCounts = {};
+    var typeCounts = {};
+
+    Object.keys(files).forEach(function (file){
+        fileNames.push(files[file].name.split('.').slice(0,-1).join('.'));
+        fileTypes.push(files[file].name.split('.').pop());
+    });
+
+    for (var i = 0; i < fileNames.length; i++) {
+        nameCounts[fileNames[i]] = 1 + (nameCounts[fileNames[i]] || 0);
+    };
+
+    for (var i = 0; i < fileTypes.length; i++) {
+        typeCounts[fileTypes[i]] = 1 + (typeCounts[fileTypes[i]] || 0);
+    };
+
+    var reqFiles = ['csv'].every(function(val) {
+        return fileTypes.indexOf(val) !== -1;
+    });
+
+    if (fileTypes.length != Object.keys(typeCounts).length) {
+        return 'INVALID';
+    };
+
+    if (Object.keys(nameCounts).length != 1) {
+        return 'INVALID';
+    };
+
+    if (reqFiles === false) {
+        return 'INVALID';
+    };
+
+    return 'VALID'
+
+};
+
+
+
 /* This function creates a cookie for ajax csrf protection. */
 getCookies = function(name) {
     var cookieValue = null;
@@ -1506,5 +1782,13 @@ generateLayerCode = function() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }; */
 
+
 /* This is a listener that fires the ajaxUploadShapefile function when the submit button is clicked. */
 $(document).on('click', '#upload-file-button', ajaxUploadShapefile);
+$(document).on('click', '#upload-csv-button', updateCSV);
+
+
+//$(document).ajaxSuccess(function() {
+//    alert("AJAX request successfully completed");
+//});
+

@@ -1,5 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
-from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting
+from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting, PersistentStoreDatabaseSetting
 from tethys_sdk.permissions import Permission, PermissionGroup
 
 base_name = __package__.split('.')[-1]
@@ -32,6 +32,21 @@ class Hydroviewer(TethysAppBase):
         )
 
         return sds_settings
+
+    def persistent_store_setting(self):
+        """
+        Define Persistent Store Settings.
+        """
+        ps_settings = (
+            PersistentStoreDatabaseSetting(
+                name='primary_db',
+                description='primary database',
+                initializer='hydroviewer_hispaniola.model.init_primary_db',
+                required=False,
+            ),
+        )
+
+        return ps_settings
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
@@ -169,6 +184,10 @@ class Hydroviewer(TethysAppBase):
                 name='add-layer',
                 url='ajax-add-layer',
                 controller='{0}.controllers.ajax_add_layer'.format(base_name)),
+            UrlMap(
+                name='update_csv',
+                url='update-csv',
+                controller='{0}.controllers_ajax.update_csv'.format(base_name)),
         )
 
         return url_maps
