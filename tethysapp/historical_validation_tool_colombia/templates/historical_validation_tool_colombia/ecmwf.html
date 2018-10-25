@@ -1,0 +1,464 @@
+{% extends base_name|add:"/base.html" %}
+{% load staticfiles %}
+{% load tethys_gizmos %}
+
+{% block import_gizmos %}
+    {% import_gizmo_dependency plotly_view %}
+{% endblock %}
+
+{% block app_content %}
+  <div id="map" class="map">
+      <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
+          <div id="wmslegend0" hidden>
+             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=AccRainEGE&amp;format=image/png&amp;STYLE=default"/>
+          </div>
+          <div id="wmslegend1" hidden>
+             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt50&amp;format=image/png&amp;STYLE=default"/>
+          </div>
+          <div id="wmslegend2" hidden>
+             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt150&amp;format=image/png&amp;STYLE=default"/>
+          </div>
+          <div id="wmslegend3" hidden>
+             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt300&amp;format=image/png&amp;STYLE=default"/>
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
+              </svg>
+              Streams
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
+              </svg>
+              20-Year Return Period
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
+              </svg>
+              10-Year Return Period
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
+              </svg>
+              2-Year Return Period
+          </div>
+      </div>
+  </div>
+  <img id="featureLoader" style="display: none; position:fixed; z-index: 100; left : 0; bottom : 0; right : 0; top : 0; margin:auto;" src="{% static base_name|add:'/images/loader2.gif' %}">
+{% endblock %}
+
+{% block header_buttons %}
+  {% if zoom_info %}
+  <div class="hidden" style="margin-right: 15px;">
+    {% gizmo text_input zoom_info %}
+  </div>
+  {% endif %}
+  {% if geoserver_endpoint %}
+  <div class="hidden" style="margin-right: 15px;">
+    {% gizmo text_input geoserver_endpoint %}
+  </div>
+  {% endif %}
+  {% if model_input %}
+    <div id="modelSelect" style="margin-right: 15px;">
+      {% gizmo select_input model_input %}
+    </div>
+  {% endif %}
+  {% if watershed_select %}
+    <div id="watershedSelect" style="margin-right: 15px;">
+      {% gizmo select_input watershed_select %}
+    </div>
+  {% endif %}
+
+  {% if defaultUpdateButton %}
+  <div id="defaultModelContainer" style="margin-right: 15px;">
+    {% gizmo defaultUpdateButton %}
+  </div>
+  {% endif %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
+    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
+  </div>
+
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
+    <a data-toggle="modal" data-target="#toc_modal"><span class="glyphicon glyphicon-list-alt"></span></a>
+  </div>
+
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
+    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block after_app_content %}
+<!----Observed Data ----->
+<div class="modal fade" id="obsgraph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div class="row">
+          <div id="station-info" class="col-md-8"></div>
+          <div class="col-md-4">
+            <div align="right">
+              <img class="obslogos" src="{% static base_name|add:'/images/byu_logo.png' %}">
+              <img class="obslogos" src="{% static base_name|add:'/images/my-icon.png' %}">
+            </div>
+          </div>
+        <div id="interaction"></div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a id="observedQ_tab_link" href="#observedQ" aria-controls="observedQ" role="tab" data-toggle="tab">Observed Discharge</a></li>
+          <li role="presentation"><a id="simulatedQ_tab_link" href="#simulatedQ" aria-controls="simulatedQ" role="tab" data-toggle="tab">Simulated Discharge</a></li>
+          <li role="presentation"><a id="hydrographs_tab_link" href="#hydrographs" aria-controls="hydrographs" role="tab" data-toggle="tab">Hydrographs</a></li>
+          <li role="presentation"><a id="dailyAverages_tab_link" href="#dailyAverages" aria-controls="dailyAverages" role="tab" data-toggle="tab">Daily Averages</a></li>
+          <li role="presentation"><a id="scatterPlot_tab_link" href="#scatterPlot" aria-controls="scatterPlot" role="tab" data-toggle="tab">Scatter Plot</a></li>
+          <li role="presentation"><a id="scatterPlotLogScale_tab_link" href="#scatterPlotLogScale" aria-controls="scatterPlotLogScale" role="tab" data-toggle="tab">Scatter Plot Log Scale</a></li>
+          <li role="presentation"><a id="volumeAnalysis_tab_link" href="#volumeAnalysis" aria-controls="volumeAnalysis" role="tab" data-toggle="tab">Volume Analysis</a></li>
+          <li role="presentation"><a id="metricsReport_tab_link" href="#metricsReport" aria-controls="metricsReport" role="tab" data-toggle="tab">Metrics Report</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="observedQ">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="observed-loading-Q" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="observed-chart-Q"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="simulatedQ">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="simulated-loading-Q" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="simulated-chart-Q"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="hydrographs">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="hydrographs-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="hydrographs-chart"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="dailyAverages">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="dailyAverages-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="dailyAverages-chart"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="scatterPlot">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="scatterPlot-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="scatterPlot-chart"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="scatterPlotLogScale">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="scatterPlotLogScale-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="scatterPlotLogScale-chart"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="volumeAnalysis">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <!--<h2>
+                  Volume
+                  <span style="font-size: 15px;" class="glyphicon glyphicon-info-sign icon_info"
+                        title="Calculate the volume of the simulated and observed hydrographs and compare them.">
+                  </span>
+                </h2>-->
+                <!--<button class="btn btn-success" id="make_volume_table">Compare Volumes</button>-->
+                <br>
+                <div class="metric-table" id="volume_table_div" style="display:none">
+                  <div id="volume_table"><!-- The table or errors go here --></div>
+                </div>
+                <div class="flex-container-row"><img id="volumeAnalysis-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="volumeAnalysis-chart"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="metricsReport">
+            <div class="panel panel-default">
+              <div class="panel-body">
+
+                <h3>Select the Metrics to Include in the Report:</h3>
+                <div id="metric_select_error"></div>
+                {# Displaying all of the metrics for the user to select #}
+                <select id="metric_select2" name="metrics" style="width: 100%" multiple="multiple">
+                  {% for name_abbr in metric_loop_list %}
+                    <option value="{{ name_abbr.1 }}">{{ name_abbr.0 }}</option>
+                  {% endfor %}
+                </select>
+                <br>
+                <h4>
+                  Optional Parameters
+                  <span style="font-size: 15px;" class="glyphicon glyphicon-info-sign icon_info"
+                        title="Optional parameter input boxes will appear here if a metric with optional parameters is selected.">
+                  </span>
+                </h4>
+
+                <div class="form-row" id="mase_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="MASE_form">
+                    <label for="mase_m">Mean Absolute Squared M Value</label>
+                    <input type="number" class="form-control" id="mase_m" name="mase_m" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="dmod_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="d_mod_form">
+                    <label for="dmod_j">Modified Index of Agreement J Value</label>
+                    <input type="number" class="form-control" id="dmod_j" name="dmod_j" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="nse_mod_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="NSE_mod_form">
+                    <label for="nse_mod_j">Modified Nash Sutcliffe J Value</label>
+                    <input type="number" class="form-control" id="nse_mod_j" name="nse_mod_j" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="lm_eff_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="lm_eff_form">
+                    <label for="lm_x_bar">Legate-McCabe Efficiency x-bar Value</label>
+                    <input type="number" class="form-control" id="lm_x_bar" name="lm_x_bar" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="mean_h6_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="mean_H6_form">
+                    <label for="h6_k_MHE">Mean H6 Error K Value</label>
+                    <input type="number" class="form-control" id="h6_k_MHE" name="h6_k_MHE" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="mean_abs_H6_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="mean_abs_H6_form">
+                    <label for="h6_k_AHE">Mean Absolute H6 Error K Value</label>
+                    <input type="number" class="form-control" id="h6_k_AHE" name="h6_k_AHE" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="rms_H6_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="rms_H6_form">
+                    <label for="h6_k_RMSHE">Root Mean Square H6 Error K Value</label>
+                    <input type="number" class="form-control" id="h6_k_RMSHE" name="h6_k_RMSHE" value=1>
+                  </div>
+                </div>
+
+                <div class="form-row" id="d1_p_param_div" style="display: none">
+                  <div class="form-group col-md-12" id="d1_p_form">
+                    <label for="d1_p_x_bar">Legate-McCabe Index of Agreement x-bar Value</label>
+                    <input type="number" class="form-control" id="d1_p_x_bar" name="d1_p_x_bar" value=1>
+                  </div>
+                </div>
+
+                <br><br>
+
+                <button type="button" class="btn btn-success" id="make-table">Make Report</button><br><br>
+
+                <div class="metric-table" id="metric-table" style="display:none">
+                  <div id="table">{# The table of errors go here #}</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="info" class="hidden"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart Modal -->
+<div class="modal fade" id="graph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div class="row">
+          <div id="watershed-info" class="col-md-8"></div>
+          <div class="col-md-4">
+            <div align="right">
+              <img class="logos" src="{% static base_name|add:'/images/byu_logo.png' %}">
+              <img class="logos" src="{% static base_name|add:'/images/glofas_logo.png' %}">
+              <img class="logos" src="{% static base_name|add:'/images/copernicus_logo.png' %}">
+            </div>
+          </div>
+        </div>
+        <div id="interaction"></div>
+      </div>
+      <div class="modal-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-toggle="tab">Forecast</a></li>
+          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical</a></li>
+          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Flow-Duration</a></li>
+          <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="forecast_tab">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
+                  <select id="datesSelect" class="form-control"></select>
+                </div>
+                <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+                <div id="long-term-chart"></div>
+                <table id="mytable">
+                  <tbody id="tbody">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div> <!-- /.tab-pane -->
+          <div role="tabpanel" class="tab-pane" id="historical">
+            <div class="panel panel-default">
+              <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id="historical-chart" class="panel-body"></div>
+            </div>
+          </div><!-- /.tab-pane -->
+          <div role="tabpanel" class="tab-pane" id="flow_duration">
+            <div class="panel panel-default">
+              <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id='fdc-chart' class="panel-body"></div>
+            </div>
+          </div><!-- /.tab-pane -->
+          <div role="tabpanel" class="tab-pane" id="download">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <h6>Download Forecast Data</h6>
+                <div id="download_forecast" class="btn-group hidden long-term-select" role="group">
+                  <a class="btn btn-success" role="button" id="submit-download-forecast">
+                    <span class="glyphicon glyphicon-play"></span> Download Forecast
+                  </a>
+                </div>
+                <h6>Download ERA Interim Data</h6>
+                <div id="download_interim" class="btn-group hidden" role="group">
+                  <a class="btn btn-info" role="button" id="submit-download-interim-csv">
+                    <span class="glyphicon glyphicon-play"></span> Download Interim Data
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="info" class="hidden"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="about-modal-label">About HydroViewer</h2>
+      </div>
+      <div class="modal-body">
+        <p id="overview"><b>
+          This web application was created to allow users to visualize hydrologic model results
+          from different sources. It currently displays GloFAS and LDAS model results.
+        </b></p>
+        <h3>How it works</h3>
+        <h6>1. Click on Get Started.</h6>
+        <h6>2. Select a hydrologic model and a corresponding watershed of interest.</h6>
+        <h6>3. Once you click select a watershed, the map will automatically zoom to that specific watershed.</h6>
+        <h6>4. Click on any of the stream reaches within the watershed.</h6>
+        <h6>6. A hydrograph for the selected reach with the most current streamflow result will be displayed
+          in the graph area next to the map.</h6>
+        <h6>7. If previous dates are available, the Select Date dropdown will be displayed on top of the graph.
+          Select any of the available dates to display the forecast for that specific date in the graph.</h6>
+        <h6>8. Click the close button to exit the application.</h6>
+
+        <h5>Additional Resources:</h5>
+        <p><a href="https://www.ecmwf.int/en/about/what-we-do/global-forecasts" target="_blank">ECMWF Global Forecasts</a></p>
+        <p><a href="http://rapid-hub.org/" target="_blank">RAPID River Routing Model</a></p>
+        <p><a href="https://streamflow-prediction-tool.readthedocs.io/en/latest/" target="_blank">StreamFlow Prediction Tool</a></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table of Contents Modal -->
+<div id="toc_modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Table of Contents</h4>
+      </div>
+      <div class="modal-body tree">
+        <!-- List group -->
+        <ul class="list-group">
+          <li class="list-group-item">
+            Accumulated Rainfall
+            <div class="pull-right">
+              <input id="wmsToggle0" name="AccRainEGE" type="checkbox" onclick="toggleAcc(0);"/>
+              <label for="AccRainEGE" class="label-default"></label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            Rainfall Probability > 50mm
+            <div class="pull-right">
+              <input id="wmsToggle1" name="EGE_probRgt50" type="checkbox" onclick="toggleAcc(1);"/>
+              <label for="EGE_probRgt50" class="label-default"></label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            Rainfall Probability > 150mm
+            <div class="pull-right">
+              <input id="wmsToggle2" name="EGE_probRgt150" type="checkbox" onclick="toggleAcc(2);"/>
+              <label for="EGE_probRgt150" class="label-default"></label>
+            </div>
+          </li>
+          <li class="list-group-item">
+            Rainfall Probability > 300mm
+            <div class="pull-right">
+              <input id="wmsToggle3" name="EGE_probRgt300" type="checkbox" onclick="toggleAcc(3);"/>
+              <label for="EGE_probRgt300" class="label-default"></label>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}
+
+{% block app_actions %}
+
+{% endblock %}

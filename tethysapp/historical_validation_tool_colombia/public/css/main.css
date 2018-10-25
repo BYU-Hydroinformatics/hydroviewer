@@ -1,0 +1,224 @@
+#headerCustomButtons {
+    margin-right: 15px;
+    margin-left: 15px;
+    width: 800px
+}
+#app-content-wrapper #app-content{
+    height: 100%;
+    /*padding-top: 60px;*/
+    /*padding-bottom: 50px;*/
+}
+
+#inner-app-content{
+    padding: 0;
+}
+
+#app-actions {
+    display: none;
+}
+#map {
+    height: 100%;
+}
+
+#graph {
+    height: 100%;
+}
+
+#obsgraph {
+    height: 100%;
+}
+.form-group {
+    margin-bottom: 0;
+}
+
+.chart {
+    min-width: 320px;
+    max-width: 800px;
+    height: 220px;
+    margin: 0 auto;
+}
+.map-view-legend {
+    bottom: 50px;
+    /*right: 20px;*/
+    width: 150px;
+    max-height: 90%;
+    overflow-y: auto;
+    margin: 5px;
+    color:white;
+    background: #286090;
+    border: 1px #ddd solid;
+    z-index: 999;
+}
+.flex-container-row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#overview {
+    font-size: 15pt;
+    padding: 0 20px 0 20px;
+}
+#logos {
+  padding: 5px 0;
+  white-space: nowrap;
+  width: 100%;
+  display: table;
+}
+
+.logo-image {
+  vertical-align: middle;
+  display: table-cell;
+  padding: 0 2px;
+}
+
+.logo-image img {
+  max-width: 100%;
+}
+#about .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+#about .modal-body {
+  height: 100%;
+  border-radius: 0;
+}
+#graph .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+
+#obsgraph .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+
+.logos {
+    width: 20%;
+    padding: 0 5px 0 5px;
+}
+
+#graph .modal-body {
+  height: 100%;
+  border-radius: 0;
+}
+
+#obsgraph .modal-body {
+  height: 100%;
+  border-radius: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+#mytable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#mytable td, #mytable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#mytable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #585757;
+    color: white;
+}
+
+.yellowzero {
+    background-color: #FFFFFF;
+}
+
+.yellowtwenty {
+    background-color: #FEFFCC;
+}
+
+.yellowfourty {
+    background-color: #FAFD96;
+}
+
+.yellowsixty {
+    background-color: #FAFE66;
+}
+
+.yelloweighty {
+    background-color: #FAFF34;
+}
+
+.yellowhundred {
+    background-color: #F9FF00;
+}
+
+.redzero {
+    background-color: #FFFFFF;
+}
+
+.redtwenty {
+    background-color: #FED4D4;
+}
+
+.redfourty {
+    background-color: #FFB0B0;
+}
+
+.redsixty {
+    background-color: #FF6D6D;
+}
+
+.redeighty {
+    background-color: #FF3535;
+}
+
+.redhundred {
+    background-color: #FF0000;
+}
+
+.purplezero {
+    background-color: #FFFFFF;
+}
+
+.purpletwenty {
+    background-color: #F1D2FF;
+}
+
+.purplefourty {
+    background-color: #E09FFE;
+}
+
+.purplesixty {
+    background-color: #D371FF;
+}
+
+.purpleeighty {
+    background-color: #C037FD;
+}
+
+.purplehundred {
+    background-color: #B000FF;
+}
+.obslogos {
+    width: 40%;
+    padding: 0 5px 0 5px;
+}
+.datepicker{
+    width: 80%;
+    padding: 0 5px 0 5px;
+}
+#startdatepicker{
+    align-items:center;
+    float: left;
+}
+#enddatepicker{
+    align-items:center;
+    float: right;
+}
+
