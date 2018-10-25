@@ -269,7 +269,7 @@ function view_watershed() {
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                params: {'LAYERS':"fews_stations"},
+                params: {'LAYERS':"FEWS_Stations_N"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             })
@@ -346,7 +346,19 @@ function view_watershed() {
                     })
                 });
 
+                wmsLayer2 = new ol.layer.Image({
+                	source: new ol.source.ImageWMS({
+                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		params: {'LAYERS':"FEWS_Stations_N"},
+                		serverType: 'geoserver',
+                		crossOrigin: 'Anonymous'
+                	})
+                });
+
+                feature_layer2 = wmsLayer2;
+
                 map.addLayer(wmsLayer);
+                map.addLayer(wmsLayer2);
 
                 feature_layer = wmsLayer;
 
@@ -396,7 +408,19 @@ function view_watershed() {
                     })
                 });
 
+                wmsLayer2 = new ol.layer.Image({
+                	source: new ol.source.ImageWMS({
+                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		params: {'LAYERS':"FEWS_Stations_N"},
+                		serverType: 'geoserver',
+                		crossOrigin: 'Anonymous'
+                	})
+                });
+
+                feature_layer2 = wmsLayer2;
+
                 map.addLayer(wmsLayer);
+                map.addLayer(wmsLayer2);
 
                 feature_layer = wmsLayer;
 
@@ -799,7 +823,7 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 function get_discharge_info (stationcode, stationname, startdateobs, enddateobs) {
     $('#observed-loading-Q').removeClass('hidden');
     $.ajax({
-        url: 'ecmwf-rapid/get-discharge-data',
+        url: 'get-discharge-data',
         type: 'GET',
         data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
@@ -829,14 +853,14 @@ function get_discharge_info (stationcode, stationname, startdateobs, enddateobs)
 
                 $('#submit-download-observed-discharge').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-observed-discharge-csv?' + jQuery.param(params)
+                    href: 'get-observed-discharge-csv?' + jQuery.param(params)
                 });
 
                 $('#download_observed_discharge').removeClass('hidden');
 
                 $('#submit-download-sensor-discharge').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-sensor-discharge-csv?' + jQuery.param(params)
+                    href: 'get-sensor-discharge-csv?' + jQuery.param(params)
                 });
 
                 $('#download_sensor_discharge').removeClass('hidden');
@@ -858,7 +882,7 @@ function get_discharge_info (stationcode, stationname, startdateobs, enddateobs)
 function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs) {
     $('#observed-loading-WL').removeClass('hidden');
     $.ajax({
-        url: 'ecmwf-rapid/get-waterlevel-data',
+        url: 'get-waterlevel-data',
         type: 'GET',
         data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
         error: function () {
@@ -888,14 +912,14 @@ function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs
 
                 $('#submit-download-observed-waterlevel').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-observed-waterlevel-csv?' + jQuery.param(params)
+                    href: 'get-observed-waterlevel-csv?' + jQuery.param(params)
                 });
 
                 $('#download_observed_waterlevel').removeClass('hidden');
 
                 $('#submit-download-sensor-waterlevel').attr({
                     target: '_blank',
-                    href: 'ecmwf-rapid/get-sensor-waterlevel-csv?' + jQuery.param(params)
+                    href: 'get-sensor-waterlevel-csv?' + jQuery.param(params)
                 });
 
                 $('#download_sensor_waterlevel').removeClass('hidden');
@@ -931,14 +955,14 @@ function map_events() {
             });
         } else if (model === 'LIS-RAPID') {
             var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-                if (layer == feature_layer) {
+                if (layer == feature_layer || layer == feature_layer2) {
                     current_feature = feature;
                     return true;
                 }
             });
         } else if (model === 'HIWAT-RAPID') {
             var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-                if (layer == feature_layer) {
+                if (layer == feature_layer || layer == feature_layer2) {
                     current_feature = feature;
                     return true;
                 }
@@ -959,7 +983,7 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (current_layer["H"]["source"]["i"]["LAYERS"] == "fews_stations") {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "FEWS_Stations_N") {
 
                         $("#obsgraph").modal('show');
                         $('#observed-chart-Q').addClass('hidden');
@@ -1283,8 +1307,8 @@ $(function() {
         var enddateobs = $('#enddateobs').val();
         $('#observed-loading-Q').removeClass('hidden');
         $('#observed-loading-WL').removeClass('hidden');
-        get_discharge_info_info (stationcode, stationname, startdateobs, enddateobs);
-        get_waterlevel_info_info (stationcode, stationname, startdateobs, enddateobs);
+        get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
+        get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
     });
     $('#enddateobs').change(function() { //when date is changed
         var startdateobs = $('#startdateobs').val();

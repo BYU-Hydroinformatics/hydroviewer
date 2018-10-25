@@ -79,7 +79,6 @@ def home_standard(request):
 
 def ecmwf(request):
 
-
     #Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
     
@@ -1515,20 +1514,22 @@ def get_discharge_data(request):
         observed_Q = go.Scatter(
             x=datesObservedDischarge,
             y=observedDischarge,
+            name='Observed'
         )
 
         sensor_Q = go.Scatter(
             x=datesSensorDischarge,
             y=sensorDischarge,
+            name='Sensor'
         )
 
         layout = go.Layout(title='Observed Discharge',
                            xaxis=dict(
                                title='Dates',),
                            yaxis=dict(
-                               title='Discharge (m3/s)',
+                               title='Discharge (m<sup>3</sup>/s)',
                                autorange=True),
-                           showlegend=False)
+                           showlegend=True)
 
         chart_obj = PlotlyView(
             go.Figure(data=[observed_Q, sensor_Q],
@@ -1588,7 +1589,7 @@ def get_observed_discharge_csv(request):
 		pairs = [list(a) for a in zip(datesObservedDischarge, observedDischarge)]
 
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+		response['Content-Disposition'] = 'attachment; filename=observed_discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
 
 		writer = csv_writer(response)
 		writer.writerow(['datetime', 'flow (m3/s)'])
@@ -1644,7 +1645,7 @@ def get_sensor_discharge_csv(request):
 		pairs = [list(a) for a in zip(datesSensorDischarge, sensorDischarge)]
 
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+		response['Content-Disposition'] = 'attachment; filename=sensor_discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
 
 		writer = csv_writer(response)
 		writer.writerow(['datetime', 'flow (m3/s)'])
@@ -1722,11 +1723,13 @@ def get_waterlevel_data(request):
         observed_WL = go.Scatter(
             x=datesObservedWaterLevel,
             y=observedWaterLevel,
+            name='Observed'
         )
 
         sensor_WL = go.Scatter(
             x=datesSensorWaterLevel,
             y=sensorWaterLevel,
+            name='Sensor'
         )
 
         layout = go.Layout(title='Observed Water Level',
@@ -1735,7 +1738,7 @@ def get_waterlevel_data(request):
                            yaxis=dict(
                                title='Water Level (m)',
                                autorange=True),
-                           showlegend=False)
+                           showlegend=True)
 
         chart_obj = PlotlyView(
             go.Figure(data=[observed_WL, sensor_WL],
@@ -1795,10 +1798,10 @@ def get_observed_waterlevel_csv(request):
 		pairs = [list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
 
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+		response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(codEstacion, nomEstacion)
 
 		writer = csv_writer(response)
-		writer.writerow(['datetime', 'flow (m3/s)'])
+		writer.writerow(['datetime', 'water level (m)'])
 
 		for row_data in pairs:
 			writer.writerow(row_data)
@@ -1852,10 +1855,10 @@ def get_sensor_waterlevel_csv(request):
 		pairs = [list(a) for a in zip(datesSensorWaterLevel, sensorWaterLevel)]
 
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+		response['Content-Disposition'] = 'attachment; filename=sensor_water_level_{0}_{1}.csv'.format(codEstacion, nomEstacion)
 
 		writer = csv_writer(response)
-		writer.writerow(['datetime', 'flow (m3/s)'])
+		writer.writerow(['datetime', 'water level (m)'])
 
 		for row_data in pairs:
 			writer.writerow(row_data)
