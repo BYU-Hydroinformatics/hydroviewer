@@ -99,9 +99,33 @@
   display: none;
 }
 
-.popover-content {
-    min-width: 180px;
+.popover {
+    max-width: 700px;
 }
+
+/*table {
+    border: 1px;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 2px;
+    border-color: gray;
+    text-align: center;
+}
+
+table th {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+    background-color: lightblue;
+}
+table td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+*/
+
+
 
 #mytable {
     display: block;

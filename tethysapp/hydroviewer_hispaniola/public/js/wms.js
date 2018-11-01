@@ -965,19 +965,21 @@ function map_events() {
     var popup = new ol.Overlay({
         element: element,
         positioning: 'bottom-center',
-        stopEvent: false
+        stopEvent: false,
     })
     map.addOverlay(popup)
 
     map.on('singleclick', function(evt) {
         var model = $('#model option:selected').text()
 
+        if (!feature) {
+            $('[data-toggle="popover"]').popover('destroy');
+        }
+
         if (map.getTargetElement().style.cursor == 'pointer') {
             // Do SingleClick popover show when the layer is the vectorlayer
 
             if (current_layer == StationsLayerVectorLayer) {
-                $(element).popover('destroy')
-
                 var feature = map.forEachFeatureAtPixel(
                     evt.pixel,
                     (feature, layer) => feature
@@ -991,27 +993,38 @@ function map_events() {
                         Z_elevation = feature.get('Z'),
                         northing = feature.get('X'),
                         easting = feature.get('Y'),
-                        network = feature.get('network'),
-                        hs_url = encodeURIComponent(feature.get('hs_url')),
-                        details_html = ''
-                    //passing the information through the url
+                        region = feature.get('REGION')
 
-                    popupContent = `<table border="1"><tbody><tr><th>Station Code</th><th>Station Name</th><th>Details</th></tr>
-                        <tr><td>${station_code}</td><td>${station_name}</td>
-                        <td><button type="button" class="mod_link btn-primary" >Site Details</button>
-                        </td></tr>`
+                    popupContent =
+                        `<table style="text-align:center; display:table; border-collapse:collapse; border-spacing:2px; border-color:gray">
+                            <tbody>
+                            <tr>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Station Name</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Station Code</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">UTM Coordinates</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Region</th>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_name}</td>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_code}</td>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${coord}</td>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${region}</td>
+                            </tr>
+                        </table>`
 
                     popup.setPosition(coord)
-                    $(element).popover({
-                        placement: 'top',
-                        html: true,
-                        content: popupContent
-                    })
-                    $(element).popover('show')
+
+                    $(element).attr('data-placement', 'top');
+                    $(element).attr('data-html', true);
+                    $(element).attr('data-content', popupContent);
+                    $(element).attr('trigger', 'focus');
+                    $(element).popover('show');
+
                 } else {
-                    $(element).popover('destroy')
+                    $(element).popover('destroy');
                     popup.setPosition(undefined)
                 }
+
             } else {
                 $('#graph').modal('show')
                 $('#tbody').empty()
@@ -1425,14 +1438,9 @@ updateCSV = function() {
 
     var files = $('#csv-upload')[0].files
 
-    /*if (!(validateCSV(files) === 'VALID')) {
+    if (!(validateCSV(files) === 'VALID')) {
         alert('Please upload a valid CSV file.')
         $("#onamet-view-file-loading").addClass("hidden")
-    };*/
-
-    if (files.length === 0) {
-        alert('Please select a file to upload.')
-        $('#onamet-view-file-loading').addClass('hidden')
     } else {
         data = prepareFilesForAjax(files)
         $.ajax({
@@ -1453,8 +1461,6 @@ updateCSV = function() {
                     alert('Uploaded file is not valid.')
                     $('#onamet-view-file-loading').addClass('hidden')
                 } else {
-                    //location.reload()
-
                     let stationgeojson = response['stationgeojson']
 
                     var image = new ol.style.Circle({
@@ -1536,7 +1542,7 @@ updateCSV = function() {
     }
 }
 
-/* This function adds the layer to the map after it's been uploaded to geoserver */
+/* This function adds the shapefile layer to the map after it's been uploaded to Geoserver */
 addLayerToMap = function(layerWorkspace, layerCode) {
     var geoserverUrl = $('#geoserver-endpoint').text() + '/wms'
     var layerWMS = new ol.source.ImageWMS({
@@ -1644,9 +1650,7 @@ validateShapefile = function(files) {
 
     var optFiles = fileTypes.every(function(val) {
         return (
-            ['shp', 'shx', 'dbf', 'prj', 'xml', 'sbn', 'sbx', 'cpg'].indexOf(
-                val
-            ) !== -1
+            ['shp', 'shx', 'dbf', 'prj', 'xml', 'sbn', 'sbx', 'cpg'].indexOf(val) !== -1
         )
     })
 
@@ -1670,7 +1674,7 @@ validateShapefile = function(files) {
 }
 
 /* This function performs some basic CSV file validation.
-   It only checks to make sure the file extensions are correct, it doesn't check the file contents. */
+   It only checks to make sure the file extension is correct, it doesn't check the file contents. */
 validateCSV = function(files) {
     if (files.length === 0) {
         return 'INVALID'
@@ -1678,8 +1682,6 @@ validateCSV = function(files) {
 
     var fileNames = []
     var fileTypes = []
-    var nameCounts = {}
-    var typeCounts = {}
 
     Object.keys(files).forEach(function(file) {
         fileNames.push(
@@ -1691,27 +1693,11 @@ validateCSV = function(files) {
         fileTypes.push(files[file].name.split('.').pop())
     })
 
-    for (var i = 0; i < fileNames.length; i++) {
-        nameCounts[fileNames[i]] = 1 + (nameCounts[fileNames[i]] || 0)
-    }
-
-    for (var i = 0; i < fileTypes.length; i++) {
-        typeCounts[fileTypes[i]] = 1 + (typeCounts[fileTypes[i]] || 0)
-    }
-
     var reqFiles = ['csv'].every(function(val) {
         return fileTypes.indexOf(val) !== -1
     })
 
-    if (fileTypes.length != Object.keys(typeCounts).length) {
-        return 'INVALID'
-    }
-
-    if (Object.keys(nameCounts).length != 1) {
-        return 'INVALID'
-    }
-
-    if (reqFiles === false) {
+    if (fileTypes.indexOf("csv") == -1) {
         return 'INVALID'
     }
 
@@ -1738,18 +1724,6 @@ getCookies = function(name) {
 
 generateLayerCode = 'onamet_layer'
 
-/* This function creates unique layer codes. This is the layer's name on GeoServer.
-generateLayerCode = function() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    };
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}; */
-
 /* This is a listener that fires the ajaxUploadShapefile function when the submit button is clicked. */
 $(document).on('click', '#upload-file-button', ajaxUploadShapefile)
 $(document).on('click', '#upload-csv-button', updateCSV)
-
-//$(document).ajaxSuccess(function() {
-//    alert("AJAX request successfully completed");
-//});

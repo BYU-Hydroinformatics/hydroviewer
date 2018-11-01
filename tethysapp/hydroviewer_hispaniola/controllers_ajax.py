@@ -7,12 +7,8 @@ import datetime
 import requests
 import ast
 import json
-import math
-
-
 import utm
 
-from pyproj import Proj, transform
 
 
 @csrf_exempt
