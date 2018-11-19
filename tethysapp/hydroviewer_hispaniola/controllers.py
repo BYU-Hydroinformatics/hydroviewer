@@ -1249,6 +1249,7 @@ def forecastpercent(request):
 
         for keyss in rivperc:
             data = riverpercent[keyss]
+
             ordered_data = sorted(
                 data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
@@ -1297,7 +1298,7 @@ def ajax_add_layer(request):
     #   VERIFIES REQUEST   #
     # -------------------- #
 
-    if not (request.is_ajax() and request.method == "POST"):
+    if not (request.is_ajax() and request.method == 'POST'):
 
         return_obj["success"] = "false"
         return_obj["message"] = "Unable to communicate with server."

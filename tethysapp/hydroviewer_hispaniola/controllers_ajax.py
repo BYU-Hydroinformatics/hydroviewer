@@ -8,7 +8,8 @@ import requests
 import ast
 import json
 import utm
-
+from .app import Hydroviewer as app
+#from hs_restclient import HydroShare, HydroShareAuthBasic
 
 
 @csrf_exempt
@@ -137,6 +138,16 @@ def convert_json(items):
     return json.dumps(featureCollection, ensure_ascii=False)
 
 
+# Retrieve Precipitation Historical Data from HydroShare
+#def hydroshare_retrieve(filename, destination):
+
+#    auth = HydroShareAuthBasic(username='jasonb18', password='chadwick3')
+#    hs = HydroShare(auth=auth)
+#    fname = filename
+#    fpath = hs.getResourceFile('71d674ad26ab40d89baa319aa4a5b1cd', fname, destination=destination)
+
+#    return fpath
+
 @csrf_exempt
 def update_csv(request):
 
@@ -148,9 +159,33 @@ def update_csv(request):
         uploaded_file = file_list[0]
 
         if str(uploaded_file).lower().endswith(".csv"):
-            reader = csv.DictReader(uploaded_file)
-            rows = list(reader)
+            layer_code = 'csv_layer'
+
+            user_workspace = app.get_user_workspace(request)
+            layer_dir = os.path.join(user_workspace.path, layer_code)
+
+            if not os.path.exists(layer_dir):
+                os.makedirs(layer_dir)
+
+            # Write csv to workspace.
+            for n, uploaded_file in enumerate(file_list):
+                with open(os.path.join(layer_dir, uploaded_file.name), 'w+') as destination:
+                    for chunk in file_list[n].chunks():
+                        destination.write(chunk)
+
+            # To rename the uploaded csv file in the workspace folder.
+            old_file = os.path.join(layer_dir, uploaded_file.name)
+            new_file = os.path.join(layer_dir, "uploaded_csv_file")
+            os.rename(old_file, new_file)
+
+            # To convert csv to geojson
+            path = new_file
+            with open(path, 'rb') as csvfile:
+                reader = csv.DictReader(csvfile)
+                rows = list(reader)
+
             geojsonstring = convert_json(rows)
+
             return_obj = {'success': True, 'stationgeojson': geojsonstring}
 
             return JsonResponse(return_obj)

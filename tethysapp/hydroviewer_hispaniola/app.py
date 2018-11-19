@@ -13,7 +13,7 @@ class Hydroviewer(TethysAppBase):
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#000099'
-    description = 'View the FFGS and Streamflow Prediction Tool, along with ONAMET data for the Dominican Republic.'
+    description = 'View the FFGS and Streamflow Prediction Tool, along with precipitation data for the Dominican Republic.'
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []

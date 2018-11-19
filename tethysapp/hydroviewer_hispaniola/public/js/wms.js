@@ -19,7 +19,8 @@ var default_extent,
     mapLayers,
     layerCode,
     out,
-    StationsLayerVectorLayer
+    StationsLayerVectorLayer,
+    mylayerCode
 
 var $loading = $('#view-file-loading')
 var m_downloaded_historical_streamflow = false
@@ -992,23 +993,30 @@ function map_events() {
                         station_name = feature.get('NOMBRE'),
                         Z_elevation = feature.get('Z'),
                         northing = feature.get('X'),
-                        easting = feature.get('Y'),
+                        easting = "%.2f" % feature.get('Y'),
                         region = feature.get('REGION')
+                        precipitation = feature.get('PRECIPITATION')
+                        cumul_precip = feature.get('Cumul. Precip.')
+                    //    today = new Date();
+                    //    date = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
+                    //console.log(date)
 
                     popupContent =
                         `<table style="text-align:center; display:table; border-collapse:collapse; border-spacing:2px; border-color:gray">
                             <tbody>
                             <tr>
-                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Station Name</th>
-                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Station Code</th>
-                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">UTM Coordinates</th>
-                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:lightblue">Region</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Station Name</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Station Code</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Region</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Precipitation (mm)</th>
+                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Cumul. Precip. (mm)</th>
                             </tr>
                             <tr>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_name}</td>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_code}</td>
-                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${coord}</td>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${region}</td>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${precipitation}</td>
+                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${cumul_precip}</td>
                             </tr>
                         </table>`
 
@@ -1473,9 +1481,6 @@ updateCSV = function() {
                     var styles = {
                         Point: new ol.style.Style({
                             image: image
-                        }),
-                        MultiPoint: new ol.style.Style({
-                            image: image
                         })
                     }
                     var styleFunction = function(feature) {
@@ -1531,7 +1536,6 @@ updateCSV = function() {
                     })
 
                     map.addLayer(StationsLayerVectorLayer)
-
                     $('#stations_title').removeClass('hidden')
                     $('#stations_transparency').removeClass('hidden')
                     $('#stations_slider').removeClass('hidden')
@@ -1598,10 +1602,12 @@ ajaxUploadShapefile = function() {
         error: function() {
             alert('File upload error.')
             $('#onamet-view-file-loading').addClass('hidden')
+            console.log(type)
         },
         success: function(response) {
             if (response['success'] === 'false') {
-                alert('File upload error.')
+                alert('File upload error!')
+                console.log(type)
             } else {
                 var layerWorkspace = response['results']['workspace']
                 var layerCode = response['results']['layer_code']
@@ -1723,6 +1729,7 @@ getCookies = function(name) {
 }
 
 generateLayerCode = 'onamet_layer'
+mylayerCode = 'csv_file_layer'
 
 /* This is a listener that fires the ajaxUploadShapefile function when the submit button is clicked. */
 $(document).on('click', '#upload-file-button', ajaxUploadShapefile)
