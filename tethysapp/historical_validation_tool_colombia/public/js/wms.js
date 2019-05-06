@@ -1658,6 +1658,81 @@ $(function() {
     });
 });
 
+// Show the date range creator when the switch is on
+$(document).ready(function() {
+    $("#date_range_bool").on("change", function() {
+        if(document.getElementById('date_range_bool').checked) {
+            $("#date_range_form").show();
+            $("#date-ranges").show();
+        } else {
+            $("#date_range_form").hide();
+            $("#date-ranges").hide();
+        }
+    });
+});
+
+// Create a variable amount of date ranges for the user
+$(document).ready(function() {
+  $("#date_range_form").on("input", function() {
+    let number = $("#Num_of_Date_Ranges").val();
+    if (number === 0) {
+      $("#date_range_container").hide();
+    } else {
+      let form_inputs = "";
+        for (let i=1; i<=number; i++) {
+            form_inputs += `<h5>Date Range ${i}</h5>\
+                            <div class="row">
+                              <div class="col-md-2">
+                                <label for="start_month_${i}">Start Month</label>
+                                <select id="start_month_${i}" name="start_month_${i}">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                  </select>
+                              </div>
+                              <div class="col-md-2">
+                                <label for="start_day_${i}">Start Day</label>
+                                <input type="number" id="start_day_${i}" name="start_day_${i}" min=1 max=31>
+                              </div>
+                              <div class="col-md-2">
+                                <label for="end_month_${i}">End Month</label>
+                                <select id="start_day_${i}" id="end_month_${i}" name="end_month_${i}">
+                                  <option value="1">January</option>
+                                  <option value="2">February</option>
+                                  <option value="3">March</option>
+                                  <option value="4">April</option>
+                                  <option value="5">May</option>
+                                  <option value="6">June</option>
+                                  <option value="7">July</option>
+                                  <option value="8">August</option>
+                                  <option value="9">September</option>
+                                  <option value="10">October</option>
+                                  <option value="11">November</option>
+                                  <option value="12">December</option>
+                                </select>
+                              </div>
+                              <div class="col-md-2">
+                                <label for="end_day_${i}">End Day</label>
+                                <input type="number" id="end_day_${i}" name="end_day_${i}" min=1 max=31>
+                              </div>
+                            </div>`;
+        }
+      $( "#date-ranges" ).html( form_inputs );
+    }
+  });
+});
+
+
+
 // Function for the select2 metric selection tool
 $(document).ready(function() {
     $('#metric_select2').select2({ width: 'resolve' });

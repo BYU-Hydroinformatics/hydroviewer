@@ -82,7 +82,7 @@
   </div>
   {% endif %}
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
-    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
+    <a data-toggle="modal" data-target="#obsgraph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
 
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
@@ -196,6 +196,37 @@
           <div role="tabpanel" class="tab-pane" id="metricsReport">
             <div class="panel panel-default">
               <div class="panel-body">
+                <hr>
+                <h2>Table</h2>
+                <hr>
+
+                <!--Optional: Date Range-->
+                <h3>
+                  Include Analysis of Date Range(s) in Table
+                  <span style="font-size: 15px;" class="glyphicon glyphicon-info-sign icon_info"
+                        title="Allows for analysis of different time ranges. For example, if your time series spanned 20 years, you can specify to only analyze the month of May and see how your model performs in the month of May.">
+                  </span>
+                </h3>
+                <input type="checkbox" name="date_range_bool" id="date_range_bool" data-toggle="toggle" data-on="Yes"
+                       data-off="No"
+                       data-onstyle="success" data-offstyle="danger" data-size="mini">
+
+                <!--begin date-->
+                <div id="date_range_form" style="display:none">
+                  <h4>Number of Date Ranges to Analyze</h4>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <input type="number" id="Num_of_Date_Ranges" min="0" max="100" step="1" value="0" class="form-control">
+                    </div>
+                    <div class="col-sm-9"></div> {# Empty #}
+                  </div>
+                </div>
+
+                <div id="empty_date_range_error"></div>
+                <div id="non_integer_error"></div>
+
+                <div id="date-ranges"></div>
+                <br><br>
 
                 <h3>Select the Metrics to Include in the Report:</h3>
                 <div id="metric_select_error"></div>
