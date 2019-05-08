@@ -8,6 +8,7 @@ from .utilities import get_user_workspace
 
 import os
 import requests
+from requests.auth import HTTPBasicAuth
 import json
 import numpy as np
 import netCDF4 as nc
@@ -138,7 +139,7 @@ def ecmwf(request):
     watershed_list = [['Select Watershed', '']]  # + watershed_list
 
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
-                        '/featuretypes.json')
+                        '/featuretypes.json', auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)[
