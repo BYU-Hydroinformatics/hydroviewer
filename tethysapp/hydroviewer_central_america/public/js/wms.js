@@ -823,7 +823,7 @@ function map_events() {
             $("#graph").modal('show');
             $("#tbody").empty()
             $('#long-term-chart').addClass('hidden');
-            $('#historical-chart').addClass('hidden');
+            $('#historical-chartjson').addClass('hidden');
             $('#fdc-chart').addClass('hidden');
             $('#download_forecast').addClass('hidden');
             $('#download_interim').addClass('hidden');

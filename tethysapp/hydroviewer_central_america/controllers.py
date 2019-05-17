@@ -531,7 +531,6 @@ def ecmwf_get_time_series(request):
             return_annotations = []
             return_shapes = []
 
-
         layout = go.Layout(
             title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
                 watershed, subbasin, comid),
@@ -539,7 +538,7 @@ def ecmwf_get_time_series(request):
                 title='Date',
             ),
             yaxis=dict(
-                title='Streamflow ({}<sup>3</sup>/s)'.format(get_units_title(units)),
+                title="Streamflow ({}<sup>3</sup>/s)".format(get_units_title(units)),
                 range=[0, max(max_values) + max(max_values)/5]
             ),
             shapes=return_shapes,
