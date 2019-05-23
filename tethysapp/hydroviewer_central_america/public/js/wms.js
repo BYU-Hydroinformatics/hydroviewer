@@ -564,7 +564,7 @@ function get_return_periods(watershed, subbasin, comid) {
     });
 }
 
-function get_time_series(model, watershed, subbasin, comid, startdate) {
+function get_time_series(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
     $loading.removeClass('hidden');
     $('#long-term-chart').addClass('hidden');
     $('#dates').addClass('hidden');
@@ -576,7 +576,9 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
             'watershed': watershed,
             'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate
+            'startdate': startdate,
+            'tot_drain_area': tot_drain_area,
+            'region': region
         },
         error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
@@ -625,7 +627,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
 }
 
 
-function get_historic_data(model, watershed, subbasin, comid, startdate) {
+function get_historic_data(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
     $('#his-view-file-loading').removeClass('hidden');
     m_downloaded_historical_streamflow = true;
     $.ajax({
@@ -636,7 +638,9 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
             'watershed': watershed,
             'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate
+            'startdate': startdate,
+            'tot_drain_area': tot_drain_area,
+            'region': region
         },
         success: function(data) {
             if (!data.error) {
@@ -673,7 +677,7 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
 };
 
 
-function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
+function get_flow_duration_curve(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
     $('#fdc-view-file-loading').removeClass('hidden');
     m_downloaded_flow_duration = true;
     $.ajax({
@@ -684,7 +688,9 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
             'watershed': watershed,
             'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate
+            'startdate': startdate,
+            'tot_drain_area': tot_drain_area,
+            'region': region
         },
         success: function(data) {
             if (!data.error) {
@@ -846,6 +852,9 @@ function map_events() {
                         success: function(result) {
                             var model = $('#model option:selected').text();
                             var comid = result["features"][0]["properties"]["COMID"];
+                            var tot_drain_area = result["features"][0]["properties"]["Tot_Drain_"];
+                            tot_drain_area = (tot_drain_area/1000000).toFixed(0)
+                            var region = result["features"][0]["properties"]["region"];
 
                             var startdate = '';
                             if ("derived_fr" in (result["features"][0]["properties"])) {
@@ -860,9 +869,9 @@ function map_events() {
                             }
 
                             get_available_dates(model, watershed, subbasin, comid);
-                            get_time_series(model, watershed, subbasin, comid, startdate);
-                            get_historic_data(model, watershed, subbasin, comid, startdate);
-                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+                            get_time_series(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
+                            get_historic_data(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
+                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
                             if (model === 'ECMWF-RAPID') {
                                 get_forecast_percent(watershed, subbasin, comid, startdate);
                             };

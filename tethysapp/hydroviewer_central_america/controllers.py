@@ -399,6 +399,9 @@ def ecmwf_get_time_series(request):
         watershed = get_data['watershed']
         subbasin = get_data['subbasin']
         comid = get_data['comid']
+        tot_drain_area = get_data['tot_drain_area']
+        region = get_data['region']
+
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
         else:
@@ -532,8 +535,8 @@ def ecmwf_get_time_series(request):
             return_shapes = []
 
         layout = go.Layout(
-            title="Forecast<br><sub>{0} ({1}): {2}</sub>".format(
-                watershed, subbasin, comid),
+            title="Forecast<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+                watershed, subbasin, comid, region, tot_drain_area),
             xaxis=dict(
                 title='Date',
             ),
@@ -752,6 +755,8 @@ def get_historic_data(request):
         watershed = get_data['watershed']
         subbasin = get_data['subbasin']
         comid = get_data['comid']
+        tot_drain_area = get_data['tot_drain_area']
+        region = get_data['region']
         units = 'metric'
 
         era_res = requests.get(
@@ -781,8 +786,8 @@ def get_historic_data(request):
         return_shapes, return_annotations = get_return_period_ploty_info(request, era_dates[0], era_dates[-1])
 
         layout = go.Layout(
-            title="Historical Streamflow<br><sub>{0} ({1}): {2}</sub>".format(
-                watershed, subbasin, comid),
+            title="Historical Streamflow<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+                watershed, subbasin, comid, region, tot_drain_area),
             xaxis=dict(
                 title='Date',
             ),
@@ -818,6 +823,8 @@ def get_flow_duration_curve(request):
         watershed = get_data['watershed']
         subbasin = get_data['subbasin']
         comid = get_data['comid']
+        tot_drain_area = get_data['tot_drain_area']
+        region = get_data['region']
         units = 'metric'
 
         era_res = requests.get(
@@ -848,8 +855,8 @@ def get_flow_duration_curve(request):
             y=sorted_daily_avg,
         )
 
-        layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}</sub>"
-                                 .format(watershed, subbasin, comid),
+        layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+                watershed, subbasin, comid, region, tot_drain_area),
                            xaxis=dict(
                                title='Exceedance Probability (%)',),
                            yaxis=dict(
