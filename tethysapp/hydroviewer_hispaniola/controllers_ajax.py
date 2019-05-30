@@ -57,6 +57,7 @@ def update_ffgs(request):
                     id_list = []
                     value_list = []
                     for n in data_list:
+
                         if len(n) == 2:
                             id_list.append(n[0])
                             value_list.append(n[1])
@@ -79,7 +80,7 @@ def update_ffgs(request):
                 with open(data_staging_file, 'r') as g:
 
                     conn = pg.connect(
-                        'host=tethys-staging.byu.edu dbname=hydroviewer_hispaniola user=tethys_super password=pass port=5435')
+                        'host=tethys-staging.byu.edu dbname=hydroviewer_hispaniola user=tethys_super password=zpwt49x3 port=5435')
 
                     cur = conn.cursor()
 
