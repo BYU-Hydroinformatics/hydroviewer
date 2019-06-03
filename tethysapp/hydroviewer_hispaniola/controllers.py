@@ -110,7 +110,7 @@ def ecmwf(request):
     hiddenAttr = ""
     if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
         hiddenAttr = "hidden"
-    print hiddenAttr
+    print(hiddenAttr)
     init_model_val = request.GET.get('model', False) or app.get_custom_setting(
         'default_model_type') or 'Select Model'
     init_ws_val = app.get_custom_setting(
@@ -275,7 +275,7 @@ def get_warning_points(request):
                 "warning2": json.loads(res2.content)["features"]
                 })
         except Exception as e:
-            print str(e)
+            print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -449,7 +449,7 @@ def ecmwf_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -514,7 +514,7 @@ def lis_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
@@ -633,7 +633,7 @@ def get_historic_data(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -699,7 +699,7 @@ def get_flow_duration_curve(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -838,7 +838,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -885,7 +885,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -943,7 +943,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1076,7 +1076,7 @@ def shp_to_geojson(request):
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1252,7 +1252,7 @@ def forecastpercent(request):
             data = riverpercent[keyss]
 
             ordered_data = sorted(
-                data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+                list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []

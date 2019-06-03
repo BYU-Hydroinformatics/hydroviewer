@@ -53,7 +53,7 @@ def update_ffgs(request):
 
                 with open(data_staging_file, 'r') as f:
                     reader = csv.reader(f)
-                    data_list = map(tuple, reader)
+                    data_list = list(map(tuple, reader))
                     id_list = []
                     value_list = []
                     for n in data_list:
@@ -126,13 +126,13 @@ def convert_json(items):
                                  "lat": newLatLong[1],
                                  "long": newLatLong[0]},
                     "properties": {key: value.decode('iso-8859-1').encode('utf8')
-                                   for key, value in feature.items()
+                                   for key, value in list(feature.items())
                                    if key not in ('X', 'Y')}
                     }
                 features.append(newFeature)
             except:
-                print "Invalid Line found in CSV File"
-                print feature
+                print("Invalid Line found in CSV File")
+                print(feature)
 
     featureCollection = {"features": features}
 
@@ -256,7 +256,7 @@ def forecastpercent(request):
         for keyss in rivperc:
             data = riverpercent[keyss]
             ordered_data = sorted(
-                data.items(), key=lambda x: datetime.datetime.strptime(x[0], '%Y-%m-%d'))
+                list(data.items()), key=lambda x: datetime.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
