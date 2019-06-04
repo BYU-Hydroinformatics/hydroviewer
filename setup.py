@@ -6,10 +6,19 @@ from tethys_apps.app_installation import custom_develop_command, custom_install_
 ### Apps Definition ###
 tethysapp_dir_list = [os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', child)
                       for child in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp'))]
-app_package = os.path.basename(list(filter(os.path.isdir, tethysapp_dir_list))[0])
+app_package = os.path.basename(filter(os.path.isdir, tethysapp_dir_list)[0])
 release_package = 'tethysapp-' + app_package
 app_class = '{0}.app:Hydroviewer'.format(app_package)
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
+
+### Python Dependencies ###
+dependencies = [
+    'requests',
+    'netCDF4',
+    'numpy',
+    'scipy',
+    'gdal',
+]
 
 setup(
     name=release_package,
@@ -26,6 +35,9 @@ setup(
     namespace_packages=['tethysapp', 'tethysapp.' + app_package],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[],
-    cmdclass={}
+    install_requires=dependencies,
+    cmdclass={
+        'install': custom_install_command(app_package, app_package_dir, dependencies),
+        'develop': custom_develop_command(app_package, app_package_dir, dependencies)
+    }
 )

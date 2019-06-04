@@ -5,6 +5,7 @@ from tethys_sdk.permissions import Permission, PermissionGroup
 base_name = __package__.split('.')[-1]
 base_url = base_name.replace('_', '-')
 
+
 class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer {0}'.format(base_name.split('_')[-1].title())
@@ -20,9 +21,7 @@ class Hydroviewer(TethysAppBase):
     feedback_emails = []
 
     def spatial_dataset_service_settings(self):
-        """
-        Spatial_dataset_service_settings method.
-        """
+
         sds_settings = (
             SpatialDatasetServiceSetting(
                 name='main_geoserver',
@@ -33,21 +32,6 @@ class Hydroviewer(TethysAppBase):
         )
 
         return sds_settings
-
-    def persistent_store_setting(self):
-        """
-        Define Persistent Store Settings.
-        """
-        ps_settings = (
-            PersistentStoreDatabaseSetting(
-                name='primary_db',
-                description='primary database',
-                initializer='hydroviewer_hispaniola.model.init_primary_db',
-                required=False,
-            ),
-        )
-
-        return ps_settings
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
@@ -65,7 +49,7 @@ class Hydroviewer(TethysAppBase):
                 name='lis',
                 url='lis-rapid',
                 controller='{0}.controllers.lis'.format(base_name)),
-             UrlMap(
+            UrlMap(
                 name='get-available-dates',
                 url='get-available-dates',
                 controller='{0}.controllers.get_available_dates'.format(base_name)),
@@ -205,11 +189,9 @@ class Hydroviewer(TethysAppBase):
     #         permissions=(update_default,)
     #     )
 
-
     #     permissions = (admin,)
 
     #     return permissions
-
 
     def custom_settings(self):
         return (

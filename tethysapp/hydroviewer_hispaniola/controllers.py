@@ -83,7 +83,7 @@ def home_standard(request):
         "base_name": base_name,
         "model_input": model_input,
         "zoom_info": zoom_info
-        }
+    }
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
@@ -102,7 +102,7 @@ def ecmwf(request):
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
                 'title': 'Save as Default Options for WS'
-                })
+            })
     else:
         defaultUpdateButton = False
 
@@ -186,7 +186,7 @@ def ecmwf(request):
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
         "defaultUpdateButton": defaultUpdateButton
-        }
+    }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
 
@@ -241,7 +241,7 @@ def lis(request):
         "model_input": model_input,
         "watershed_select": watershed_select,
         "zoom_info": zoom_info
-        }
+    }
 
     return render(request, '{0}/lis.html'.format(base_name), context)
 
@@ -273,7 +273,7 @@ def get_warning_points(request):
                 "warning20": json.loads(res20.content)["features"],
                 "warning10": json.loads(res10.content)["features"],
                 "warning2": json.loads(res2.content)["features"]
-                })
+            })
         except Exception as e:
             print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
@@ -283,6 +283,7 @@ def get_warning_points(request):
 
 def ecmwf_get_time_series(request):
     get_data = request.GET
+
     try:
         # model = get_data['model']
         watershed = get_data['watershed']
@@ -314,7 +315,8 @@ def ecmwf_get_time_series(request):
         std_dev_upper_values = []
 
         for pair in pairs:
-            if 'high_res' in header:
+            pair = pair.decode('utf-8')
+            if b'high_res' in header:
                 hres_dates.append(dt.datetime.strptime(
                     pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
                 hres_values.append(float(pair.split(',')[1]))
@@ -350,8 +352,8 @@ def ecmwf_get_time_series(request):
             y=mean_values,
             line=dict(
                 color='blue',
-                )
             )
+        )
 
         max_series = go.Scatter(
             name='Max',
@@ -362,8 +364,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 color='rgb(152, 251, 152)',
                 width=0,
-                )
             )
+        )
 
         min_series = go.Scatter(
             name='Min',
@@ -373,8 +375,8 @@ def ecmwf_get_time_series(request):
             mode='lines',
             line=dict(
                 color='rgb(152, 251, 152)',
-                )
             )
+        )
 
         std_dev_lower_series = go.Scatter(
             name='Std. Dev. Lower',
@@ -385,8 +387,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 color='rgb(152, 251, 152)',
                 width=0,
-                )
             )
+        )
 
         std_dev_upper_series = go.Scatter(
             name='Std. Dev. Upper',
@@ -397,8 +399,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 width=0,
                 color='rgb(34, 139, 34)',
-                )
             )
+        )
 
         plot_series = [min_series,
                        std_dev_lower_series,
@@ -413,8 +415,8 @@ def ecmwf_get_time_series(request):
                 y=hres_values,
                 line=dict(
                     color='black',
-                    )
-                ))
+                )
+            ))
 
         try:
             return_shapes, return_annotations = get_return_period_ploty_info(
@@ -428,23 +430,23 @@ def ecmwf_get_time_series(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'.format(get_units_title(units)),
                 range=[0, max(max_values) + max(max_values)/5]
-                ),
+            ),
             shapes=return_shapes,
             annotations=return_annotations
-            )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=plot_series,
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
@@ -488,28 +490,28 @@ def lis_get_time_series(request):
             name='LDAS',
             x=dates,
             y=values,
-            )
+        )
 
         layout = go.Layout(
             title="LDAS Streamflow<br><sub>{0} ({1}): {2}</sub>".format(
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
                       .format(get_units_title(units))
-                )
             )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=[series],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
@@ -546,7 +548,7 @@ def get_available_dates(request):
     return JsonResponse({
         "success": "Data analysis complete!",
         "available_dates": json.dumps(dates)
-        })
+    })
 
 
 def get_return_periods(request):
@@ -591,6 +593,7 @@ def get_historic_data(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_dates.append(dt.datetime.strptime(
                 era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
             era_values.append(float(era_pair.split(',')[1]))
@@ -602,7 +605,7 @@ def get_historic_data(request):
             name='ERA Interim',
             x=era_dates,
             y=era_values,
-            )
+        )
 
         return_shapes, return_annotations = get_return_period_ploty_info(
             request, era_dates[0], era_dates[-1])
@@ -612,23 +615,23 @@ def get_historic_data(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
                       .format(get_units_title(units))
-                ),
+            ),
             shapes=return_shapes,
             annotations=return_annotations
-            )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=[era_series],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
@@ -659,6 +662,7 @@ def get_flow_duration_curve(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_values.append(float(era_pair.split(',')[1]))
 
         sorted_daily_avg = np.sort(era_values)[::-1]
@@ -674,7 +678,7 @@ def get_flow_duration_curve(request):
         flow_duration_sc = go.Scatter(
             x=prob,
             y=sorted_daily_avg,
-            )
+        )
 
         layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}</sub>"
                                  .format(watershed, subbasin, comid),
@@ -690,11 +694,11 @@ def get_flow_duration_curve(request):
         chart_obj = PlotlyView(
             go.Figure(data=[flow_duration_sc],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
@@ -729,7 +733,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=max(return_max, band_alt_max),
             line=dict(width=0),
             fillcolor='rgba(128, 0, 128, 0.4)',
-            ),
+        ),
         # return 10 band
         dict(
             type='rect',
@@ -741,7 +745,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=return_20,
             line=dict(width=0),
             fillcolor='rgba(255, 0, 0, 0.4)',
-            ),
+        ),
         # return 2 band
         dict(
             type='rect',
@@ -753,8 +757,8 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=return_10,
             line=dict(width=0),
             fillcolor='rgba(255, 255, 0, 0.4)',
-            ),
-        ]
+        ),
+    ]
     annotations = [
         # return max
         dict(
@@ -765,7 +769,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='Max. ({:.1f})'.format(return_max),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 20 band
         dict(
             x=datetime_end,
@@ -775,7 +779,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='20-yr ({:.1f})'.format(return_20),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 10 band
         dict(
             x=datetime_end,
@@ -785,7 +789,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='10-yr ({:.1f})'.format(return_10),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 2 band
         dict(
             x=datetime_end,
@@ -795,8 +799,8 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='2-yr ({:.1f})'.format(return_2),
             showarrow=False,
             xanchor='left',
-            ),
-        ]
+        ),
+    ]
 
     return shapes, annotations
 
@@ -961,7 +965,7 @@ def shp_to_geojson(request):
             '-'.join([watershed, subbasin]),
             '-'.join([watershed, subbasin, 'drainage_line']),
             '-'.join([watershed, subbasin, 'drainage_line', '3857.shp'])
-            )
+        )
 
         if not os.path.exists(reprojected_shp_path):
 
@@ -999,7 +1003,7 @@ def shp_to_geojson(request):
                     EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"],
                     AUTHORITY["EPSG","3857"]]
                 """
-                )
+            )
 
             coordTrans = osr.CoordinateTransformation(in_prj, out_prj)
 
@@ -1043,7 +1047,7 @@ def shp_to_geojson(request):
             fc = {
                 'type': 'FeatureCollection',
                 'features': []
-                }
+            }
 
             for feature in reprojected_shp:
                 fc['features'].append(feature.ExportToJson(as_object=True))
@@ -1071,7 +1075,7 @@ def shp_to_geojson(request):
                 'legend_extent': [xmin, ymin, xmax, ymax],
                 'legend_extent_projection': 'EPSG:3857',
                 'feature_selection': True
-                }
+            }
 
             return JsonResponse(geojson_layer)
 
@@ -1079,99 +1083,6 @@ def shp_to_geojson(request):
         print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
-
-# def get_daily_seasonal_streamflow_chart(request):
-#     """
-#     Returns daily seasonal streamflow chart for unique river ID
-#     """
-#     units = request.GET.get('units')
-#     seasonal_data_file, river_id, watershed_name, subbasin_name =\
-#         validate_historical_data(request.GET,
-#                                  "seasonal_average*.nc",
-#                                  "Seasonal Average")
-#
-#     with rivid_exception_handler('Seasonal Average', river_id):
-#         with xarray.open_dataset(seasonal_data_file) as seasonal_nc:
-#             seasonal_data = seasonal_nc.sel(rivid=river_id)
-#             base_date = datetime.datetime(2017, 1, 1)
-#             day_of_year = \
-#                 [base_date + datetime.timedelta(days=ii)
-#                  for ii in range(seasonal_data.dims['day_of_year'])]
-#             season_avg = seasonal_data.average_flow.values
-#             season_std = seasonal_data.std_dev_flow.values
-#
-#             season_avg[season_avg < 0] = 0
-#
-#             avg_plus_std = season_avg + season_std
-#             avg_min_std = season_avg - season_std
-#
-#             avg_plus_std[avg_plus_std < 0] = 0
-#             avg_min_std[avg_min_std < 0] = 0
-#
-#     if units == 'english':
-#         # convert from m3/s to ft3/s
-#         season_avg *= M3_TO_FT3
-#         avg_plus_std *= M3_TO_FT3
-#         avg_min_std *= M3_TO_FT3
-#
-#     # generate chart
-#     avg_scatter = go.Scatter(
-#         name='Average',
-#         x=day_of_year,
-#         y=season_avg,
-#         line=dict(
-#             color='#0066ff'
-#         )
-#     )
-#
-#     std_plus_scatter = go.Scatter(
-#         name='Std. Dev. Upper',
-#         x=day_of_year,
-#         y=avg_plus_std,
-#         fill=None,
-#         mode='lines',
-#         line=dict(
-#             color='#98fb98'
-#         )
-#     )
-#
-#     std_min_scatter = go.Scatter(
-#         name='Std. Dev. Lower',
-#         x=day_of_year,
-#         y=avg_min_std,
-#         fill='tonexty',
-#         mode='lines',
-#         line=dict(
-#             color='#98fb98',
-#         )
-#     )
-#
-#     layout = go.Layout(
-#         title="Daily Seasonal Streamflow<br>"
-#               "<sub>{0} ({1}): {2}</sub>"
-#               .format(watershed_name, subbasin_name, river_id),
-#         xaxis=dict(
-#             title='Day of Year',
-#             tickformat="%b"),
-#         yaxis=dict(
-#             title='Streamflow ({}<sup>3</sup>/s)'
-#                   .format(get_units_title(units)))
-#     )
-#
-#     chart_obj = PlotlyView(
-#         go.Figure(data=[std_plus_scatter,
-#                         std_min_scatter,
-#                         avg_scatter],
-#                   layout=layout)
-#     )
-#
-#     context = {
-#         'gizmo_object': chart_obj,
-#     }
-#
-#     return render(request,
-#                   'streamflow_prediction_tool/gizmo_ajax.html',
-#                   context)
 
 def setDefault(request):
     get_data = request.GET
@@ -1191,7 +1102,7 @@ def get_units_title(unit_type):
 
 def forecastpercent(request):
 
-    # Check if its an ajax post request
+    # Check if its an ajax get request
     if request.is_ajax() and request.method == 'GET':
 
         watershed = request.GET.get('watershed')
@@ -1202,8 +1113,7 @@ def forecastpercent(request):
             forecast = 'most_recent'
         else:
             forecast = str(date)
-# res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
-    #                    headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+
         request_params = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach,
                               forecast_folder=forecast)
         request_headers = dict(Authorization='Token ' +
@@ -1219,7 +1129,7 @@ def forecastpercent(request):
         dicts = ens.content.splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content)
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
         rpdict.pop('max', None)
 
         rivperc = {}
@@ -1232,7 +1142,7 @@ def forecastpercent(request):
 
         dictlen = len(dicts)
         for i in range(1, dictlen):
-            dictstr.append(dicts[i].split(","))
+            dictstr.append(dicts[i].decode('utf-8').split(","))
 
         for rps in rivperc:
             rp = float(rpdict[rps])
@@ -1293,7 +1203,7 @@ def ajax_add_layer(request):
         "success": "",
         "message": None,
         "results": {}
-        }
+    }
 
     # -------------------- #
     #   VERIFIES REQUEST   #
@@ -1349,7 +1259,7 @@ def ajax_add_layer(request):
         purge=True,
         recurse=True,
         debug=False
-        )
+    )
 
     response2
 
@@ -1357,7 +1267,7 @@ def ajax_add_layer(request):
         store_id=store_id,
         shapefile_base=res_base,
         overwrite=True
-        )
+    )
 
     if layer_response['success'] is True:
         return_obj["success"] = 'true'

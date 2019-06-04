@@ -128,7 +128,7 @@ def convert_json(items):
                     "properties": {key: value.decode('iso-8859-1').encode('utf8')
                                    for key, value in list(feature.items())
                                    if key not in ('X', 'Y')}
-                    }
+                }
                 features.append(newFeature)
             except:
                 print("Invalid Line found in CSV File")
@@ -140,7 +140,7 @@ def convert_json(items):
 
 
 # Retrieve Precipitation Historical Data from HydroShare
-#def hydroshare_retrieve(filename, destination):
+# def hydroshare_retrieve(filename, destination):
 
 #    auth = HydroShareAuthBasic(username='jasonb18', password='chadwick3')
 #    hs = HydroShare(auth=auth)
