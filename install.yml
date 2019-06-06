@@ -12,3 +12,4 @@ conda:
     - numpy
     - scipy
     - gdal
+    - utm
