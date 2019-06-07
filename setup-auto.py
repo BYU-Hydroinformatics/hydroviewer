@@ -19,7 +19,6 @@ resource_files += find_resource_files('tethysapp/' + app_package + '/public')
 setup(
     name=release_package,
     version='0.0.1',
-    tags='',
     description='',
     long_description='',
     keywords='',
@@ -28,6 +27,7 @@ setup(
     url='',
     license='',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+    package_data={'': resource_files},
     namespace_packages=['tethysapp', 'tethysapp.' + app_package],
     include_package_data=True,
     zip_safe=False,
