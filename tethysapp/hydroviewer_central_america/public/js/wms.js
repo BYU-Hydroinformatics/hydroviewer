@@ -1111,3 +1111,16 @@ $(function() {
         get_forecast_percent(watershed, subbasin, comid, startdate);
     });
 });
+
+$('#stp-stream-toggle').on('change', function() {
+    wmsLayer.setVisible($('#stp-stream-toggle').prop('checked'))
+})
+$('#stp-20-toggle').on('change', function() {
+    twenty_year_warning.setVisible($('#stp-20-toggle').prop('checked'))
+})
+$('#stp-10-toggle').on('change', function() {
+    ten_year_warning.setVisible($('#stp-10-toggle').prop('checked'))
+})
+$('#stp-2-toggle').on('change', function() {
+    two_year_warning.setVisible($('#stp-2-toggle').prop('checked'))
+})

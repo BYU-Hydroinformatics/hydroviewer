@@ -535,7 +535,7 @@ def ecmwf_get_time_series(request):
             return_shapes = []
 
         layout = go.Layout(
-            title="Forecast<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+            title="Forecast<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
                 watershed, subbasin, comid, region, tot_drain_area),
             xaxis=dict(
                 title='Date',
@@ -786,7 +786,7 @@ def get_historic_data(request):
         return_shapes, return_annotations = get_return_period_ploty_info(request, era_dates[0], era_dates[-1])
 
         layout = go.Layout(
-            title="Historical Streamflow<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+            title="Historical Streamflow<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
                 watershed, subbasin, comid, region, tot_drain_area),
             xaxis=dict(
                 title='Date',
@@ -855,7 +855,7 @@ def get_flow_duration_curve(request):
             y=sorted_daily_avg,
         )
 
-        layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}<br>region: {3}, upstream drainage area: {4} km<sup>2</sup></sub>".format(
+        layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
                 watershed, subbasin, comid, region, tot_drain_area),
                            xaxis=dict(
                                title='Exceedance Probability (%)',),
