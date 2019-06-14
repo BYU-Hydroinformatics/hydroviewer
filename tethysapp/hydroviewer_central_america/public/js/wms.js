@@ -170,6 +170,7 @@ function init_map() {
                 radius: 10,
                 angle: 0
             })
+
         })
     });
 
@@ -435,7 +436,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(1).getSource().addFeature(feature);
                 }
-                map.getLayers().item(1).setVisible(true);
+                map.getLayers().item(1).setVisible(false);
             }
 
             if (result.warning10 != 'undefined') {
@@ -451,7 +452,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(2).getSource().addFeature(feature);
                 }
-                map.getLayers().item(2).setVisible(true);
+                map.getLayers().item(2).setVisible(false);
             }
 
             if (result.warning20 != 'undefined') {
@@ -467,7 +468,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(3).getSource().addFeature(feature);
                 }
-                map.getLayers().item(3).setVisible(true);
+                map.getLayers().item(3).setVisible(false);
             }
 
         }
