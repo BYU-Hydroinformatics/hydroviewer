@@ -44,7 +44,7 @@ def set_custom_setting(defaultModelName, defaultWSName):
 def home(request):
 
     # Check if we have a default model. If we do, then redirect the user to the default model's page
-    default_model = app.get_custom_setting('default_model_type');
+    default_model = app.get_custom_setting('default_model_type')
     if default_model:
         model_func = switch_model(default_model)
         if model_func is not 'invalid':
@@ -53,7 +53,8 @@ def home(request):
             return home_standard(request)
     else:
         return home_standard(request)
-   
+
+
 def home_standard(request):
     model_input = SelectInput(display_text='',
                               name='model',
@@ -61,6 +62,7 @@ def home_standard(request):
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=['Select Model'],
                               original=True)
+
 
     zoom_info = TextInput(display_text='',
                           initial=json.dumps(app.get_custom_setting('zoom_info')),
@@ -93,14 +95,14 @@ def ecmwf(request):
     
     if(can_update_default):
         defaultUpdateButton = Button(
-        display_text='Save',
-        name='update_button',
-        style='success',
-        attributes={
-            'data-toggle':'tooltip',
-            'data-placement':'bottom',
-            'title':'Save as Default Options for WS'
-        })
+            display_text='Save',
+            name='update_button',
+            style='success',
+            attributes={
+                'data-toggle':'tooltip',
+                'data-placement':'bottom',
+                'title':'Save as Default Options for WS'
+            })
     else:
         defaultUpdateButton = False
 
@@ -119,7 +121,7 @@ def ecmwf(request):
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
-                              classes = hiddenAttr,
+                              classes=hiddenAttr,
                               original=True)
 
     # uncomment for displaying watersheds in the SPT
@@ -132,9 +134,6 @@ def ecmwf(request):
     # watershed_list = [value for value in watershed_list_raw if
     #                   any(val in value[0].lower().replace(' ', '') for
     #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
-
-
-   
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')), verify=False)
@@ -156,8 +155,8 @@ def ecmwf(request):
                                    options=watershed_list,
                                    initial=[init_ws_val],
                                    original=True,
-                                   classes = hiddenAttr,
-                                   attributes = {'onchange':"javascript:view_watershed();"+hiddenAttr}
+                                   classes=hiddenAttr,
+                                   attributes={'onchange':"javascript:view_watershed();"+hiddenAttr}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -181,7 +180,7 @@ def ecmwf(request):
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
-        "defaultUpdateButton":defaultUpdateButton
+        "defaultUpdateButton": defaultUpdateButton
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -198,17 +197,17 @@ def lis(request):
         name='update_button',
         style='success',
         attributes={
-            'data-toggle':'tooltip',
-            'data-placement':'bottom',
-            'title':'Save as Default Options for WS'
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Save as Default Options for WS'
         })
     else:
         defaultUpdateButton = False
 
     # Check if we need to hide the WS options dropdown.
-    hiddenAttr=""
+    hiddenAttr = ""
     if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
-        hiddenAttr="hidden"
+        hiddenAttr = "hidden"
 
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -219,7 +218,7 @@ def lis(request):
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
-                              classes = hiddenAttr,
+                              classes=hiddenAttr,
                               original=True)
 
     watershed_list = [['Select Watershed', '']]
@@ -242,8 +241,8 @@ def lis(request):
                                    options=watershed_list,
                                    initial=[init_ws_val],
                                    original=True,
-                                   classes = hiddenAttr,
-                                   attributes = {'onchange':"javascript:view_watershed();"}
+                                   classes=hiddenAttr,
+                                   attributes={'onchange':"javascript:view_watershed();"}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -266,7 +265,7 @@ def lis(request):
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
-        "defaultUpdateButton":defaultUpdateButton
+        "defaultUpdateButton": defaultUpdateButton
     }
 
     return render(request, '{0}/lis.html'.format(base_name), context)
@@ -386,7 +385,7 @@ def get_warning_points(request):
                 "warning2":json.loads(res2.content)["features"]
             })
         except Exception as e:
-            print str(e)
+            print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -428,7 +427,8 @@ def ecmwf_get_time_series(request):
         std_dev_upper_values = []
 
         for pair in pairs:
-            if 'high_res' in header:
+            pair = pair.decode('utf-8')
+            if b'high_res' in header:
                 hres_dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
                 hres_values.append(float(pair.split(',')[1]))
 
@@ -560,7 +560,7 @@ def ecmwf_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 def get_time_series(request):
@@ -630,7 +630,7 @@ def lis_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
@@ -693,7 +693,7 @@ def hiwat_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No HIWAT data found for the selected reach.'})
 
 
@@ -714,10 +714,10 @@ def get_available_dates(request):
     for date in eval(res.content):
         if len(date) == 10:
             date_mod = date + '000'
-            date_f = dt.datetime.strptime(date_mod , '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
+            date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
         else:
             date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
-        dates.append([date_f,date,watershed,subbasin,comid])
+        dates.append([date_f, date, watershed, subbasin, comid])
 
     dates.append(['Select Date', dates[-1][1]])
     dates.reverse()
@@ -738,7 +738,7 @@ def get_return_periods(request):
     res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
     return eval(res.content)
 
@@ -762,7 +762,7 @@ def get_historic_data(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
         era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
@@ -771,6 +771,7 @@ def get_historic_data(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_dates.append(dt.datetime.strptime(era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
             era_values.append(float(era_pair.split(',')[1]))
 
@@ -808,10 +809,10 @@ def get_historic_data(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -830,7 +831,7 @@ def get_flow_duration_curve(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
         era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
@@ -838,6 +839,7 @@ def get_flow_duration_curve(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_values.append(float(era_pair.split(',')[1]))
 
         sorted_daily_avg = np.sort(era_values)[::-1]
@@ -875,10 +877,10 @@ def get_flow_duration_curve(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -996,7 +998,7 @@ def get_historic_data_csv(request):
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
         qout_data = era_res.content.splitlines()
         qout_data.pop(0)
@@ -1016,7 +1018,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -1041,7 +1043,7 @@ def get_forecast_data_csv(request):
             app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
             startdate + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
         qout_data = res.content.splitlines()
         qout_data.pop(0)
@@ -1063,7 +1065,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1118,7 +1120,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1173,7 +1175,7 @@ def get_hiwat_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1311,7 +1313,7 @@ def shp_to_geojson(request):
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1442,16 +1444,16 @@ def forecastpercent(request):
                               forecast_folder=forecast)
         request_headers = dict(Authorization='Token ' + app.get_custom_setting('spt_token'))
         ens = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetEnsemble/',
-                           params=request_params, headers=request_headers,verify=False)
+                           params=request_params, headers=request_headers, verify=False)
 
         request_params1 = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach)
         rpall = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/',
-                             params=request_params1, headers=request_headers,verify=False)
+                             params=request_params1, headers=request_headers, verify=False)
 
         dicts = ens.content.splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content)
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
         rpdict.pop('max', None)
 
         rivperc = {}
@@ -1464,7 +1466,7 @@ def forecastpercent(request):
 
         dictlen = len(dicts)
         for i in range(1, dictlen):
-            dictstr.append(dicts[i].split(","))
+            dictstr.append(dicts[i].decode('utf-8').split(","))
 
         for rps in rivperc:
             rp = float(rpdict[rps])
@@ -1482,7 +1484,7 @@ def forecastpercent(request):
 
         for keyss in rivperc:
             data = riverpercent[keyss]
-            ordered_data = sorted(data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            ordered_data = sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
