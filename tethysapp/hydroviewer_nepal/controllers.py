@@ -44,7 +44,8 @@ def set_custom_setting(defaultModelName, defaultWSName):
 def home(request):
 
     # Check if we have a default model. If we do, then redirect the user to the default model's page
-    default_model = app.get_custom_setting('default_model_type');
+    # default_model = app.get_custom_setting('default_model_type');
+    default_model = app.get_custom_setting('default_model_type')
     if default_model:
         model_func = switch_model(default_model)
         if model_func is not 'invalid':
@@ -386,7 +387,7 @@ def get_warning_points(request):
                 "warning2":json.loads(res2.content)["features"]
             })
         except Exception as e:
-            print str(e)
+            print (str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -425,9 +426,13 @@ def ecmwf_get_time_series(request):
         std_dev_upper_values = []
 
         for pair in pairs:
-            if 'high_res' in header:
+            pair = pair.decode('utf-8')
+            if b'high_res' in header:
+            # if 'high_res' in header:
                 hres_dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
                 hres_values.append(float(pair.split(',')[1]))
+
+
 
                 if 'nan' not in pair:
                     dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
@@ -558,7 +563,7 @@ def ecmwf_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 def get_time_series(request):
@@ -628,7 +633,7 @@ def lis_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
@@ -691,7 +696,7 @@ def hiwat_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No HIWAT data found for the selected reach.'})
 
 
@@ -767,6 +772,7 @@ def get_historic_data(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_dates.append(dt.datetime.strptime(era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
             era_values.append(float(era_pair.split(',')[1]))
 
@@ -807,7 +813,7 @@ def get_historic_data(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -832,6 +838,7 @@ def get_flow_duration_curve(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_values.append(float(era_pair.split(',')[1]))
 
         sorted_daily_avg = np.sort(era_values)[::-1]
@@ -872,7 +879,7 @@ def get_flow_duration_curve(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -1010,7 +1017,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -1057,7 +1064,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1112,7 +1119,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1167,7 +1174,7 @@ def get_hiwat_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1305,7 +1312,7 @@ def shp_to_geojson(request):
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print (str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1445,7 +1452,9 @@ def forecastpercent(request):
         dicts = ens.content.splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content)
+        # rpdict = ast.literal_eval(rpall.content)
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
+
         rpdict.pop('max', None)
 
         rivperc = {}
@@ -1458,7 +1467,8 @@ def forecastpercent(request):
 
         dictlen = len(dicts)
         for i in range(1, dictlen):
-            dictstr.append(dicts[i].split(","))
+            # dictstr.append(dicts[i].split(","))
+            dictstr.append(dicts[i].decode('utf-8').split(","))
 
         for rps in rivperc:
             rp = float(rpdict[rps])
@@ -1476,7 +1486,8 @@ def forecastpercent(request):
 
         for keyss in rivperc:
             data = riverpercent[keyss]
-            ordered_data = sorted(data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            # ordered_data = sorted(data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            ordered_data = sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
