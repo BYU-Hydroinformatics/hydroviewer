@@ -9,7 +9,6 @@ from tethys_sdk.base import TethysAppBase
 import os
 import requests
 from requests.auth import HTTPBasicAuth
-from requests.auth import HTTPDigestAuth
 import json
 import numpy as np
 import netCDF4 as nc
@@ -140,11 +139,15 @@ def ecmwf(request):
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
     gurl=app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json'
+    print(gurl)
     user=app.get_custom_setting('user_geoserver')
     password=app.get_custom_setting('password_geoserver')
     # res2 = requests.get(gurl, auth=HTTPDigestAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')))
     # res2 = requests.get(gurl, auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')),verify=False)
-    res2 = requests.get(gurl, auth=HTTPBasicAuth(user, password),verify=False)
+    # res2 = requests.get(gurl, auth=HTTPBasicAuth(user, password),verify=False)
+    res2 = requests.get(gurl, auth=(user, password))
+
+
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
