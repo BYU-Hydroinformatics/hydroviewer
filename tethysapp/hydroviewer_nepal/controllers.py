@@ -142,10 +142,11 @@ def ecmwf(request):
     print(gurl)
     user=app.get_custom_setting('user_geoserver')
     password=app.get_custom_setting('password_geoserver')
+    auth_values=(user,password)
     # res2 = requests.get(gurl, auth=HTTPDigestAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')))
     # res2 = requests.get(gurl, auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')),verify=False)
     # res2 = requests.get(gurl, auth=HTTPBasicAuth(user, password),verify=False)
-    res2 = requests.get(gurl, auth=(user, password),verify=False)
+    res2 = requests.get(gurl, auth=auth_values,verify=False)
 
 
 
