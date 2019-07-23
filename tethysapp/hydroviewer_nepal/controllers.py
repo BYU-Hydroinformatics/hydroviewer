@@ -138,7 +138,7 @@ def ecmwf(request):
    
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-    gurl=app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json'
+    gurl=app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json/admin/C2Y376zm80T8v'
     print(gurl)
     user=app.get_custom_setting('user_geoserver')
     password=app.get_custom_setting('password_geoserver')
