@@ -141,7 +141,7 @@ def convert_json(items):
 # Retrieve Precipitation Historical Data from HydroShare
 #def hydroshare_retrieve(filename, destination):
 
-#    auth = HydroShareAuthBasic(username='jasonb18', password='chadwick3')
+#    auth = HydroShareAuthBasic(username='', password='')
 #    hs = HydroShare(auth=auth)
 #    fname = filename
 #    fpath = hs.getResourceFile('71d674ad26ab40d89baa319aa4a5b1cd', fname, destination=destination)

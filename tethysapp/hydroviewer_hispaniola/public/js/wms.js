@@ -996,7 +996,7 @@ function map_events() {
                         easting = "%.2f" % feature.get('Y'),
                         region = feature.get('REGION')
                         precipitation = feature.get('HOY')
-                        cumul_precip = feature.get('Cumul. Precip.')
+                    //    cumul_precip = feature.get('Cumul. Precip.')
                     //    today = new Date();
                     //    date = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
                     //console.log(date)
@@ -1009,14 +1009,12 @@ function map_events() {
                                 <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Station Code</th>
                                 <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Region</th>
                                 <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Precipitation (mm)</th>
-                                <th style="border: 1px solid #ddd; text-align:center; padding:8px; background-color:#000099; color: white">Cumul. Precip. (mm)</th>
                             </tr>
                             <tr>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_name}</td>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${station_code}</td>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${region}</td>
                                 <td style="border: 1px solid #ddd; text-align:center; padding:8px">${precipitation}</td>
-                                <td style="border: 1px solid #ddd; text-align:center; padding:8px">${cumul_precip}</td>
                             </tr>
                         </table>`
 
