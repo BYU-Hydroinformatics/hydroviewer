@@ -135,8 +135,15 @@ def ecmwf(request):
     #                   any(val in value[0].lower().replace(' ', '') for
     #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
 
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    geos_username = geoserver_engine.username
+    geos_password = geoserver_engine.password
+
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-    res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')), verify=False)
+    res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
