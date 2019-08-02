@@ -13,6 +13,8 @@ import json
 import numpy as np
 import netCDF4 as nc
 import shutil
+import zipfile
+import subprocess
 
 from osgeo import ogr
 from osgeo import osr
@@ -110,7 +112,7 @@ def ecmwf(request):
     hiddenAttr = ""
     if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
         hiddenAttr = "hidden"
-    print hiddenAttr
+    print(hiddenAttr)
     init_model_val = request.GET.get('model', False) or app.get_custom_setting(
         'default_model_type') or 'Select Model'
     init_ws_val = app.get_custom_setting(
@@ -136,10 +138,17 @@ def ecmwf(request):
     #                   any(val in value[0].lower().replace(' ', '') for
     #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
 
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    geos_username = geoserver_engine.username
+    geos_password = geoserver_engine.password
+
     watershed_list = [['Select Watershed', '']]  # + watershed_list
 
     res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
-                        '/featuretypes.json', auth=HTTPBasicAuth(app.get_custom_setting('user_geoserver'), app.get_custom_setting('password_geoserver')), verify=False)
+                        '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)[
@@ -275,7 +284,7 @@ def get_warning_points(request):
                 "warning2": json.loads(res2.content)["features"]
                 })
         except Exception as e:
-            print str(e)
+            print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -314,7 +323,8 @@ def ecmwf_get_time_series(request):
         std_dev_upper_values = []
 
         for pair in pairs:
-            if 'high_res' in header:
+            pair = pair.decode('utf-8')
+            if b'high_res' in header:
                 hres_dates.append(dt.datetime.strptime(
                     pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
                 hres_values.append(float(pair.split(',')[1]))
@@ -449,7 +459,7 @@ def ecmwf_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -514,7 +524,7 @@ def lis_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
@@ -591,6 +601,7 @@ def get_historic_data(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_dates.append(dt.datetime.strptime(
                 era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
             era_values.append(float(era_pair.split(',')[1]))
@@ -633,7 +644,7 @@ def get_historic_data(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -659,6 +670,7 @@ def get_flow_duration_curve(request):
         era_values = []
 
         for era_pair in era_pairs:
+            era_pair = era_pair.decode('utf-8')
             era_values.append(float(era_pair.split(',')[1]))
 
         sorted_daily_avg = np.sort(era_values)[::-1]
@@ -699,7 +711,7 @@ def get_flow_duration_curve(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -838,7 +850,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -885,7 +897,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -943,7 +955,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1076,7 +1088,7 @@ def shp_to_geojson(request):
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1219,7 +1231,7 @@ def forecastpercent(request):
         dicts = ens.content.splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content)
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
         rpdict.pop('max', None)
 
         rivperc = {}
@@ -1232,7 +1244,7 @@ def forecastpercent(request):
 
         dictlen = len(dicts)
         for i in range(1, dictlen):
-            dictstr.append(dicts[i].split(","))
+            dictstr.append(dicts[i].decode('utf-8').split(","))
 
         for rps in rivperc:
             rp = float(rpdict[rps])
@@ -1251,8 +1263,8 @@ def forecastpercent(request):
         for keyss in rivperc:
             data = riverpercent[keyss]
 
-            ordered_data = sorted(
-                data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            ordered_data = sorted(list(
+                data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
@@ -1315,20 +1327,40 @@ def ajax_add_layer(request):
     layer_code = str(request.POST.get('layerCode'))
 
     user_workspace = get_user_workspace(request)
-
     layer_dir = os.path.join(user_workspace, layer_code)
 
+    # create directory if it doesn't exist
     if not os.path.exists(layer_dir):
         os.makedirs(layer_dir)
 
+    # delete old files in the directory
+    if os.path.exists(layer_dir):
+        shutil.rmtree(layer_dir)
+        os.mkdir(layer_dir)
+
+    # Save files to user workspace
     for n, uploaded_file in enumerate(file_list):
-        with open(os.path.join(layer_dir, uploaded_file.name), 'w+') as destination:
+        ext = uploaded_file.name.split('.')[-1]
+        with open(os.path.join(layer_dir, layer_code + '.' + ext), 'wb') as destination:
             for chunk in file_list[n].chunks():
                 destination.write(chunk)
 
+    # Zip files and save to user workspace
+    name_of_zip = layer_code + '.zip'
+    path = layer_dir
+    files = os.listdir(layer_dir)
+    archive = zipfile.ZipFile(os.path.join(layer_dir, name_of_zip), mode='w')
+    for file in files:
+        archive.write(os.path.join(path, file), arcname=file)
+    archive.close()
+
+    zippath = os.path.join(layer_dir, name_of_zip)
+
+    # Retrieve a geoserver engine.
     geoserver_engine = app.get_spatial_dataset_service(
         name='main_geoserver', as_engine=True)
 
+    # Check for workspace and create workspace for app if it doesn't exist.
     response = geoserver_engine.list_workspaces()
 
     if response['success']:
@@ -1344,26 +1376,23 @@ def ajax_add_layer(request):
         str(file_list[0]).split(".")[:-1]))
 
     # Deletes store before adding new store on GeoServer.
-    response2 = geoserver_engine.delete_store(
+    geoserver_engine.delete_store(
         store_id=store_id,
         purge=True,
         recurse=True,
         debug=False
-        )
-
-    response2
+    )
 
     layer_response = geoserver_engine.create_shapefile_resource(
         store_id=store_id,
-        shapefile_base=res_base,
+        shapefile_zip=zippath,
         overwrite=True
-        )
+    )
 
     if layer_response['success'] is True:
         return_obj["success"] = 'true'
         return_obj["results"]["workspace"] = WORKSPACE
         return_obj["results"]["layer_code"] = layer_code
         return JsonResponse(return_obj)
-
     else:
         return JsonResponse(return_obj)

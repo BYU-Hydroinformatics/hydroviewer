@@ -1,502 +1,502 @@
-CODIGO,NOMBRE,X,Y,Z,REGION,ACTUAL,ACTUAL,Cumul. Precip.,TODAY,15-Nov-18,14-Nov-18,13-Nov-18,12-Nov-18,11-Nov-18,10-Nov-18
-SIAP-23,Sede-INDRHI,402188,204057,,OZA-NIZ,clim�tica,Satelital,245,22,23,25,32,72,29,42
-SIAP-26,Valdesia,364822.4,2035372.9,,OZA-NIZ,clim�tica,Satelital,Cumul. Precip.,58,15,44,66,2,64,79
-SIAP-2,Pico Duarte,290123.9,2104041.7,,YNOR,clim�tica,Satelital,175,4,20,25,37,6,40,43
-SIAP-11,Don Miguel,218377,2158781.9,,YNOR,clim�tica,Satelital,269,2,49,29,22,77,28,62
-SIAP-14,Isa,345119.9,2077242.6,,YNOR,clim�tica,Satelital,350,67,70,25,78,61,49,0
-SIAP-17,Jarabacoa,331114.5,2115121.9,,YNOR,clim�tica,Satelital,206,12,66,23,62,29,3,11
-SIAP-20,Tavera,320505.1,2136009.7,,YNOR,clim�tica,Satelital,369,66,53,16,49,63,50,72
-SIAP-29,Arroyo Ca�a,346025.3,2069794.8,,YNOR,clim�tica,Satelital,205,7,29,21,76,65,1,6
-SIAP-43,Mata Grande,394798.8,2121410.5,,YNOR,clim�tica,Satelital,269,2,26,68,19,36,51,67
-SIAP-32,Constanza,319166.5,2091834.8,,YSUR,clim�tica,Satelital,105,15,9,20,44,5,0,12
-SIAP-35,Los Valencios,258710.1,2111222.9,,YSUR,clim�tica,Satelital,290,14,49,43,37,23,68,56
-SIAP-38,Guayabal-Padre las Casas,305115.3,2074694.3,,YSUR,clim�tica,Satelital,373,77,62,5,80,48,23,78
-SIAP-41,San Juan km 11,273172,2075533,,YSUR,clim�tica,Satelital,317,79,49,2,66,46,6,69
-SIAP-52,El 15 de Azua,302700.4,2042523.1,,YSUR,clim�tica,Satelital,332,57,20,30,77,59,58,31
-SIAP-5,Juma ,354005.6,2090084,,YUNA,clim�tica,Satelital,275,73,34,5,44,70,34,15
-SIAP-8,Los Botados,332820,2087095.1,,YUNA,clim�tica,Satelital,218,28,21,74,4,9,39,43
-SIAP-99,Nizao Bocaina,346037,2065012.2,,OZA-NIZ,hidrom�trica,Satelital,187,59,14,15,37,10,46,6
-SIAP-100,Mahoma Rosalito,355592,2055817,,OZA-NIZ,hidrom�trica,Satelital,347,35,55,62,72,14,53,56
-SIAP-101,Mahomita el Cacao,362760,2049278,,OZA-NIZ,hidrom�trica,Satelital,328,10,59,71,50,60,1,77
-SIAP-102,Presa de Jiguey,354652,2051200,,OZA-NIZ,hidrom�trica,Satelital,310,4,19,40,69,65,35,78
-SIAP-103,Presa de Aguacate,360528,2045604,,OZA-NIZ,hidrom�trica,Satelital,338,51,71,68,16,37,69,26
-SIAP-104,Presa de Valdes�a,364768,2034070,,OZA-NIZ,hidrom�trica,Satelital,314,73,36,69,76,3,26,31
-SIAP-105,Contraembalse Las Bar�as,366337,2030822,,OZA-NIZ,hidrom�trica,Satelital,239,41,54,0,63,4,32,45
-SIAP-56,Jimenoa Redondo,333118,2104490,,YNOR,hidrom�trica,Satelital,206,51,29,13,7,61,21,24
-SIAP-57,Yaque del Norte Boma,323977,2121535,,YNOR,hidrom�trica,Satelital,200,49,11,65,20,19,27,9
-SIAP-58,Yaque del Pinar Quemado,323861.5,2111592.3,,YNOR,hidrom�trica,Satelital,248,2,21,51,21,43,34,76
-SIAP-59,Yaque del Norte Manabao,311918.1,2110080.5,,YNOR,hidrom�trica,Satelital,208,57,0,24,45,37,1,44
-SIAP-60,Baiguate Paso Bajito,329852.7,2108245.9,,YNOR,hidrom�trica,Satelital,379,54,75,57,4,62,77,50
-SIAP-77,Contraembalse de Lop�z,316790,2136112,,YNOR,hidrom�trica,Satelital,222,36,0,45,49,51,14,27
-SIAP-78,Magua Los Ramones,274822,2134825.9,,YNOR,hidrom�trica,Satelital,272,67,54,48,5,48,15,35
-SIAP-79,Cidra La Cidra,256614,2133245,,YNOR,hidrom�trica,Satelital,311,79,30,67,19,5,34,77
-SIAP-80,Cenov� en Cenov�,265920.1,2137583.5,,YNOR,hidrom�trica,Satelital,271,42,27,78,32,59,8,25
-SIAP-81,Presa de Maguaca,236388,2171072,,YNOR,hidrom�trica,Satelital,408,77,78,80,15,49,70,39
-SIAP-82,Presa de Chacuey,233074,2171684,,YNOR,hidrom�trica,Satelital,361,15,70,74,68,22,70,42
-SIAP-83,Presa de Tavera,319195,2133408,,YNOR,hidrom�trica,Satelital,195,4,44,44,3,38,15,47
-SIAP-85,Yaque del Norte Santiago,321046,2151267,,YNOR,hidrom�trica,Satelital,351,39,63,74,73,58,8,36
-SIAP-86,Guanajuma el Cerraz�,316700,2131815,,YNOR,hidrom�trica,Satelital,376,66,72,28,11,68,58,73
-SIAP-87,Baiguaque Los Pilones,330053.5,2129921.9,,YNOR,hidrom�trica,Satelital,170,33,23,13,7,31,5,58
-SIAP-88,Amina Inoa,294365,2146498,,YNOR,hidrom�trica,Satelital,271,21,67,49,5,69,32,28
-,Puente San Rafael,,,,,hidrom�trica,Satelital,367,44,76,30,64,60,51,42
-SIAP-89,Yaque del N el Puente yapur d,283894,2167349,,YNOR,hidrom�trica,Satelital,322,62,64,4,48,79,25,40
-SIAP-90,Gayub�n Rinc�n,249236,2160450,,YNOR,hidrom�trica,Satelital,326,60,60,21,50,21,34,80
-SIAP-91,Jagua el Higuero,306361,2129251,,YNOR,hidrom�trica,Satelital,299,66,55,75,28,21,2,52
-SIAP-92,Jagua Los Limones,302502,2121546,,YNOR,hidrom�trica,Satelital,263,34,52,13,77,13,44,30
-SIAP-93,Bao Abajo Confluencia ,282891,2116835,,YNOR,hidrom�trica,Satelital,176,39,3,12,40,9,41,32
-SIAP-94,Bao Sabaneta,292732,2124733,,YNOR,hidrom�trica,Satelital,322,73,75,15,18,34,36,71
-SIAP-95,Bao Agua Caliente,300398,2128718,,YNOR,hidrom�trica,Satelital,168,54,21,3,32,29,29,0
-SIAP-96,Contraembalse Monci�n,281535,2153761,,YNOR,hidrom�trica,Satelital,329,57,80,59,52,58,19,4
-SIAP-97,Mao Meseta,280743,2151434,,YNOR,hidrom�trica,Satelital,231,54,14,12,22,36,75,18
-SIAP-98,Presa de Monci�n,277438,2147063,,YNOR,hidrom�trica,Satelital,281,76,8,12,59,57,23,46
-SIAP-121,Mao  La Cidra ,256590,2133781,,YNOR,hidrom�trica,Satelital,252,41,11,49,80,43,4,24
-SIAP-106,San Juan Sabana Alta,277664,2071707,,YSUR,hidrom�trica,Satelital,223,1,80,5,29,41,34,33
-SIAP-107,Yaque del Sur Los G�iros,288586,2047831,,YSUR,hidrom�trica,Satelital,296,48,76,60,6,19,32,55
-SIAP-108,Presa de Mijo,278507,2086895,,YSUR,hidrom�trica,Satelital,220,34,17,45,19,29,46,30
-SIAP-109,Presa de Sabaneta,258845,2100561,,YSUR,hidrom�trica,Satelital,356,26,36,56,67,71,74,26
-SIAP-110,San Juan Paso de Lima ,257919,2105850,,YSUR,hidrom�trica,Satelital,297,61,28,70,15,50,4,69
-SIAP-111,San Juan Los Valencios,258828,2111276,,YSUR,hidrom�trica,Satelital,262,28,11,42,4,64,70,43
-SIAP-112,Arroyo Lim�n el Rodeo,261362,2102994,,YSUR,hidrom�trica,Satelital,321,11,51,27,67,36,68,61
-SIAP-113,Yaque del Sur el Aguacate,286143,2086141,,YSUR,hidrom�trica,Satelital,307,77,65,23,40,31,57,14
-SIAP-114,Del Medio Palomino,294047,2080772,,YSUR,hidrom�trica,Satelital,351,71,59,28,69,71,11,42
-SIAP-115,Las Cuevas Las Guamas,308907,2071396,,YSUR,hidrom�trica,Satelital,297,78,45,1,26,26,55,66
-SIAP-116,Guayabal La Coja,306080,2074394,,YSUR,hidrom�trica,Satelital,263,11,20,50,60,21,57,44
-SIAP-117,Mijo el Cacheo,276897,2082276,,YSUR,hidrom�trica,Satelital,343,52,11,34,43,58,69,76
-SIAP-118,Maguana en Maguana Arriba,263591,2096887,,YSUR,hidrom�trica,Satelital,253,1,36,77,43,50,43,3
-SIAP-119,Yaque del Sur Presa Sabana Yegua,284192,2069868,,YSUR,hidrom�trica,Satelital,172,52,5,22,17,33,15,28
-SIAP-61,Cam� Bayacanes,333274,2127250,,YUNA,hidrom�trica,Satelital,322,65,24,75,61,12,38,47
-SIAP-62,Masipedro Los Arroces,347240,2098822,,YUNA,hidrom�trica,Satelital,344,62,57,41,51,22,37,74
-SIAP-63,Jima Ca�ada de Piedra,349177,2103131,,YUNA,hidrom�trica,Satelital,114,9,5,17,5,16,23,39
-SIAP-64,Yuna La Verde,354228,20970264,,YUNA,hidrom�trica,Satelital,334,49,49,74,44,63,40,15
-SIAP-65,Yuna Platanal,382929,21143371,,YUNA,hidrom�trica,Satelital,254,67,72,38,41,18,12,6
-SIAP-66,Presa de Hatillo,370403.7,2100046.4,,YUNA,hidrom�trica,Satelital,317,61,71,0,69,62,9,45
-SIAP-67,Blanco Los Botados,334265,2086668,,YUNA,hidrom�trica,Satelital,205,3,12,28,4,48,50,60
-SIAP-68,Tireo La Playa,333274,2088663,,YUNA,hidrom�trica,Satelital,357,70,52,5,73,52,75,30
-SIAP-69,Presa de Blanco,335643,2089009,,YUNA,hidrom�trica,Satelital,356,60,66,12,63,60,21,74
-SIAP-70,Presa de  Tireito,339668,2086109,,YUNA,hidrom�trica,Satelital,206,10,45,19,0,20,57,55
-,Presa Arroyon,,,,,hidrom�trica,Satelital,339,21,61,56,61,35,56,49
-SIAP-72,Arroyo Blanco el Torito,346517,2076095,,YUNA,hidrom�trica,Satelital,258,36,40,31,19,78,11,43
-SIAP-73,Yuna Piedra Los Veganos,345550,2080098,,YUNA,hidrom�trica,Satelital,272,11,65,50,21,12,71,42
-SIAP-74,Yuna Los Quemados,345919,2089037,,YUNA,hidrom�trica,Satelital,279,70,73,7,15,75,16,23
-SIAP-75,Maim�n,346823,2090281,,YUNA,hidrom�trica,Satelital,385,44,51,78,28,75,34,75
-SIAP-76,Presa de Rinc�n,351984,2113055,,YUNA,hidrom�trica,Satelital,351,40,60,52,63,17,80,39
-SIAP-84,Cam� Guanabano,335227,2118522,,YUNA,hidrom�trica,Satelital,184,3,5,78,5,19,37,37
-SIAP-71,Presa Cabeza de Caballo,220393,2152706,,,hidrom�trica,Satelital,342,77,79,22,69,6,67,22
-SIAP-47,El Aguacate Nagua,413327.9,2123680.5,,ATLANTICA,pluviom�trica,Satelital,390,68,19,39,43,78,66,77
-SIAP-48,El Novillo,345002.5,2077212.8,,YUNA,pluviom�trica,Satelital,231,16,51,66,14,39,5,40
-,Bayahibe,552155.9,2017294.6,,ESTE,pluviom�trica,Satelital,363,50,70,57,60,50,15,61
-SIAP-4,Higuey,531471.6,2058803,,ESTE,pluviom�trica,Satelital,235,61,51,18,65,22,18,0
-SIAP-27,Palo de Caja,352224,2049484.9,,OZA-NIZ,pluviom�trica,Satelital,303,76,8,33,49,16,79,42
-SIAP-30,Nizao-Rancho Arriba,330711.6,2070787.2,,OZA-NIZ,pluviom�trica,Satelital,316,28,52,69,36,55,25,51
-SIAP-1,Las Matas de Santa Cruz,342231.5,2173352,,YNOR,pluviom�trica,Satelital,325,27,72,28,42,29,70,57
-SIAP-3,Manabao,211164.3,2108675.6,,YNOR,pluviom�trica,Satelital,205,30,46,20,20,2,42,45
-SIAP-4,Loma Quemada,292214.9,2113090.6,,YNOR,pluviom�trica,Satelital,227,27,16,12,48,47,59,18
-SIAP-6,La Pita,329019.8,2103549.1,,YNOR,pluviom�trica,Satelital,343,40,32,66,2,56,75,72
-SIAP-7,El Arroyaso,337127.8,2104336.8,,YNOR,pluviom�trica,Satelital,215,41,41,8,57,34,20,14
-SIAP-9,Cruz de Cuaba,319005.8,2099370.1,,YNOR,pluviom�trica,Satelital,346,35,57,71,71,35,5,72
-SIAP-15,Jima Rinc�n,353218.3,2116254.3,,YNOR,pluviom�trica,Satelital,300,75,55,10,62,30,62,6
-SIAP-16,Juan Adri�n (Los Platanos),359657.6,2075037.6,,YNOR,pluviom�trica,Satelital,179,45,4,29,35,28,35,3
-SIAP-18,Magua Monci�n,275219.2,2145678.8,,YNOR,pluviom�trica,Satelital,296,31,62,9,60,39,44,51
-SIAP-19,La Cidra,255723.6,2130734.5,,YNOR,pluviom�trica,Satelital,276,55,8,53,33,19,50,58
-SIAP-21,Los Ramones,273800.3,2134869.3,,YNOR,pluviom�trica,Satelital,311,33,59,61,22,16,59,61
-SIAP-22,La Diferencia,285120.7,2131441.3,,YNOR,pluviom�trica,Satelital,324,64,17,47,62,60,14,60
-SIAP-24,Resbaloso,231575.1,2149595.9,,YNOR,pluviom�trica,Satelital,183,46,23,52,14,13,24,11
-SIAP-25,El Cajuil (Los Pomos),226502.9,2140410.4,,YNOR,pluviom�trica,Satelital,209,19,5,23,60,61,38,3
-SIAP-28,Alto Bandera,328604.3,2080645.5,,YNOR,pluviom�trica,Satelital,284,53,79,50,13,32,13,44
-SIAP-34,Valle de Tetero,297970.3,2211228.2,,YNOR,pluviom�trica,Satelital,379,58,38,66,40,57,53,67
-SIAP-A2842,Mano Javier,275928,2093689.2,,YNOR,pluviom�trica,Satelital,277,66,0,11,33,50,72,45
-SIAP-45,Janey,212470.2,2121086.9,,YNOR,pluviom�trica,Satelital,391,23,76,65,42,50,66,69
-SIAP-49,Valle de Bao,284865,1998339,,YNOR,pluviom�trica,Satelital,201,12,32,18,6,59,27,47
-SIAP-50,Loma de la Tachuela,306221.1,2116074.7,,YNOR,pluviom�trica,Satelital,247,50,51,71,25,15,34,1
-SIAP-54,Alto La Cotorra,308397.6,2106119,,YNOR,pluviom�trica,Satelital,188,38,11,11,3,2,46,77
-SIAP-13,Loma del Medio,344418.3,2084442.9,,YNOR,pluviom�trica,Satelital,250,12,23,44,26,58,74,13
-SIAP-46,Donaja,300472.6,2119672.8,,YNOR,pluviom�trica,Satelital,367,43,62,58,19,63,47,75
-SIAP-33,El Naranjito,313565.1,2067136.3,,YSUR,pluviom�trica,Satelital,282,79,46,75,28,27,17,10
-SIAP-37,Los Frios,291729.8,2088123.6,,YSUR,pluviom�trica,Satelital,316,25,66,29,80,59,22,35
-SIAP-39,Los Pinales,264012.5,2116475.7,,YSUR,pluviom�trica,Satelital,445,74,39,74,63,43,72,80
-SIAP-40,Barahona,275011.8,2016256.7,,YSUR,pluviom�trica,Satelital,329,35,47,54,80,2,45,66
-SIAP-44,Las Ca�itas,300265.5,2086923.1,,YSUR,pluviom�trica,Satelital,396,68,51,76,20,79,78,24
-SIAP-51,Los Jobos,353757.9,2019867.5,,YSUR,pluviom�trica,Satelital,239,2,32,64,15,58,15,53
-SIAP-53,Los Chicharrones ,290826.2,2124639.5,,YSUR,pluviom�trica,Satelital,316,61,11,67,57,41,21,58
-SIAP-31,El R�o,328695.8,2100139,,YSUR,pluviom�trica,Satelital,163,64,2,3,4,36,33,21
-SIAP-36,Juancho,261107.6,1977546.6,,YSUR,pluviom�trica,Satelital,281,79,36,41,79,19,14,13
-SIAP-10,Mechesito,339050.7,2083227.7,,YUNA,pluviom�trica,Satelital,265,62,20,23,48,41,2,69
-SIAP-12,La Ceiba,335918.2,2089896.3,,YUNA,pluviom�trica,Satelital,269,53,31,32,61,53,12,27
-4426,Los Arroyos,338694,2060619,1044,,clim�tica,Convencional,256,66,59,33,31,52,10,5
-4425,El Memiso,334128,2047925,536,,clim�tica,Convencional,316,34,70,27,74,11,55,45
-4401,Naranjal,344301,2052210,633,,clim�tica,Convencional,375,44,21,75,20,73,65,77
-3402,Medina,379729,2049654,150,,clim�tica,Convencional,399,65,65,72,62,33,54,48
-3401,Engombe,394347,2041314,10,,clim�tica,Convencional,399,59,44,73,77,6,60,80
-3001,El Seibo,495395,2075299,109,,clim�tica,Convencional,277,26,49,6,6,49,66,75
-2603,Naranjo de China,518049,2067227,154,,clim�tica,Convencional,261,45,58,13,34,65,6,40
-2401,Higuey,531750,2058800,90,,clim�tica,Convencional,429,80,60,28,80,32,78,71
-,Trepada Alta,451652,2098275,227,,clim�tica,Autom�tica,295,32,78,44,64,9,16,52
-,La Pe�ita,466033,2089593,344,,clim�tica,Autom�tica,282,28,46,68,31,52,49,8
-3812,Santana,372330,2021927,35,,clim�tica,Autom�tica,258,63,13,12,80,1,55,34
-,Pueblo Nuevo,413380,2103343,19,,clim�tica,Autom�tica,245,55,65,18,48,22,4,33
-3316,Comate,4353288,2073442,45,,clim�tica,Autom�tica,360,36,74,41,43,54,77,35
-3105,Hato Mayor,471450,2074750,102,,clim�tica,Autom�tica,307,42,14,67,47,38,31,68
-6693,Sabana de la Mar,459086,2106696,13,,clim�tica,Autom�tica,227,33,10,54,19,37,34,40
-6688,Bayahibe,516452,2035231,50,,clim�tica,Autom�tica,341,76,67,7,80,29,8,74
-6696,Citricos Dominicanos,369223,2073361,220,,clim�tica,Autom�tica,265,23,64,1,6,37,75,59
-411,Mata Grande,291113,2124831,938,,clim�tica,Convencional,385,36,49,46,64,61,57,72
-401,Jarabacoa,331104,2115489,574,,clim�tica,Convencional,284,22,47,67,23,49,50,26
-404,Santiago Isa,316600,2151038,169,,clim�tica,Convencional,284,49,57,58,51,6,46,17
-405,Quinigua,313974,2154551,127,,clim�tica,Convencional,280,61,37,8,41,79,9,45
-402,Tavera,319992,2133265,374,,clim�tica,Convencional,202,30,24,65,6,49,28,0
-1814,Barraquito,417390,2114331,19,,clim�tica,Convencional,408,80,56,77,79,59,11,46
-408,La Antona,248399,2172455,44,,clim�tica,Convencional,279,10,46,64,5,67,59,28
-101,Don Miguel,218295,2157723,52,,clim�tica,Convencional,353,55,26,76,78,6,38,74
-602,La Isabela,287340,2195484,222,,clim�tica,Convencional,198,5,14,57,24,41,33,24
-1816,Jos� Contreras,347059,2153197,694,,clim�tica,Convencional,312,58,2,44,44,44,78,42
-1815,Angelina,371919,2115739,62,,clim�tica,Convencional,390,63,75,50,32,79,14,77
-1817,Los Botados,334298,2087219,951,,clim�tica,Convencional,278,12,25,39,39,20,79,64
-1802,Juma Bonao,354087,2090395,196,,clim�tica,Convencional,226,11,63,61,0,74,11,6
-403,San Jos� de las Matas,296903.5,2139186.2,530,,clim�tica,Convencional,330,41,41,77,55,20,79,17
-407,Santiago Rodr�guez,254772,2155388,120,,clim�tica,Convencional,282,78,78,67,2,10,19,28
-1002,Cuesta Barrosa,352052,2173698,10,,clim�tica,Convencional,271,54,42,30,40,45,32,28
-1501,Los Jengibres,390063,2149752,15,,clim�tica,Convencional,304,21,49,44,29,73,49,39
-1801,San Francisco de Macor�s,369672,2132978,110,,clim�tica,Convencional,173,53,14,5,5,8,42,46
-1803,El Lim�n,413826,2117960,8,,clim�tica,Convencional,377,75,37,43,72,64,45,41
-7313,Ceb�,307993,2139880,256,,clim�tica,Autom�tica,300,18,28,1,46,62,65,80
-7300,Las Placetas,301563,2124899,837,,clim�tica,Autom�tica,299,0,79,10,73,77,20,40
-7322,La Cabirma,382406,2099943,60,,clim�tica,Autom�tica,177,10,0,20,45,34,53,15
-7318,Cercadillo,269819,2167853,80,,clim�tica,Autom�tica,189,53,3,16,28,33,8,48
-7315,Diego de Ocampo,317150,2167007,951,,clim�tica,Autom�tica,350,22,74,37,78,35,48,56
-5312,Angostura,246462,2021823,45,,clim�tica,Convencional,338,71,58,6,53,45,80,25
-5302,Puerto Escondido,228266,2027525,414,,clim�tica,Convencional,337,49,52,54,80,61,20,21
-5313,"Guayabal, Postrer R�os",220014,2058319,174,,clim�tica,Convencional,312,76,43,78,1,40,47,27
-4904,El Pe��n,268773,2024454,22,,clim�tica,Convencional,363,61,80,75,55,10,59,23
-5408,Catanamat�as,246093,2108003,1086,,clim�tica,Convencional,265,2,16,66,28,66,33,54
-4903,"San Juan, Km. 11",273172,2075533,423,,clim�tica,Convencional,284,15,61,45,60,36,1,66
-4701,El Sisal,307321,2036559,352,,clim�tica,Convencional,318,18,51,39,73,72,18,47
-4915,Vallejuelo,253449,2064287,709,,clim�tica,Convencional,252,77,63,1,7,76,2,26
-5401,Matayaya,227341,2089938,434,,clim�tica,Convencional,205,13,28,40,54,27,34,9
-5411,Sabana Mula,230960,2106583,516,,clim�tica,Convencional,321,47,16,41,61,29,61,66
-4602,Resol�,317106,2042257,,,clim�tica,Convencional,279,66,15,79,8,17,78,16
-4911,El Tetero,299645,2089144,,,clim�tica,Convencional,357,33,34,79,78,58,46,29
-4983,El Valle-Constanza,318457.6,2091165.3,1200,,clim�tica,Convencional,276,3,52,24,71,19,80,27
-5301,Neyba,242631,2047791,10,,clim�tica,Convencional,327,50,56,57,60,10,17,77
-5410,Naranjito,237540.4,2134155.9,900,,clim�tica,Convencional,243,6,75,14,32,11,50,55
-4916,"Guayabal, Padre las Casas",305959.7,2074193.5,710,,clim�tica,Convencional,290,6,56,14,66,52,46,50
-6699,Peralta,314694,2055051,563,,clim�tica,Autom�tica,269,70,11,67,61,34,8,18
-6701,Higuerito,222994,2102847,467,,clim�tica,Autom�tica,351,6,58,53,6,77,77,74
-5104,El Plat�n Villa Nizao,266934,1996582,264,,clim�tica,Autom�tica,223,2,67,69,10,17,10,48
-6692,Esteban�a,326600,2042350,97,,clim�tica,Autom�tica,233,2,48,7,59,67,37,13
-7319,Las Mercedes,217865,2006300,632,,clim�tica,Autom�tica,438,67,48,76,47,70,80,50
-7307,Higuerito,254671,1988397,266,,clim�tica,Autom�tica,304,75,47,72,15,14,80,1
-,Las Lajitas,252019,2050322,169,,clim�tica,Autom�tica,296,38,38,33,53,51,28,55
-7316,Los Copeyes,243072,2102549,622,,clim�tica,Autom�tica,220,5,1,75,54,37,36,12
-7309,Isla Cabritos,212599,2047172,-14,,clim�tica,Autom�tica,253,44,30,46,47,18,10,58
-4001,El Recodo,358514,2031887,221,,pluviom�trica,Convencional,318,61,26,21,57,72,54,27
-4003,Distrito de Riego,361899,2020373,199,,pluviom�trica,Convencional,385,43,35,61,68,49,59,70
-3305,El Higuero,394984,2058398,13,,pluviom�trica,Convencional,275,71,37,12,37,39,78,1
-3302,El Cacique,409225,2080762,37,,pluviom�trica,Convencional,270,62,29,12,67,53,7,40
-3308,Los Hidalgos,430813,2088654,108,,pluviom�trica,Convencional,168,56,18,31,7,47,2,7
-3002,Paso Al Medio,481750,2052999,28,,pluviom�trica,Convencional,235,41,42,28,22,42,13,47
-2602,Guanito,521708,2059680,71,,pluviom�trica,Convencional,240,47,4,24,51,45,69,0
-2601,Santa Luc�a,506202,2065648,87,,pluviom�trica,Convencional,290,20,28,58,22,34,56,72
-2301,Anamuya,539288,2066653,51,,pluviom�trica,Convencional,246,34,69,54,12,2,8,67
-,Santana,360655,2056371,615,,pluviom�trica,Convencional,190,28,36,28,52,37,7,2
-3003,Pedro S�nchez,484729,2089702.6,500,,pluviom�trica,Convencional,443,76,78,57,57,64,71,40
-3303,El Cerro,418741,2077213,22,,pluviom�trica,Convencional,192,50,2,72,21,10,19,18
-3301,Don Juan,399875,2081099,83,,pluviom�trica,Convencional,308,30,24,40,50,64,58,42
-3307,Comatillo,435207.6,2083692.3,150,,pluviom�trica,Convencional,237,38,37,29,23,16,53,41
-3314,Mata Mam�n,414129.2,2056635.5,12,,pluviom�trica,Convencional,374,69,79,60,36,62,68,0
-3404,Presa Isa,372444.2,2056040.2,280,,pluviom�trica,Convencional,239,49,8,43,35,29,27,48
-3601,El tablazo,375297.9,2035178.9,137,,pluviom�trica,Convencional,323,1,48,50,38,61,63,62
-3801,Nizao ,346815.3,2058843.2,580,,pluviom�trica,Convencional,228,1,33,31,44,40,42,37
-3804,La Laguna,350914,2050724.8,1170,,pluviom�trica,Convencional,212,17,24,23,39,8,56,45
-3806,Palo de Caja,352224,2049484.9,680,,pluviom�trica,Convencional,293,29,15,53,5,77,50,64
-4301,Matanza ,352576.8,2019046.4,60,,pluviom�trica,Convencional,147,34,1,51,12,24,13,12
-4402,Rancho del Pino,323898.7,2053354.2,860,,pluviom�trica,Convencional,362,70,62,27,13,68,48,74
-4405,Las Ci�nagas de Ocoa,329666.3,2055576.8,790,,pluviom�trica,Convencional,319,46,38,8,59,21,75,72
-4414,La Malagueta ,340015.3,2058930.2,1220,,pluviom�trica,Convencional,266,21,63,13,67,15,35,52
-4416,Pinar de Ocoa,336193.2,2050846,600,,pluviom�trica,Convencional,241,29,25,35,27,32,71,22
-4417,El Bejucal,334134.8,2056920.8,840,,pluviom�trica,Convencional,313,36,9,79,26,55,73,35
-4422,Los Ranchos,348532.1,2038815,720,,pluviom�trica,Convencional,255,53,0,64,4,57,57,20
-4428,El Lim�n de Ocoa,344184.7,2045460,780,,pluviom�trica,Convencional,264,1,5,59,42,30,70,57
-101,Don Miguel,218929.9,2158681,45,,pluviom�trica,Convencional,279,13,42,3,18,78,80,45
-413,PINAR QUEMADO,323776.1,2111839.1,,,pluviom�trica,Convencional,237,68,0,68,23,42,13,23
-202,LAS MATAS DE SANTA CRUZ,237124,2175103,54,,pluviom�trica,Convencional,279,45,29,6,73,71,9,46
-105,ZONA DE RIEGO DAJABON,,,,,pluviom�trica,Convencional,387,57,10,45,70,66,69,70
-1601,Cinta Negra,398388.9,2131442.6,180,,pluviom�trica,Convencional,236,21,43,37,56,5,40,34
-451,MAO (ZONA DE RIEGO),282206.8,2163556,80,,pluviom�trica,Convencional,308,57,69,7,57,28,80,10
-452,PRESA DE BAO,316388.9,2136050.8,340,,pluviom�trica,Convencional,318,22,79,22,70,29,47,49
-408,LA ANTONA,348576,2171612,48,,pluviom�trica,Convencional,228,19,42,63,30,19,38,17
-427,GUAYUBIN RINCON,251165,2160280,127,,pluviom�trica,Convencional,202,19,18,52,80,3,6,24
-407,SANTIAGO RODRIGUEZ,254771.6,2155388.4,120,,pluviom�trica,Convencional,209,37,51,27,62,8,12,12
-412,MAGUA MONCION,274461,2146464,411,,pluviom�trica,Convencional,287,73,52,6,21,40,41,54
-411,MATA GRANDE,291026.5,2124268.2,1000,,pluviom�trica,Convencional,309,13,51,38,72,13,56,66
-421,CA�EO,298980,2163286,77,,pluviom�trica,Convencional,205,66,4,37,3,34,39,22
-422,JINAMAGAO,292040,2161845,100,,pluviom�trica,Convencional,327,75,20,17,61,65,14,75
-425,PUENTE SAN RAFAEL,283513.5,2167425,,,pluviom�trica,Convencional,276,54,43,29,43,11,22,74
-434,LA CIENAGA MANABAO,304072.8,2109208.9,,,pluviom�trica,Convencional,280,28,77,29,17,26,57,46
-410,MANABAO,310787,2109259,917,,pluviom�trica,Convencional,232,28,37,22,57,7,40,41
-414,BOMA,325145.4,2120558.9,,,pluviom�trica,Convencional,262,27,5,40,68,11,70,41
-416,PINALITO,313221.8,2134699.2,,,pluviom�trica,Convencional,254,5,3,53,72,36,32,53
-420,HATO YAQUE,311389.2,2157782.4,,,pluviom�trica,Convencional,314,60,33,72,58,10,2,79
-444,REDONDO,333283.8,2102895.2,,,pluviom�trica,Convencional,244,36,50,22,34,51,19,32
-438,JANEY,313980.8,2120330.4,,,pluviom�trica,Convencional,211,11,9,70,80,22,8,11
-440,CAGUEYES,307340,2133499.6,,,pluviom�trica,Convencional,237,36,0,57,73,19,19,33
-446,LOS MONTAZOS,311258.5,2117037.1,,,pluviom�trica,Convencional,207,35,2,57,2,40,64,7
-447,LA CANA,235140.6,2171665.4,,,pluviom�trica,Convencional,262,25,20,16,65,64,62,10
-442,JUNCALITO,308427.9,2125861.5,,,pluviom�trica,Convencional,282,58,80,19,57,7,47,14
-448,JIMENOA,331735,2112656.4,,,pluviom�trica,Convencional,331,5,44,60,74,74,51,23
-462,ARROYO CA�A,273202,2183211,231,,pluviom�trica,Convencional,279,31,31,17,17,78,69,36
-461,LOS LIMONES,257096,2186986,264,,pluviom�trica,Convencional,300,3,28,79,41,49,31,69
-464,LOS PINOS,285250,2178600,275,,pluviom�trica,Convencional,305,64,41,58,48,55,13,26
-458,PE�A RANCHADERO,255566,2174936,,,pluviom�trica,Convencional,344,47,68,76,65,27,43,18
-459,RESBALOSO,244272,2143337,384,,pluviom�trica,Convencional,183,65,24,20,29,1,2,42
-460,LA CIDRA,256337,2133743,646,,pluviom�trica,Convencional,278,17,10,58,57,40,33,63
-465,ALBANA,299350,2146250,,,pluviom�trica,Convencional,274,46,73,26,25,63,9,32
-457,GURABO AFUERA,272255,2164934,109,,pluviom�trica,Convencional,350,50,16,66,71,71,17,59
-470,ZONA VILLA VASQUEZ,244321,2184039,49,,pluviom�trica,Convencional,301,72,27,40,26,35,27,74
-471,ZONA MAO,282517,2163788,450,,pluviom�trica,Convencional,270,16,20,28,79,10,53,64
-472,ZONA ESPERANZA,292266,2168404,116,,pluviom�trica,Convencional,291,46,64,14,54,46,28,39
-473,ZONA SANTIAGO,,,,,pluviom�trica,Convencional,249,75,11,48,72,17,22,4
-1057,DISTRITO LA VEGA(Yuna-Cam�),340472,2126385,111,,pluviom�trica,Convencional,258,2,31,16,17,63,49,80
-1001,JAMAO,347952.8,2171273,,,pluviom�trica,Convencional,219,19,49,5,67,50,9,20
-1002,CUESTA BARROSA,352051.7,2173698.4,,,pluviom�trica,Convencional,379,25,77,75,25,63,72,42
-1502,PLAYA DIAMANTE,405745.9,2165095.5,5,,pluviom�trica,Convencional,227,53,51,12,24,64,18,5
-1604,AGLIPO,409150,2121800,8,,pluviom�trica,Convencional,237,15,51,24,43,37,47,20
-1703,HATO VIEJO,459719,2131173,,,pluviom�trica,Convencional,358,36,12,57,56,69,72,56
-1704,LA LAGUNA,469437,2130017,,,pluviom�trica,Convencional,231,19,79,60,29,12,32,0
-1805,"MAIMON, EL PINO",363954,2089977,98,,pluviom�trica,Convencional,258,6,73,0,7,59,35,78
-1808,LOS RANCHITOS,351920,2122044,56,,pluviom�trica,Convencional,358,80,68,71,67,60,5,7
-1809,LICEY NARANJAL,340956,2137818,110,,pluviom�trica,Convencional,212,13,49,7,53,26,1,63
-1826,"TIREO, PINALITO",327636,2093174,1209,,pluviom�trica,Convencional,367,51,6,68,37,55,73,77
-1837,LA CABIRMA,381253,2099701,102,,pluviom�trica,Convencional,405,57,70,75,24,63,78,38
-1838,"CENOVI, SANTA ANA",255871,2130230,89,,pluviom�trica,Convencional,252,36,44,30,3,79,26,34
-1840,LOS TRES PASOS,385951,2098284,110,,pluviom�trica,Convencional,231,15,18,48,47,10,68,25
-1842,PIEDRA BLANCA,359709,2085015,194,,pluviom�trica,Convencional,282,56,9,66,33,9,63,46
-1856,EL PLACER,257110,2145508,331,,pluviom�trica,Convencional,276,66,39,30,65,20,1,55
-1858,DISTR. BAJO YUNA,407952,2137993,25,,pluviom�trica,Convencional,370,52,66,27,49,67,76,33
-201,Partido,232184,2156885,195,,pluviom�trica,Convencional,360,14,75,78,35,71,22,65
-1821,La Ceiba de Blanco,336453,2089616,788,,pluviom�trica,Convencional,286,6,19,53,32,68,64,44
-4501,Hatillo,337432.8,2034540.3,80,,pluviom�trica,Convencional,273,58,6,22,18,42,69,58
-5412,Cajuilito,226190,2112336,474,,pluviom�trica,Convencional,237,24,52,2,22,64,0,73
-5413,Guazumal El�as Pi�a,217521,2089170,426,,pluviom�trica,Convencional,261,27,23,65,66,51,27,2
-5402,Pozo Hondo,237955.6,2101784.4,620,,pluviom�trica,Convencional,162,39,0,10,33,70,7,3
-5403,Puertecito,235313.3,2080593.9,574,,pluviom�trica,Convencional,319,5,57,65,50,25,47,70
-5407,Ranchito Macas�as,224716,2095998,374,,pluviom�trica,Convencional,334,50,76,68,33,62,15,30
-4703,T�bara Abajo,299655.9,2043231.3,90,,pluviom�trica,Convencional,307,24,70,69,19,35,44,46
-4907,La Florida,279647,2083190,534,,pluviom�trica,Convencional,323,32,30,38,56,51,75,41
-4909,Guazumal,261532.7,2091930.3,487,,pluviom�trica,Convencional,272,38,40,55,64,19,39,17
-4910,Cacheo,276813,2081826,458,,pluviom�trica,Convencional,306,21,66,70,49,35,18,47
-4913,Villarpando,284897,2064445,307,,pluviom�trica,Convencional,277,31,10,71,42,71,5,47
-4921,Palo de Viento,257240.6,2119547.8,1490,,pluviom�trica,Convencional,370,18,2,76,72,66,56,80
-4936,Gajos de la Lagunita,278335.2,2089354.4,983,,pluviom�trica,Convencional,320,66,29,44,22,67,56,36
-5206,Los Olivares,,,,,pluviom�trica,Convencional,251,13,52,8,46,29,38,65
-4937,Valle del Tetero,297290.5,2101378.5,1540,,pluviom�trica,Convencional,356,56,60,72,3,44,45,76
-4947,Los Castillitos,307584.7,2095425.9,1200,,pluviom�trica,Convencional,280,32,54,15,52,1,51,75
-4949,Los Corralitos,322039,2092299.1,1372,,pluviom�trica,Convencional,294,13,32,69,28,73,2,77
-4952,Alto del Sill�n,312593.1,2087164.3,1650,,pluviom�trica,Convencional,279,80,31,6,58,18,74,12
-4962,Sabana Yegua,284349.1,2070062,335,,pluviom�trica,Convencional,312,20,76,72,28,15,43,58
-4964,Monte Bonito,301209.7,2071045,1030,,pluviom�trica,Convencional,208,12,19,77,38,3,27,32
-4965,Las Lagunas,301395,2078611,580,,pluviom�trica,Convencional,272,29,61,2,71,2,63,44
-4968,El Naranjal,309875.3,2064497.9,1080,,pluviom�trica,Convencional,307,77,3,62,52,54,34,25
-4977,Jaquim�,257720.6,2107144.6,695,,pluviom�trica,Convencional,327,19,35,52,54,72,17,78
-4978,Los Cerros-Constanza,318659,2088847,1299,,pluviom�trica,Convencional,326,38,11,62,71,58,6,80
-4981,El Chorro-Constanza,315463,2090875,1161,,pluviom�trica,Convencional,385,35,64,62,80,60,61,23
-4982,El Limoncito,306481.5,2090640.1,857,,pluviom�trica,Convencional,256,35,80,39,26,3,48,25
-4984,El Palmar ,284188,2081566,,,pluviom�trica,Convencional,153,17,2,7,14,52,4,57
-4985,Palero,321752,2090771,1285,,pluviom�trica,Convencional,287,58,42,32,51,41,4,59
-4988,Distrito de riego San Juan,265962,2080732,463,,pluviom�trica,Convencional,295,72,32,2,53,18,52,66
-4987,Distrito de riego Barahona,275164,2016368,85,,pluviom�trica,Convencional,229,30,21,26,64,1,25,62
-5101,Villa Nizao,268638,1993013,146,,pluviom�trica,Convencional,214,2,15,42,62,21,29,43
-5205,Distrito de riego Pedernales,209056,1995705,6,,pluviom�trica,Convencional,290,2,65,68,25,55,75,0
-5307,Los Bolos,220241.5,2062136.7,1100,,pluviom�trica,Convencional,217,39,53,35,32,0,54,4
-5314,Los Guineos,242320.6,2057362.3,740,,pluviom�trica,Convencional,236,13,42,18,66,49,19,29
-5316,Bartolom�,210745.8,2053079.3,10,,pluviom�trica,Convencional,294,48,28,46,47,15,49,61
-5322,Majagual,255516.3,2054757.5,740,,pluviom�trica,Convencional,347,39,61,16,71,53,72,35
-5323,Distrito de riego Neyba,244537,2045373,41,,pluviom�trica,Convencional,338,79,76,39,19,41,48,36
-5418,Zona de riego Las Matas,234906,2088706,456,,pluviom�trica,Convencional,264,34,41,27,0,40,44,78
-5419,Zona de riego Elias Pi�a,214806,2089641,397,,pluviom�trica,Convencional,363,49,71,36,69,52,43,43
-,"Duverge, Oficina agricultura",233938,2033695,5,,pluviom�trica,Convencional,173,10,69,1,35,24,0,34
-5411,Sabana Mula,230960,2106583,516,,pluviom�trica,Convencional,225,16,1,64,25,32,70,17
-380011,Bocaina,346374,2065279,670,,Hidrom�trica,Convencional,237,45,4,52,39,48,13,36
-400001,El Recodo,358430.1,2032129.6,199,,Hidrom�trica,Convencional,273,67,63,4,58,24,37,20
-,Santana,360687,2056258,,,Hidrom�trica,Convencional,320,1,22,59,71,42,69,56
-,Calder�n,361272,2052689,,,Hidrom�trica,Convencional,276,71,14,71,0,9,46,65
-383001,Los Cacaos,362781,2049167,,,Hidrom�trica,Convencional,366,70,62,4,44,34,74,78
-340004,Los Corozos,381780,2048497,,,Hidrom�trica,Convencional,319,31,47,1,74,45,49,72
-333001,Palmarejo,395795,2051453,,,Hidrom�trica,Convencional,165,77,47,3,17,5,4,12
-333101,El Higuero,394588,2058698,,,Hidrom�trica,Convencional,170,1,7,36,61,22,12,31
-335001,Guanuma,402270,2067757,,,Hidrom�trica,Convencional,307,50,6,63,79,41,53,15
-330001,Don Juan,399856,2080913,,,Hidrom�trica,Convencional,243,24,37,3,45,66,42,26
-331001,El Cacique,409254,2080836,37,,Hidrom�trica,Convencional,259,44,16,19,51,12,38,79
-332101,Los Hidalgos,429996,2087346,,,Hidrom�trica,Convencional,269,42,35,58,6,71,44,13
-332321,El Salto,436065,2082957,,,Hidrom�trica,Convencional,272,29,72,17,50,68,0,36
-,Sierra de Agua,439101,2086265,,,Hidrom�trica,Convencional,152,36,17,10,13,5,29,42
-Capita-1,El Tabl�n,445301,2082623,,,Hidrom�trica,Convencional,328,35,22,70,48,29,76,48
-,El Puerto,453246,2074626,,,Hidrom�trica,Convencional,388,80,79,26,48,57,40,58
-311001,Excavacion,457608,2060018,,,Hidrom�trica,Convencional,244,16,63,57,25,11,64,8
-300002,Paso al Medio,481858,2052973,15,,Hidrom�trica,Convencional,181,46,10,42,16,9,52,6
-260001,Santa Luc�a,506654,2065639,67,,Hidrom�trica,Convencional,297,20,72,61,6,64,28,46
-240001,El Mamey,526247,2064198,,,Hidrom�trica,Convencional,312,13,30,69,73,48,79,0
-230001,Anamuya,537440,2067655,,,Hidrom�trica,Convencional,242,60,77,0,10,38,47,10
-340002,Caobal,379822,2054438,,,Hidrom�trica,Convencional,241,7,79,6,54,11,4,80
-Magua-2,Las Espinas,468257,2060099,,,Hidrom�trica,Convencional,358,64,53,70,71,74,15,11
-261001,Guanito,521531,2059413,,,Hidrom�trica,Convencional,436,41,67,39,79,75,56,79
-332201, Camaron,431497,2086635,,,Hidrom�trica,Convencional,245,41,1,28,71,36,21,47
-360001,El Tablazo,376976,2043792,133,,Hidrom�trica,Convencional,271,28,74,73,1,10,50,35
-, Las Barias,367579,2030367,,,Hidrom�trica,Convencional,234,21,11,75,53,26,48,0
-Maimo-1,La Guama,535075,2080802,,,Hidrom�trica,Convencional,205,19,46,35,8,19,30,48
-Cedro-1,El Cedro,512647,2096856,,,Hidrom�trica,Convencional,265,49,1,20,62,74,49,10
-Yeguada-1,Miches,494972,2098140,,,Hidrom�trica,Convencional,307,45,33,13,37,61,47,71
-200001,La Cruz,458045,2101362,8,,Hidrom�trica,Convencional,266,17,49,70,34,26,38,32
-301001,Isabelita (Pedro S�nchez),4888950,2085250,130,,Hidrom�trica,Convencional,287,18,13,70,42,63,79,2
-332001,El Jobo,436554.4,2066536.5,35,,Hidrom�trica,Convencional,165,31,57,34,17,2,18,6
-361001,Pueblo Nuevo,375940.6,2039263.2,113,,Hidrom�trica,Convencional,274,67,22,66,19,32,65,3
-380004,Rancho Arriba,345383.1,2070076.8,699,,Hidrom�trica,Convencional,262,59,47,71,9,41,21,14
-187002,Avadesa II,402300,2102980,16,,Hidrom�trica,Convencional,316,79,43,47,67,2,4,74
-331101,El Cerro,418752,2077193,22,,Hidrom�trica,Convencional,283,20,78,64,77,15,12,17
-541002,El Corte,222927.7,2118433.7,281,,Hidrom�trica,Convencional,344,36,67,47,51,39,36,68
-540001,El Corte,222841.4,2118527.3,279,,Hidrom�trica,Convencional,299,7,62,3,54,67,58,48
-540002,Pedro Santana,216774,2114592,,,Hidrom�trica,Convencional,314,13,49,22,68,61,29,72
-543401,Sonador,228369,2070350,735,,Hidrom�trica,Convencional,369,61,30,32,28,71,75,72
-543003,Las Dos Bocas,196880,2097012,,,Hidrom�trica,Convencional,323,70,53,0,35,22,63,80
-543002,Ranchitos,224863,2095205.3,328,,Hidrom�trica,Convencional,381,20,39,77,61,69,61,54
-543001,Puertecito,234338,2083870,,,Hidrom�trica,Convencional,266,13,44,3,40,52,40,74
-542001,Cajuilito,226694,2111916,,,Hidrom�trica,Convencional,233,7,46,51,53,0,37,39
-543101,Pozo Hondo,238567,2103759,,,Hidrom�trica,Convencional,219,19,21,12,57,40,7,63
-543201,Los Guineos,221671.2,2071561.3,780,,Hidrom�trica,Convencional,340,35,53,72,72,44,53,11
-532001,Puerto Escondido,232311,2032665,425,,Hidrom�trica,Convencional,242,34,54,25,63,8,24,34
-534001,Conuquitos,222376.9,2055736.4,118,,Hidrom�trica,Convencional,198,44,13,41,33,43,22,2
-493902,Jaquim�,257120,2106921,,,Hidrom�trica,Convencional,124,31,0,13,22,15,22,21
-493204,El Cacheo,277135,2081560,,,Hidrom�trica,Convencional,245,44,37,20,26,7,43,68
-493701,J�nova,268335,2086480,,,Hidrom�trica,Convencional,266,57,45,30,47,6,7,74
-493904,Jaquim�,257695,2106921,,,Hidrom�trica,Convencional,291,16,70,79,74,12,22,18
-493601,Hato Viejo,257695,2106748,,,Hidrom�trica,Convencional,196,9,41,12,31,45,53,5
-493201,El Cacheo,276870,2082377,,,Hidrom�trica,Convencional,439,61,50,73,56,64,66,69
-491006,Palomino,292444,2080415,,,Hidrom�trica,Convencional,305,17,70,48,46,14,44,66
-492002,La Guama,308617,2072021,,,Hidrom�trica,Convencional,162,20,33,53,4,21,26,5
-493005,El Rosario,268346,2074724,,,Hidrom�trica,Convencional,296,78,38,0,30,60,29,61
-493002,Guazumal,261588,2091952,,,Hidrom�trica,Convencional,321,30,37,64,76,16,62,36
-493003,Arroyo Gajitos,257305,2106719,,,Hidrom�trica,Convencional,227,1,26,1,67,45,18,69
-493004,Jaquim�,257650,2007000,,,Hidrom�trica,Convencional,273,14,17,40,51,64,25,62
-493006,Paso de Lima,258050,2105850,,,Hidrom�trica,Convencional,302,0,63,27,34,57,77,44
-493007,Sabana Alta,277571,2071720,,,Hidrom�trica,Convencional,222,1,25,65,52,32,37,10
-493104,El Rodeo,261294,2102976,,,Hidrom�trica,Convencional,308,61,32,69,52,14,77,3
-493802,Vallejuelo,255631,2064424,,,Hidrom�trica,Convencional,309,19,73,1,43,46,63,64
-490009,El Palmar,284447,2081162,,,Hidrom�trica,Convencional,283,19,49,53,15,77,54,16
-462001,Carrizal,307833.5,2051019.2,270,,Hidrom�trica,Convencional,381,79,58,31,36,59,71,47
-490001,"El Puente, Los Bancos",282476,2066726,,,Hidrom�trica,Convencional,308,5,47,21,32,65,62,76
-490014,Los Guiros,2891634,2048022,,,Hidrom�trica,Convencional,415,77,32,15,71,76,79,65
-490006,Conuquito,272730,2037074.1,33,,Hidrom�trica,Convencional,248,17,49,48,16,75,32,11
-490003,Palo Alto,270239,2024666,,,Hidrom�trica,Convencional,240,31,61,2,29,64,27,26
-490002,Villarpando,283722,2063214,,,Hidrom�trica,Convencional,216,5,43,70,0,34,28,36
-492002,La Guama,308850,2071450,770,,Hidrom�trica,Convencional,374,43,75,23,80,76,31,46
-509001,San Rafael I,273674,1994713,,,Hidrom�trica,Convencional,199,18,72,39,4,10,54,2
-509002,San Rafael II,273384,1995024,,,Hidrom�trica,Convencional,282,55,7,0,50,42,74,54
-509101,San Rafael ,273027,1994782,,,Hidrom�trica,Convencional,278,59,29,77,12,36,11,54
-520002,Paso Sena,210118,2002462,,,Hidrom�trica,Convencional,381,71,49,69,57,78,56,1
-10001,Don Miguel,218929.9,2158681,45,,Hidrom�trica,Convencional,169,67,0,31,1,2,34,34
-10002,La Aduana,215386.9,2163444.8,23,,Hidrom�trica,Convencional,307,77,61,0,31,51,19,68
-20001,La Espensa,232035.4,2166788.6,80,,Hidrom�trica,Convencional,219,72,35,15,12,21,35,29
-40001,Manabao,312040.7,2110632.8,85,,Hidrom�trica,Convencional,334,24,64,56,77,24,69,20
-40002,Pinar Quemado,323921.1,2111714.7,568,,Hidrom�trica,Convencional,265,26,32,60,29,44,21,53
-40004,Las Charcas,320029.5,2146931,164,,Hidrom�trica,Convencional,266,39,54,27,24,13,66,43
-40006,Ca�eo,291928,2162056.7,80,,Hidrom�trica,Convencional,274,9,55,70,32,37,66,5
-40007,Jinamagao,291901.7,2162303,65,,Hidrom�trica,Convencional,225,59,2,13,31,33,39,48
-40008,Puente San Rafael,283513.5,2167938.6,50,,Hidrom�trica,Convencional,199,30,5,21,6,36,31,70
-40010,Palo verde,231369.8,2186490.8,11,,Hidrom�trica,Convencional,314,67,10,25,48,48,46,70
-40015,Puente Guayubin,248551.4,2175809.7,25,,Hidrom�trica,Convencional,258,25,19,30,76,80,22,6
-40017,Boma,324884.5,2120776.6,435,,Hidrom�trica,Convencional,244,60,60,1,29,32,20,42
-40018,Los Velazquitos,323641.6,2125216.5,375,,Hidrom�trica,Convencional,215,51,3,1,33,32,73,22
-40019,Dique Juan G�mez,246613.1,2178882.9,23,,Hidrom�trica,Convencional,309,79,49,17,13,58,53,40
-40020,Pe�a Ranchadero,254161.7,2174747.1,28,,Hidrom�trica,Convencional,213,79,6,34,55,1,17,21
-41001,Hato Viejo ,328204,2116440,492,,Hidrom�trica,Convencional,347,57,55,64,28,60,45,38
-41002,Casa de M�quina,331735,2112656,555,,Hidrom�trica,Convencional,230,49,29,20,24,11,39,58
-41003,Redondo,333284,2102895,975,,Hidrom�trica,Convencional,325,53,80,11,46,70,61,4
-41202,Paso Bajito,329883,2108307,978,,Hidrom�trica,Convencional,260,48,29,38,23,68,28,26
-41740,Mata Grande,325347,2123294,980,,Hidrom�trica,Convencional,347,52,46,80,53,36,43,37
-42001,Bao,311187.6,2135642.7,308,,Hidrom�trica,Convencional,226,60,22,9,74,51,9,1
-42002,Sabana Iglesia,316539.5,2136510.5,230,,Hidrom�trica,Convencional,250,69,27,0,25,45,63,21
-42005,Aguas Caliente,300487.1,2129052.5,542,,Hidrom�trica,Convencional,259,19,34,65,19,44,76,2
-42006,Sabaneta,292755.1,2124679.1,737,,Hidrom�trica,Convencional,132,37,21,25,10,9,18,12
-42101,Pinalito,315175,2134433,283,,Hidrom�trica,Convencional,330,63,59,80,29,67,25,7
-42102,El Higuero,306361,2129251,241,,Hidrom�trica,Convencional,245,66,31,0,39,23,12,74
-42201,Guanajuma,316590,2132851,315,,Hidrom�trica,Convencional,294,21,67,51,27,35,56,37
-42202,El Cerrazo,318924,2135533,490,,Hidrom�trica,Convencional,252,29,13,60,62,4,22,62
-42203,Bejucal ,317562,2121924,605,,Hidrom�trica,Convencional,164,13,1,65,16,6,34,29
-42301,Los Pilones,313294,2130301,438,,Hidrom�trica,Convencional,182,7,50,33,0,21,47,24
-42801,La Fortaleza,309286,2138092,442,,Hidrom�trica,Convencional,376,64,62,42,11,58,71,68
-42901,Jamam�,296679,2125465,675,,Hidrom�trica,Convencional,348,79,62,80,12,3,35,77
-43002,Potrero,294256,2153972,115,,Hidrom�trica,Convencional,313,15,39,71,57,15,76,40
-43101,Inoa,294188.7,2137795.3,373,,Hidrom�trica,Convencional,264,22,20,67,53,2,23,77
-44001,Bulla,281734.3,2148613.4,145,,Hidrom�trica,Convencional,276,27,39,43,64,35,1,67
-44002,Chorrera,281151.6,2153510.9,108,,Hidrom�trica,Convencional,156,19,20,13,34,31,36,3
-45002,La Antona,248006,2172341,38,,Hidrom�trica,Convencional,256,33,63,4,75,6,55,20
-45301,Cana Chapet�n,367970,2167701,59,,Hidrom�trica,Convencional,226,20,51,65,12,46,20,12
-47002,Paso de la Palma,236105,2167867,60,,Hidrom�trica,Convencional,235,3,22,73,28,29,70,10
-47003,Santa Cruz,235522,2171814,47,,Hidrom�trica,Convencional,255,42,54,25,18,24,27,65
-60001,Imbert,307889,2184883,108,,Hidrom�trica,Convencional,241,10,74,9,36,70,25,17
-60002,El Estrecho,296634,2191129,40,,Hidrom�trica,Convencional,295,39,42,13,66,80,54,1
-100002,Los Brazos,349991,2174546,15,,Hidrom�trica,Convencional,290,56,18,19,56,65,13,63
-100003,Y�sica,331851.9,2172462.7,120,,Hidrom�trica,Convencional,213,40,65,0,3,46,19,40
-101001,Jamao,349963,2171256,34,,Hidrom�trica,Convencional,255,27,65,20,47,27,45,24
-103001,Sonador,338570,2167942,190,,Hidrom�trica,Convencional,279,66,48,65,22,34,44,0
-150001,Los Jengibres,390063,2149752,17,,Hidrom�trica,Convencional,281,0,75,51,41,36,48,30
-160003,Cinta Negra,398509,2132118,39,,Hidrom�trica,Convencional,284,33,67,53,13,19,51,48
-170001,Valle de Saman�,465250,2120800,35,,Hidrom�trica,Convencional,273,13,41,36,14,32,77,60
-180001,Los Quemados,346392,2089499,250,,Hidrom�trica,Convencional,228,15,19,60,24,0,37,73
-180003,Villa Riva,404780,2119849,10,,Hidrom�trica,Convencional,329,11,32,31,57,66,75,57
-180004,El Lim�n ,413855,2117960,8,,Hidrom�trica,Convencional,272,66,45,70,12,16,9,54
-180007,Los Pl�tanos,370463,2100231,65,,Hidrom�trica,Convencional,279,2,39,39,14,47,64,74
-180010,El pino de Yuna,346538,2078829,582,,Hidrom�trica,Convencional,280,58,0,0,78,38,63,43
-180011,Piedra los Veganos,344921,2081548,470,,Hidrom�trica,Convencional,282,48,32,56,29,44,15,58
-180012,La Jagua,390300,2116100,25,,Hidrom�trica,Convencional,266,21,16,51,31,19,49,79
-181001,El Torito,346532,2074494,760,,Hidrom�trica,Convencional,236,32,17,13,63,80,29,2
-181101,Los Arroces,377056,2099025,218,,Hidrom�trica,Convencional,302,13,28,39,57,76,24,65
-182001,Los Gu�zaros,339600,2085900,630,,Hidrom�trica,Convencional,277,4,46,58,77,17,19,56
-183101,Pinalito,364216,2089883,96,,Hidrom�trica,Convencional,294,3,55,76,61,35,22,42
-183102,Tireo,334796,2088768,660,,Hidrom�trica,Convencional,331,44,58,33,47,66,7,76
-184001,Maim�n,364216,2089883,96,,Hidrom�trica,Convencional,320,26,77,27,14,52,66,58
-184003,El pino de Yuna,346538,2078829,582,,Hidrom�trica,Convencional,275,57,54,30,12,53,52,17
-185001,Bayacanes,333211,2127186,130,,Hidrom�trica,Convencional,276,1,46,68,58,46,38,19
-185002,Ranchito,351920,2122044,56,,Hidrom�trica,Convencional,373,48,66,74,61,12,34,78
-185003,La Bija,381251,2117834,28,,Hidrom�trica,Convencional,239,17,35,44,72,11,44,16
-185501,"Cenov�, Los Limones",358300,2136400,,,Hidrom�trica,Convencional,299,7,70,76,23,48,60,15
-185502,Santa Ana ,358469,2133983,81,,Hidrom�trica,Convencional,340,77,61,18,45,78,26,35
-185602,La Boca,363099,2128537,61,,Hidrom�trica,Convencional,305,28,46,68,66,58,19,20
-188002,Los Tres Pasos,386400,2098500,77,,Hidrom�trica,Convencional,260,78,4,61,37,14,50,16
-188003,La Cabirma,382600,2098400,46,,Hidrom�trica,Convencional,170,3,15,64,2,29,26,31
-3801,Nizao,346815,2058843,580,,clim�tica,Convencional,262,19,74,45,11,66,1,46
-3802,Valdesia,364737,2035865,160,,clim�tica,Convencional,281,57,27,31,10,61,39,56
-3809,Quij� Quieta,345738,2016148,19,,clim�tica,Convencional,251,7,59,48,0,12,50,75
-3315,Triple Ozama,400744,2080407,50,,clim�tica,Convencional,392,72,54,79,46,64,54,23
-3006,Piedra Blanca,505774,2081909,140,,clim�tica,Convencional,302,59,42,69,54,34,4,40
-6691,La Guama,535700,2079800,20,,clim�tica,Convencional,126,31,8,17,11,34,5,20
-6702,El Jobo,,,,,clim�tica,Convencional,355,28,51,17,79,55,65,60
-3004,El Pe��n ,473250,2040800,15,,clim�tica,Convencional,322,69,74,5,38,23,35,78
-3101,Excavaci�n,458000,2059700,25,,clim�tica,Convencional,282,71,60,14,41,38,56,2
-1843,Aguacate,413728,2124679,16,,clim�tica,Convencional,330,73,8,62,58,1,49,79
-,Mata Bonita,393351,2150438,33,,clim�tica,Convencional,279,12,66,29,47,20,27,78
-1003,La Cumbre ,329946,2161995,600,,clim�tica,Convencional,346,71,64,29,78,32,54,18
-1806,Hatillo-Yuna,368090,2095481,80,,clim�tica,Convencional,294,52,59,15,65,47,55,1
-1830,El Novillo,344802,2077829,1225,,clim�tica,Convencional,380,71,41,70,72,75,3,48
-1852,Casabito,337619,2103717,1420,,clim�tica,Convencional,210,5,1,1,59,10,61,73
-7311,El Rodeo,238633,215440,181,,clim�tica,Convencional,359,5,71,36,42,72,60,73
-7310,Naranjo Dulce,371427,2139304,176,,clim�tica,Convencional,214,9,19,13,6,79,34,54
-7317,La Caoba,345242,2167308,342,,clim�tica,Convencional,262,79,49,4,53,6,25,46
-7312,El G�mez,236063,2195899,98,,clim�tica,Convencional,306,19,31,72,48,15,62,59
-7306,La Cueva,386314,2106054,71,,clim�tica,Convencional,252,19,13,13,66,77,57,7
-7323,El Bombillo,365672,2150608,377,,clim�tica,Convencional,411,74,78,50,79,58,34,38
-7321,Los Cajuiles,388448,2164669,104,,clim�tica,Convencional,345,72,28,57,53,15,61,59
-4901,Valle Nuevo,322657.6,2080393.4,2300,,clim�tica,Convencional,297,76,42,74,35,7,17,46
-4902,Constanza ,319254,2091943,1219,,clim�tica,Convencional,319,71,72,44,8,16,40,68
-4924,Los Valencios,258850,2111944,1160,,clim�tica,Convencional,298,72,44,54,54,16,0,58
-4986,Barahona,277615,2015150,,,clim�tica,Convencional,279,64,31,51,50,7,0,76
-5323,Lago Enriquillo,215256.3,2054426.5,-41,,clim�tica,Convencional,207,51,39,0,51,60,6,0
-4705,Cruce del Quince,302624,2042530,136,,clim�tica,Autom�tica,241,9,5,41,62,21,74,29
-6689,Yayas de Viajama,295791,2058881,315,,clim�tica,Autom�tica,306,5,35,50,79,50,10,77
-4931,Sabaneta,259257,2100487,686,,clim�tica,Autom�tica,320,14,54,76,23,63,72,18
-6694,El Pinar,233650,2073743,719,,clim�tica,Autom�tica,293,64,50,71,2,12,76,18
-4420,Villa Fundaci�n,342000,2021300,,,clim�tica,Autom�tica,391,1,72,74,66,79,45,54
-5323,Plaza Cacique,242683,2047897,125,,clim�tica,Autom�tica,317,79,67,32,43,21,46,29
-5102,Juancho,259206,1977363,14,,clim�tica,Autom�tica,299,70,31,64,18,49,46,21
-6690,Jiman�,198729,2047090,52,,clim�tica,Autom�tica,314,71,34,8,68,46,80,7
-6695,Paso Sena,210197,2002350,110,,clim�tica,Autom�tica,255,15,38,45,79,0,64,14
-7314,Las Petacas,241543,2057295,960,,clim�tica,Autom�tica,250,33,59,27,0,34,43,54
+CODIGO,NOMBRE,X,Y,Z,REGION,ACTUAL,ACTUAL,Cumul. Precip.,HOY,15-Nov-18,14-Nov-18,13-Nov-18,12-Nov-18,11-Nov-18,10-Nov-18
+SIAP-23,Sede-INDRHI,402188,204057,,OZA-NIZ,climática,Satelital,245,22,23,25,32,72,29,42
+SIAP-26,Valdesia,364822.4,2035372.9,,OZA-NIZ,climática,Satelital,328,58,15,44,66,2,64,79
+SIAP-2,Pico Duarte,290123.9,2104041.7,,YNOR,climática,Satelital,175,4,20,25,37,6,40,43
+SIAP-11,Don Miguel,218377,2158781.9,,YNOR,climática,Satelital,269,2,49,29,22,77,28,62
+SIAP-14,Isa,345119.9,2077242.6,,YNOR,climática,Satelital,350,67,70,25,78,61,49,0
+SIAP-17,Jarabacoa,331114.5,2115121.9,,YNOR,climática,Satelital,206,12,66,23,62,29,3,11
+SIAP-20,Tavera,320505.1,2136009.7,,YNOR,climática,Satelital,369,66,53,16,49,63,50,72
+SIAP-29,Arroyo Caña,346025.3,2069794.8,,YNOR,climática,Satelital,205,7,29,21,76,65,1,6
+SIAP-43,Mata Grande,394798.8,2121410.5,,YNOR,climática,Satelital,269,2,26,68,19,36,51,67
+SIAP-32,Constanza,319166.5,2091834.8,,YSUR,climática,Satelital,105,15,9,20,44,5,0,12
+SIAP-35,Los Valencios,258710.1,2111222.9,,YSUR,climática,Satelital,290,14,49,43,37,23,68,56
+SIAP-38,Guayabal-Padre las Casas,305115.3,2074694.3,,YSUR,climática,Satelital,373,77,62,5,80,48,23,78
+SIAP-41,San Juan km 11,273172,2075533,,YSUR,climática,Satelital,317,79,49,2,66,46,6,69
+SIAP-52,El 15 de Azua,302700.4,2042523.1,,YSUR,climática,Satelital,332,57,20,30,77,59,58,31
+SIAP-5,Juma ,354005.6,2090084,,YUNA,climática,Satelital,275,73,34,5,44,70,34,15
+SIAP-8,Los Botados,332820,2087095.1,,YUNA,climática,Satelital,218,28,21,74,4,9,39,43
+SIAP-99,Nizao Bocaina,346037,2065012.2,,OZA-NIZ,hidrométrica,Satelital,187,59,14,15,37,10,46,6
+SIAP-100,Mahoma Rosalito,355592,2055817,,OZA-NIZ,hidrométrica,Satelital,347,35,55,62,72,14,53,56
+SIAP-101,Mahomita el Cacao,362760,2049278,,OZA-NIZ,hidrométrica,Satelital,328,10,59,71,50,60,1,77
+SIAP-102,Presa de Jiguey,354652,2051200,,OZA-NIZ,hidrométrica,Satelital,310,4,19,40,69,65,35,78
+SIAP-103,Presa de Aguacate,360528,2045604,,OZA-NIZ,hidrométrica,Satelital,338,51,71,68,16,37,69,26
+SIAP-104,Presa de Valdesía,364768,2034070,,OZA-NIZ,hidrométrica,Satelital,314,73,36,69,76,3,26,31
+SIAP-105,Contraembalse Las Barías,366337,2030822,,OZA-NIZ,hidrométrica,Satelital,239,41,54,0,63,4,32,45
+SIAP-56,Jimenoa Redondo,333118,2104490,,YNOR,hidrométrica,Satelital,206,51,29,13,7,61,21,24
+SIAP-57,Yaque del Norte Boma,323977,2121535,,YNOR,hidrométrica,Satelital,200,49,11,65,20,19,27,9
+SIAP-58,Yaque del Pinar Quemado,323861.5,2111592.3,,YNOR,hidrométrica,Satelital,248,2,21,51,21,43,34,76
+SIAP-59,Yaque del Norte Manabao,311918.1,2110080.5,,YNOR,hidrométrica,Satelital,208,57,0,24,45,37,1,44
+SIAP-60,Baiguate Paso Bajito,329852.7,2108245.9,,YNOR,hidrométrica,Satelital,379,54,75,57,4,62,77,50
+SIAP-77,Contraembalse de Lopéz,316790,2136112,,YNOR,hidrométrica,Satelital,222,36,0,45,49,51,14,27
+SIAP-78,Magua Los Ramones,274822,2134825.9,,YNOR,hidrométrica,Satelital,272,67,54,48,5,48,15,35
+SIAP-79,Cidra La Cidra,256614,2133245,,YNOR,hidrométrica,Satelital,311,79,30,67,19,5,34,77
+SIAP-80,Cenoví en Cenoví,265920.1,2137583.5,,YNOR,hidrométrica,Satelital,271,42,27,78,32,59,8,25
+SIAP-81,Presa de Maguaca,236388,2171072,,YNOR,hidrométrica,Satelital,408,77,78,80,15,49,70,39
+SIAP-82,Presa de Chacuey,233074,2171684,,YNOR,hidrométrica,Satelital,361,15,70,74,68,22,70,42
+SIAP-83,Presa de Tavera,319195,2133408,,YNOR,hidrométrica,Satelital,195,4,44,44,3,38,15,47
+SIAP-85,Yaque del Norte Santiago,321046,2151267,,YNOR,hidrométrica,Satelital,351,39,63,74,73,58,8,36
+SIAP-86,Guanajuma el Cerrazö,316700,2131815,,YNOR,hidrométrica,Satelital,376,66,72,28,11,68,58,73
+SIAP-87,Baiguaque Los Pilones,330053.5,2129921.9,,YNOR,hidrométrica,Satelital,170,33,23,13,7,31,5,58
+SIAP-88,Amina Inoa,294365,2146498,,YNOR,hidrométrica,Satelital,271,21,67,49,5,69,32,28
+,Puente San Rafael,,,,,hidrométrica,Satelital,367,44,76,30,64,60,51,42
+SIAP-89,Yaque del N el Puente yapur d,283894,2167349,,YNOR,hidrométrica,Satelital,322,62,64,4,48,79,25,40
+SIAP-90,Gayubín Rincón,249236,2160450,,YNOR,hidrométrica,Satelital,326,60,60,21,50,21,34,80
+SIAP-91,Jagua el Higuero,306361,2129251,,YNOR,hidrométrica,Satelital,299,66,55,75,28,21,2,52
+SIAP-92,Jagua Los Limones,302502,2121546,,YNOR,hidrométrica,Satelital,263,34,52,13,77,13,44,30
+SIAP-93,Bao Abajo Confluencia ,282891,2116835,,YNOR,hidrométrica,Satelital,176,39,3,12,40,9,41,32
+SIAP-94,Bao Sabaneta,292732,2124733,,YNOR,hidrométrica,Satelital,322,73,75,15,18,34,36,71
+SIAP-95,Bao Agua Caliente,300398,2128718,,YNOR,hidrométrica,Satelital,168,54,21,3,32,29,29,0
+SIAP-96,Contraembalse Monción,281535,2153761,,YNOR,hidrométrica,Satelital,329,57,80,59,52,58,19,4
+SIAP-97,Mao Meseta,280743,2151434,,YNOR,hidrométrica,Satelital,231,54,14,12,22,36,75,18
+SIAP-98,Presa de Monción,277438,2147063,,YNOR,hidrométrica,Satelital,281,76,8,12,59,57,23,46
+SIAP-121,Mao  La Cidra ,256590,2133781,,YNOR,hidrométrica,Satelital,252,41,11,49,80,43,4,24
+SIAP-106,San Juan Sabana Alta,277664,2071707,,YSUR,hidrométrica,Satelital,223,1,80,5,29,41,34,33
+SIAP-107,Yaque del Sur Los Gúiros,288586,2047831,,YSUR,hidrométrica,Satelital,296,48,76,60,6,19,32,55
+SIAP-108,Presa de Mijo,278507,2086895,,YSUR,hidrométrica,Satelital,220,34,17,45,19,29,46,30
+SIAP-109,Presa de Sabaneta,258845,2100561,,YSUR,hidrométrica,Satelital,356,26,36,56,67,71,74,26
+SIAP-110,San Juan Paso de Lima ,257919,2105850,,YSUR,hidrométrica,Satelital,297,61,28,70,15,50,4,69
+SIAP-111,San Juan Los Valencios,258828,2111276,,YSUR,hidrométrica,Satelital,262,28,11,42,4,64,70,43
+SIAP-112,Arroyo Limón el Rodeo,261362,2102994,,YSUR,hidrométrica,Satelital,321,11,51,27,67,36,68,61
+SIAP-113,Yaque del Sur el Aguacate,286143,2086141,,YSUR,hidrométrica,Satelital,307,77,65,23,40,31,57,14
+SIAP-114,Del Medio Palomino,294047,2080772,,YSUR,hidrométrica,Satelital,351,71,59,28,69,71,11,42
+SIAP-115,Las Cuevas Las Guamas,308907,2071396,,YSUR,hidrométrica,Satelital,297,78,45,1,26,26,55,66
+SIAP-116,Guayabal La Coja,306080,2074394,,YSUR,hidrométrica,Satelital,263,11,20,50,60,21,57,44
+SIAP-117,Mijo el Cacheo,276897,2082276,,YSUR,hidrométrica,Satelital,343,52,11,34,43,58,69,76
+SIAP-118,Maguana en Maguana Arriba,263591,2096887,,YSUR,hidrométrica,Satelital,253,1,36,77,43,50,43,3
+SIAP-119,Yaque del Sur Presa Sabana Yegua,284192,2069868,,YSUR,hidrométrica,Satelital,172,52,5,22,17,33,15,28
+SIAP-61,Camú Bayacanes,333274,2127250,,YUNA,hidrométrica,Satelital,322,65,24,75,61,12,38,47
+SIAP-62,Masipedro Los Arroces,347240,2098822,,YUNA,hidrométrica,Satelital,344,62,57,41,51,22,37,74
+SIAP-63,Jima Cañada de Piedra,349177,2103131,,YUNA,hidrométrica,Satelital,114,9,5,17,5,16,23,39
+SIAP-64,Yuna La Verde,354228,20970264,,YUNA,hidrométrica,Satelital,334,49,49,74,44,63,40,15
+SIAP-65,Yuna Platanal,382929,21143371,,YUNA,hidrométrica,Satelital,254,67,72,38,41,18,12,6
+SIAP-66,Presa de Hatillo,370403.7,2100046.4,,YUNA,hidrométrica,Satelital,317,61,71,0,69,62,9,45
+SIAP-67,Blanco Los Botados,334265,2086668,,YUNA,hidrométrica,Satelital,205,3,12,28,4,48,50,60
+SIAP-68,Tireo La Playa,333274,2088663,,YUNA,hidrométrica,Satelital,357,70,52,5,73,52,75,30
+SIAP-69,Presa de Blanco,335643,2089009,,YUNA,hidrométrica,Satelital,356,60,66,12,63,60,21,74
+SIAP-70,Presa de  Tireito,339668,2086109,,YUNA,hidrométrica,Satelital,206,10,45,19,0,20,57,55
+,Presa Arroyon,,,,,hidrométrica,Satelital,339,21,61,56,61,35,56,49
+SIAP-72,Arroyo Blanco el Torito,346517,2076095,,YUNA,hidrométrica,Satelital,258,36,40,31,19,78,11,43
+SIAP-73,Yuna Piedra Los Veganos,345550,2080098,,YUNA,hidrométrica,Satelital,272,11,65,50,21,12,71,42
+SIAP-74,Yuna Los Quemados,345919,2089037,,YUNA,hidrométrica,Satelital,279,70,73,7,15,75,16,23
+SIAP-75,Maimón,346823,2090281,,YUNA,hidrométrica,Satelital,385,44,51,78,28,75,34,75
+SIAP-76,Presa de Rincón,351984,2113055,,YUNA,hidrométrica,Satelital,351,40,60,52,63,17,80,39
+SIAP-84,Camú Guanabano,335227,2118522,,YUNA,hidrométrica,Satelital,184,3,5,78,5,19,37,37
+SIAP-71,Presa Cabeza de Caballo,220393,2152706,,,hidrométrica,Satelital,342,77,79,22,69,6,67,22
+SIAP-47,El Aguacate Nagua,413327.9,2123680.5,,ATLANTICA,pluviométrica,Satelital,390,68,19,39,43,78,66,77
+SIAP-48,El Novillo,345002.5,2077212.8,,YUNA,pluviométrica,Satelital,231,16,51,66,14,39,5,40
+,Bayahibe,552155.9,2017294.6,,ESTE,pluviométrica,Satelital,363,50,70,57,60,50,15,61
+SIAP-4,Higuey,531471.6,2058803,,ESTE,pluviométrica,Satelital,235,61,51,18,65,22,18,0
+SIAP-27,Palo de Caja,352224,2049484.9,,OZA-NIZ,pluviométrica,Satelital,303,76,8,33,49,16,79,42
+SIAP-30,Nizao-Rancho Arriba,330711.6,2070787.2,,OZA-NIZ,pluviométrica,Satelital,316,28,52,69,36,55,25,51
+SIAP-1,Las Matas de Santa Cruz,342231.5,2173352,,YNOR,pluviométrica,Satelital,325,27,72,28,42,29,70,57
+SIAP-3,Manabao,211164.3,2108675.6,,YNOR,pluviométrica,Satelital,205,30,46,20,20,2,42,45
+SIAP-4,Loma Quemada,292214.9,2113090.6,,YNOR,pluviométrica,Satelital,227,27,16,12,48,47,59,18
+SIAP-6,La Pita,329019.8,2103549.1,,YNOR,pluviométrica,Satelital,343,40,32,66,2,56,75,72
+SIAP-7,El Arroyaso,337127.8,2104336.8,,YNOR,pluviométrica,Satelital,215,41,41,8,57,34,20,14
+SIAP-9,Cruz de Cuaba,319005.8,2099370.1,,YNOR,pluviométrica,Satelital,346,35,57,71,71,35,5,72
+SIAP-15,Jima Rincón,353218.3,2116254.3,,YNOR,pluviométrica,Satelital,300,75,55,10,62,30,62,6
+SIAP-16,Juan Adrián (Los Platanos),359657.6,2075037.6,,YNOR,pluviométrica,Satelital,179,45,4,29,35,28,35,3
+SIAP-18,Magua Monción,275219.2,2145678.8,,YNOR,pluviométrica,Satelital,296,31,62,9,60,39,44,51
+SIAP-19,La Cidra,255723.6,2130734.5,,YNOR,pluviométrica,Satelital,276,55,8,53,33,19,50,58
+SIAP-21,Los Ramones,273800.3,2134869.3,,YNOR,pluviométrica,Satelital,311,33,59,61,22,16,59,61
+SIAP-22,La Diferencia,285120.7,2131441.3,,YNOR,pluviométrica,Satelital,324,64,17,47,62,60,14,60
+SIAP-24,Resbaloso,231575.1,2149595.9,,YNOR,pluviométrica,Satelital,183,46,23,52,14,13,24,11
+SIAP-25,El Cajuil (Los Pomos),226502.9,2140410.4,,YNOR,pluviométrica,Satelital,209,19,5,23,60,61,38,3
+SIAP-28,Alto Bandera,328604.3,2080645.5,,YNOR,pluviométrica,Satelital,284,53,79,50,13,32,13,44
+SIAP-34,Valle de Tetero,297970.3,2211228.2,,YNOR,pluviométrica,Satelital,379,58,38,66,40,57,53,67
+SIAP-A2842,Mano Javier,275928,2093689.2,,YNOR,pluviométrica,Satelital,277,66,0,11,33,50,72,45
+SIAP-45,Janey,212470.2,2121086.9,,YNOR,pluviométrica,Satelital,391,23,76,65,42,50,66,69
+SIAP-49,Valle de Bao,284865,1998339,,YNOR,pluviométrica,Satelital,201,12,32,18,6,59,27,47
+SIAP-50,Loma de la Tachuela,306221.1,2116074.7,,YNOR,pluviométrica,Satelital,247,50,51,71,25,15,34,1
+SIAP-54,Alto La Cotorra,308397.6,2106119,,YNOR,pluviométrica,Satelital,188,38,11,11,3,2,46,77
+SIAP-13,Loma del Medio,344418.3,2084442.9,,YNOR,pluviométrica,Satelital,250,12,23,44,26,58,74,13
+SIAP-46,Donaja,300472.6,2119672.8,,YNOR,pluviométrica,Satelital,367,43,62,58,19,63,47,75
+SIAP-33,El Naranjito,313565.1,2067136.3,,YSUR,pluviométrica,Satelital,282,79,46,75,28,27,17,10
+SIAP-37,Los Frios,291729.8,2088123.6,,YSUR,pluviométrica,Satelital,316,25,66,29,80,59,22,35
+SIAP-39,Los Pinales,264012.5,2116475.7,,YSUR,pluviométrica,Satelital,445,74,39,74,63,43,72,80
+SIAP-40,Barahona,275011.8,2016256.7,,YSUR,pluviométrica,Satelital,329,35,47,54,80,2,45,66
+SIAP-44,Las Cañitas,300265.5,2086923.1,,YSUR,pluviométrica,Satelital,396,68,51,76,20,79,78,24
+SIAP-51,Los Jobos,353757.9,2019867.5,,YSUR,pluviométrica,Satelital,239,2,32,64,15,58,15,53
+SIAP-53,Los Chicharrones ,290826.2,2124639.5,,YSUR,pluviométrica,Satelital,316,61,11,67,57,41,21,58
+SIAP-31,El Río,328695.8,2100139,,YSUR,pluviométrica,Satelital,163,64,2,3,4,36,33,21
+SIAP-36,Juancho,261107.6,1977546.6,,YSUR,pluviométrica,Satelital,281,79,36,41,79,19,14,13
+SIAP-10,Mechesito,339050.7,2083227.7,,YUNA,pluviométrica,Satelital,265,62,20,23,48,41,2,69
+SIAP-12,La Ceiba,335918.2,2089896.3,,YUNA,pluviométrica,Satelital,269,53,31,32,61,53,12,27
+4426,Los Arroyos,338694,2060619,1044,,climática,Convencional,256,66,59,33,31,52,10,5
+4425,El Memiso,334128,2047925,536,,climática,Convencional,316,34,70,27,74,11,55,45
+4401,Naranjal,344301,2052210,633,,climática,Convencional,375,44,21,75,20,73,65,77
+3402,Medina,379729,2049654,150,,climática,Convencional,399,65,65,72,62,33,54,48
+3401,Engombe,394347,2041314,10,,climática,Convencional,399,59,44,73,77,6,60,80
+3001,El Seibo,495395,2075299,109,,climática,Convencional,277,26,49,6,6,49,66,75
+2603,Naranjo de China,518049,2067227,154,,climática,Convencional,261,45,58,13,34,65,6,40
+2401,Higuey,531750,2058800,90,,climática,Convencional,429,80,60,28,80,32,78,71
+,Trepada Alta,451652,2098275,227,,climática,Automática,295,32,78,44,64,9,16,52
+,La Peñita,466033,2089593,344,,climática,Automática,282,28,46,68,31,52,49,8
+3812,Santana,372330,2021927,35,,climática,Automática,258,63,13,12,80,1,55,34
+,Pueblo Nuevo,413380,2103343,19,,climática,Automática,245,55,65,18,48,22,4,33
+3316,Comate,4353288,2073442,45,,climática,Automática,360,36,74,41,43,54,77,35
+3105,Hato Mayor,471450,2074750,102,,climática,Automática,307,42,14,67,47,38,31,68
+6693,Sabana de la Mar,459086,2106696,13,,climática,Automática,227,33,10,54,19,37,34,40
+6688,Bayahibe,516452,2035231,50,,climática,Automática,341,76,67,7,80,29,8,74
+6696,Citricos Dominicanos,369223,2073361,220,,climática,Automática,265,23,64,1,6,37,75,59
+411,Mata Grande,291113,2124831,938,,climática,Convencional,385,36,49,46,64,61,57,72
+401,Jarabacoa,331104,2115489,574,,climática,Convencional,284,22,47,67,23,49,50,26
+404,Santiago Isa,316600,2151038,169,,climática,Convencional,284,49,57,58,51,6,46,17
+405,Quinigua,313974,2154551,127,,climática,Convencional,280,61,37,8,41,79,9,45
+402,Tavera,319992,2133265,374,,climática,Convencional,202,30,24,65,6,49,28,0
+1814,Barraquito,417390,2114331,19,,climática,Convencional,408,80,56,77,79,59,11,46
+408,La Antona,248399,2172455,44,,climática,Convencional,279,10,46,64,5,67,59,28
+101,Don Miguel,218295,2157723,52,,climática,Convencional,353,55,26,76,78,6,38,74
+602,La Isabela,287340,2195484,222,,climática,Convencional,198,5,14,57,24,41,33,24
+1816,José Contreras,347059,2153197,694,,climática,Convencional,312,58,2,44,44,44,78,42
+1815,Angelina,371919,2115739,62,,climática,Convencional,390,63,75,50,32,79,14,77
+1817,Los Botados,334298,2087219,951,,climática,Convencional,278,12,25,39,39,20,79,64
+1802,Juma Bonao,354087,2090395,196,,climática,Convencional,226,11,63,61,0,74,11,6
+403,San José de las Matas,296903.5,2139186.2,530,,climática,Convencional,330,41,41,77,55,20,79,17
+407,Santiago Rodríguez,254772,2155388,120,,climática,Convencional,282,78,78,67,2,10,19,28
+1002,Cuesta Barrosa,352052,2173698,10,,climática,Convencional,271,54,42,30,40,45,32,28
+1501,Los Jengibres,390063,2149752,15,,climática,Convencional,304,21,49,44,29,73,49,39
+1801,San Francisco de Macorís,369672,2132978,110,,climática,Convencional,173,53,14,5,5,8,42,46
+1803,El Limón,413826,2117960,8,,climática,Convencional,377,75,37,43,72,64,45,41
+7313,Cebú,307993,2139880,256,,climática,Automática,300,18,28,1,46,62,65,80
+7300,Las Placetas,301563,2124899,837,,climática,Automática,299,0,79,10,73,77,20,40
+7322,La Cabirma,382406,2099943,60,,climática,Automática,177,10,0,20,45,34,53,15
+7318,Cercadillo,269819,2167853,80,,climática,Automática,189,53,3,16,28,33,8,48
+7315,Diego de Ocampo,317150,2167007,951,,climática,Automática,350,22,74,37,78,35,48,56
+5312,Angostura,246462,2021823,45,,climática,Convencional,338,71,58,6,53,45,80,25
+5302,Puerto Escondido,228266,2027525,414,,climática,Convencional,337,49,52,54,80,61,20,21
+5313,"Guayabal, Postrer Ríos",220014,2058319,174,,climática,Convencional,312,76,43,78,1,40,47,27
+4904,El Peñón,268773,2024454,22,,climática,Convencional,363,61,80,75,55,10,59,23
+5408,Catanamatías,246093,2108003,1086,,climática,Convencional,265,2,16,66,28,66,33,54
+4903,"San Juan, Km. 11",273172,2075533,423,,climática,Convencional,284,15,61,45,60,36,1,66
+4701,El Sisal,307321,2036559,352,,climática,Convencional,318,18,51,39,73,72,18,47
+4915,Vallejuelo,253449,2064287,709,,climática,Convencional,252,77,63,1,7,76,2,26
+5401,Matayaya,227341,2089938,434,,climática,Convencional,205,13,28,40,54,27,34,9
+5411,Sabana Mula,230960,2106583,516,,climática,Convencional,321,47,16,41,61,29,61,66
+4602,Resolí,317106,2042257,,,climática,Convencional,279,66,15,79,8,17,78,16
+4911,El Tetero,299645,2089144,,,climática,Convencional,357,33,34,79,78,58,46,29
+4983,El Valle-Constanza,318457.6,2091165.3,1200,,climática,Convencional,276,3,52,24,71,19,80,27
+5301,Neyba,242631,2047791,10,,climática,Convencional,327,50,56,57,60,10,17,77
+5410,Naranjito,237540.4,2134155.9,900,,climática,Convencional,243,6,75,14,32,11,50,55
+4916,"Guayabal, Padre las Casas",305959.7,2074193.5,710,,climática,Convencional,290,6,56,14,66,52,46,50
+6699,Peralta,314694,2055051,563,,climática,Automática,269,70,11,67,61,34,8,18
+6701,Higuerito,222994,2102847,467,,climática,Automática,351,6,58,53,6,77,77,74
+5104,El Platón Villa Nizao,266934,1996582,264,,climática,Automática,223,2,67,69,10,17,10,48
+6692,Estebanía,326600,2042350,97,,climática,Automática,233,2,48,7,59,67,37,13
+7319,Las Mercedes,217865,2006300,632,,climática,Automática,438,67,48,76,47,70,80,50
+7307,Higuerito,254671,1988397,266,,climática,Automática,304,75,47,72,15,14,80,1
+,Las Lajitas,252019,2050322,169,,climática,Automática,296,38,38,33,53,51,28,55
+7316,Los Copeyes,243072,2102549,622,,climática,Automática,220,5,1,75,54,37,36,12
+7309,Isla Cabritos,212599,2047172,-14,,climática,Automática,253,44,30,46,47,18,10,58
+4001,El Recodo,358514,2031887,221,,pluviométrica,Convencional,318,61,26,21,57,72,54,27
+4003,Distrito de Riego,361899,2020373,199,,pluviométrica,Convencional,385,43,35,61,68,49,59,70
+3305,El Higuero,394984,2058398,13,,pluviométrica,Convencional,275,71,37,12,37,39,78,1
+3302,El Cacique,409225,2080762,37,,pluviométrica,Convencional,270,62,29,12,67,53,7,40
+3308,Los Hidalgos,430813,2088654,108,,pluviométrica,Convencional,168,56,18,31,7,47,2,7
+3002,Paso Al Medio,481750,2052999,28,,pluviométrica,Convencional,235,41,42,28,22,42,13,47
+2602,Guanito,521708,2059680,71,,pluviométrica,Convencional,240,47,4,24,51,45,69,0
+2601,Santa Lucía,506202,2065648,87,,pluviométrica,Convencional,290,20,28,58,22,34,56,72
+2301,Anamuya,539288,2066653,51,,pluviométrica,Convencional,246,34,69,54,12,2,8,67
+,Santana,360655,2056371,615,,pluviométrica,Convencional,190,28,36,28,52,37,7,2
+3003,Pedro Sánchez,484729,2089702.6,500,,pluviométrica,Convencional,443,76,78,57,57,64,71,40
+3303,El Cerro,418741,2077213,22,,pluviométrica,Convencional,192,50,2,72,21,10,19,18
+3301,Don Juan,399875,2081099,83,,pluviométrica,Convencional,308,30,24,40,50,64,58,42
+3307,Comatillo,435207.6,2083692.3,150,,pluviométrica,Convencional,237,38,37,29,23,16,53,41
+3314,Mata Mamón,414129.2,2056635.5,12,,pluviométrica,Convencional,374,69,79,60,36,62,68,0
+3404,Presa Isa,372444.2,2056040.2,280,,pluviométrica,Convencional,239,49,8,43,35,29,27,48
+3601,El tablazo,375297.9,2035178.9,137,,pluviométrica,Convencional,323,1,48,50,38,61,63,62
+3801,Nizao ,346815.3,2058843.2,580,,pluviométrica,Convencional,228,1,33,31,44,40,42,37
+3804,La Laguna,350914,2050724.8,1170,,pluviométrica,Convencional,212,17,24,23,39,8,56,45
+3806,Palo de Caja,352224,2049484.9,680,,pluviométrica,Convencional,293,29,15,53,5,77,50,64
+4301,Matanza ,352576.8,2019046.4,60,,pluviométrica,Convencional,147,34,1,51,12,24,13,12
+4402,Rancho del Pino,323898.7,2053354.2,860,,pluviométrica,Convencional,362,70,62,27,13,68,48,74
+4405,Las Ciénagas de Ocoa,329666.3,2055576.8,790,,pluviométrica,Convencional,319,46,38,8,59,21,75,72
+4414,La Malagueta ,340015.3,2058930.2,1220,,pluviométrica,Convencional,266,21,63,13,67,15,35,52
+4416,Pinar de Ocoa,336193.2,2050846,600,,pluviométrica,Convencional,241,29,25,35,27,32,71,22
+4417,El Bejucal,334134.8,2056920.8,840,,pluviométrica,Convencional,313,36,9,79,26,55,73,35
+4422,Los Ranchos,348532.1,2038815,720,,pluviométrica,Convencional,255,53,0,64,4,57,57,20
+4428,El Limón de Ocoa,344184.7,2045460,780,,pluviométrica,Convencional,264,1,5,59,42,30,70,57
+101,Don Miguel,218929.9,2158681,45,,pluviométrica,Convencional,279,13,42,3,18,78,80,45
+413,PINAR QUEMADO,323776.1,2111839.1,,,pluviométrica,Convencional,237,68,0,68,23,42,13,23
+202,LAS MATAS DE SANTA CRUZ,237124,2175103,54,,pluviométrica,Convencional,279,45,29,6,73,71,9,46
+105,ZONA DE RIEGO DAJABON,,,,,pluviométrica,Convencional,387,57,10,45,70,66,69,70
+1601,Cinta Negra,398388.9,2131442.6,180,,pluviométrica,Convencional,236,21,43,37,56,5,40,34
+451,MAO (ZONA DE RIEGO),282206.8,2163556,80,,pluviométrica,Convencional,308,57,69,7,57,28,80,10
+452,PRESA DE BAO,316388.9,2136050.8,340,,pluviométrica,Convencional,318,22,79,22,70,29,47,49
+408,LA ANTONA,348576,2171612,48,,pluviométrica,Convencional,228,19,42,63,30,19,38,17
+427,GUAYUBIN RINCON,251165,2160280,127,,pluviométrica,Convencional,202,19,18,52,80,3,6,24
+407,SANTIAGO RODRIGUEZ,254771.6,2155388.4,120,,pluviométrica,Convencional,209,37,51,27,62,8,12,12
+412,MAGUA MONCION,274461,2146464,411,,pluviométrica,Convencional,287,73,52,6,21,40,41,54
+411,MATA GRANDE,291026.5,2124268.2,1000,,pluviométrica,Convencional,309,13,51,38,72,13,56,66
+421,CAÑEO,298980,2163286,77,,pluviométrica,Convencional,205,66,4,37,3,34,39,22
+422,JINAMAGAO,292040,2161845,100,,pluviométrica,Convencional,327,75,20,17,61,65,14,75
+425,PUENTE SAN RAFAEL,283513.5,2167425,,,pluviométrica,Convencional,276,54,43,29,43,11,22,74
+434,LA CIENAGA MANABAO,304072.8,2109208.9,,,pluviométrica,Convencional,280,28,77,29,17,26,57,46
+410,MANABAO,310787,2109259,917,,pluviométrica,Convencional,232,28,37,22,57,7,40,41
+414,BOMA,325145.4,2120558.9,,,pluviométrica,Convencional,262,27,5,40,68,11,70,41
+416,PINALITO,313221.8,2134699.2,,,pluviométrica,Convencional,254,5,3,53,72,36,32,53
+420,HATO YAQUE,311389.2,2157782.4,,,pluviométrica,Convencional,314,60,33,72,58,10,2,79
+444,REDONDO,333283.8,2102895.2,,,pluviométrica,Convencional,244,36,50,22,34,51,19,32
+438,JANEY,313980.8,2120330.4,,,pluviométrica,Convencional,211,11,9,70,80,22,8,11
+440,CAGUEYES,307340,2133499.6,,,pluviométrica,Convencional,237,36,0,57,73,19,19,33
+446,LOS MONTAZOS,311258.5,2117037.1,,,pluviométrica,Convencional,207,35,2,57,2,40,64,7
+447,LA CANA,235140.6,2171665.4,,,pluviométrica,Convencional,262,25,20,16,65,64,62,10
+442,JUNCALITO,308427.9,2125861.5,,,pluviométrica,Convencional,282,58,80,19,57,7,47,14
+448,JIMENOA,331735,2112656.4,,,pluviométrica,Convencional,331,5,44,60,74,74,51,23
+462,ARROYO CAÑA,273202,2183211,231,,pluviométrica,Convencional,279,31,31,17,17,78,69,36
+461,LOS LIMONES,257096,2186986,264,,pluviométrica,Convencional,300,3,28,79,41,49,31,69
+464,LOS PINOS,285250,2178600,275,,pluviométrica,Convencional,305,64,41,58,48,55,13,26
+458,PEÑA RANCHADERO,255566,2174936,,,pluviométrica,Convencional,344,47,68,76,65,27,43,18
+459,RESBALOSO,244272,2143337,384,,pluviométrica,Convencional,183,65,24,20,29,1,2,42
+460,LA CIDRA,256337,2133743,646,,pluviométrica,Convencional,278,17,10,58,57,40,33,63
+465,ALBANA,299350,2146250,,,pluviométrica,Convencional,274,46,73,26,25,63,9,32
+457,GURABO AFUERA,272255,2164934,109,,pluviométrica,Convencional,350,50,16,66,71,71,17,59
+470,ZONA VILLA VASQUEZ,244321,2184039,49,,pluviométrica,Convencional,301,72,27,40,26,35,27,74
+471,ZONA MAO,282517,2163788,450,,pluviométrica,Convencional,270,16,20,28,79,10,53,64
+472,ZONA ESPERANZA,292266,2168404,116,,pluviométrica,Convencional,291,46,64,14,54,46,28,39
+473,ZONA SANTIAGO,,,,,pluviométrica,Convencional,249,75,11,48,72,17,22,4
+1057,DISTRITO LA VEGA(Yuna-Camú),340472,2126385,111,,pluviométrica,Convencional,258,2,31,16,17,63,49,80
+1001,JAMAO,347952.8,2171273,,,pluviométrica,Convencional,219,19,49,5,67,50,9,20
+1002,CUESTA BARROSA,352051.7,2173698.4,,,pluviométrica,Convencional,379,25,77,75,25,63,72,42
+1502,PLAYA DIAMANTE,405745.9,2165095.5,5,,pluviométrica,Convencional,227,53,51,12,24,64,18,5
+1604,AGLIPO,409150,2121800,8,,pluviométrica,Convencional,237,15,51,24,43,37,47,20
+1703,HATO VIEJO,459719,2131173,,,pluviométrica,Convencional,358,36,12,57,56,69,72,56
+1704,LA LAGUNA,469437,2130017,,,pluviométrica,Convencional,231,19,79,60,29,12,32,0
+1805,"MAIMON, EL PINO",363954,2089977,98,,pluviométrica,Convencional,258,6,73,0,7,59,35,78
+1808,LOS RANCHITOS,351920,2122044,56,,pluviométrica,Convencional,358,80,68,71,67,60,5,7
+1809,LICEY NARANJAL,340956,2137818,110,,pluviométrica,Convencional,212,13,49,7,53,26,1,63
+1826,"TIREO, PINALITO",327636,2093174,1209,,pluviométrica,Convencional,367,51,6,68,37,55,73,77
+1837,LA CABIRMA,381253,2099701,102,,pluviométrica,Convencional,405,57,70,75,24,63,78,38
+1838,"CENOVI, SANTA ANA",255871,2130230,89,,pluviométrica,Convencional,252,36,44,30,3,79,26,34
+1840,LOS TRES PASOS,385951,2098284,110,,pluviométrica,Convencional,231,15,18,48,47,10,68,25
+1842,PIEDRA BLANCA,359709,2085015,194,,pluviométrica,Convencional,282,56,9,66,33,9,63,46
+1856,EL PLACER,257110,2145508,331,,pluviométrica,Convencional,276,66,39,30,65,20,1,55
+1858,DISTR. BAJO YUNA,407952,2137993,25,,pluviométrica,Convencional,370,52,66,27,49,67,76,33
+201,Partido,232184,2156885,195,,pluviométrica,Convencional,360,14,75,78,35,71,22,65
+1821,La Ceiba de Blanco,336453,2089616,788,,pluviométrica,Convencional,286,6,19,53,32,68,64,44
+4501,Hatillo,337432.8,2034540.3,80,,pluviométrica,Convencional,273,58,6,22,18,42,69,58
+5412,Cajuilito,226190,2112336,474,,pluviométrica,Convencional,237,24,52,2,22,64,0,73
+5413,Guazumal Elías Piña,217521,2089170,426,,pluviométrica,Convencional,261,27,23,65,66,51,27,2
+5402,Pozo Hondo,237955.6,2101784.4,620,,pluviométrica,Convencional,162,39,0,10,33,70,7,3
+5403,Puertecito,235313.3,2080593.9,574,,pluviométrica,Convencional,319,5,57,65,50,25,47,70
+5407,Ranchito Macasías,224716,2095998,374,,pluviométrica,Convencional,334,50,76,68,33,62,15,30
+4703,Tábara Abajo,299655.9,2043231.3,90,,pluviométrica,Convencional,307,24,70,69,19,35,44,46
+4907,La Florida,279647,2083190,534,,pluviométrica,Convencional,323,32,30,38,56,51,75,41
+4909,Guazumal,261532.7,2091930.3,487,,pluviométrica,Convencional,272,38,40,55,64,19,39,17
+4910,Cacheo,276813,2081826,458,,pluviométrica,Convencional,306,21,66,70,49,35,18,47
+4913,Villarpando,284897,2064445,307,,pluviométrica,Convencional,277,31,10,71,42,71,5,47
+4921,Palo de Viento,257240.6,2119547.8,1490,,pluviométrica,Convencional,370,18,2,76,72,66,56,80
+4936,Gajos de la Lagunita,278335.2,2089354.4,983,,pluviométrica,Convencional,320,66,29,44,22,67,56,36
+5206,Los Olivares,,,,,pluviométrica,Convencional,251,13,52,8,46,29,38,65
+4937,Valle del Tetero,297290.5,2101378.5,1540,,pluviométrica,Convencional,356,56,60,72,3,44,45,76
+4947,Los Castillitos,307584.7,2095425.9,1200,,pluviométrica,Convencional,280,32,54,15,52,1,51,75
+4949,Los Corralitos,322039,2092299.1,1372,,pluviométrica,Convencional,294,13,32,69,28,73,2,77
+4952,Alto del Sillón,312593.1,2087164.3,1650,,pluviométrica,Convencional,279,80,31,6,58,18,74,12
+4962,Sabana Yegua,284349.1,2070062,335,,pluviométrica,Convencional,312,20,76,72,28,15,43,58
+4964,Monte Bonito,301209.7,2071045,1030,,pluviométrica,Convencional,208,12,19,77,38,3,27,32
+4965,Las Lagunas,301395,2078611,580,,pluviométrica,Convencional,272,29,61,2,71,2,63,44
+4968,El Naranjal,309875.3,2064497.9,1080,,pluviométrica,Convencional,307,77,3,62,52,54,34,25
+4977,Jaquimé,257720.6,2107144.6,695,,pluviométrica,Convencional,327,19,35,52,54,72,17,78
+4978,Los Cerros-Constanza,318659,2088847,1299,,pluviométrica,Convencional,326,38,11,62,71,58,6,80
+4981,El Chorro-Constanza,315463,2090875,1161,,pluviométrica,Convencional,385,35,64,62,80,60,61,23
+4982,El Limoncito,306481.5,2090640.1,857,,pluviométrica,Convencional,256,35,80,39,26,3,48,25
+4984,El Palmar ,284188,2081566,,,pluviométrica,Convencional,153,17,2,7,14,52,4,57
+4985,Palero,321752,2090771,1285,,pluviométrica,Convencional,287,58,42,32,51,41,4,59
+4988,Distrito de riego San Juan,265962,2080732,463,,pluviométrica,Convencional,295,72,32,2,53,18,52,66
+4987,Distrito de riego Barahona,275164,2016368,85,,pluviométrica,Convencional,229,30,21,26,64,1,25,62
+5101,Villa Nizao,268638,1993013,146,,pluviométrica,Convencional,214,2,15,42,62,21,29,43
+5205,Distrito de riego Pedernales,209056,1995705,6,,pluviométrica,Convencional,290,2,65,68,25,55,75,0
+5307,Los Bolos,220241.5,2062136.7,1100,,pluviométrica,Convencional,217,39,53,35,32,0,54,4
+5314,Los Guineos,242320.6,2057362.3,740,,pluviométrica,Convencional,236,13,42,18,66,49,19,29
+5316,Bartolomé,210745.8,2053079.3,10,,pluviométrica,Convencional,294,48,28,46,47,15,49,61
+5322,Majagual,255516.3,2054757.5,740,,pluviométrica,Convencional,347,39,61,16,71,53,72,35
+5323,Distrito de riego Neyba,244537,2045373,41,,pluviométrica,Convencional,338,79,76,39,19,41,48,36
+5418,Zona de riego Las Matas,234906,2088706,456,,pluviométrica,Convencional,264,34,41,27,0,40,44,78
+5419,Zona de riego Elias Piña,214806,2089641,397,,pluviométrica,Convencional,363,49,71,36,69,52,43,43
+,"Duverge, Oficina agricultura",233938,2033695,5,,pluviométrica,Convencional,173,10,69,1,35,24,0,34
+5411,Sabana Mula,230960,2106583,516,,pluviométrica,Convencional,225,16,1,64,25,32,70,17
+380011,Bocaina,346374,2065279,670,,Hidrométrica,Convencional,237,45,4,52,39,48,13,36
+400001,El Recodo,358430.1,2032129.6,199,,Hidrométrica,Convencional,273,67,63,4,58,24,37,20
+,Santana,360687,2056258,,,Hidrométrica,Convencional,320,1,22,59,71,42,69,56
+,Calderón,361272,2052689,,,Hidrométrica,Convencional,276,71,14,71,0,9,46,65
+383001,Los Cacaos,362781,2049167,,,Hidrométrica,Convencional,366,70,62,4,44,34,74,78
+340004,Los Corozos,381780,2048497,,,Hidrométrica,Convencional,319,31,47,1,74,45,49,72
+333001,Palmarejo,395795,2051453,,,Hidrométrica,Convencional,165,77,47,3,17,5,4,12
+333101,El Higuero,394588,2058698,,,Hidrométrica,Convencional,170,1,7,36,61,22,12,31
+335001,Guanuma,402270,2067757,,,Hidrométrica,Convencional,307,50,6,63,79,41,53,15
+330001,Don Juan,399856,2080913,,,Hidrométrica,Convencional,243,24,37,3,45,66,42,26
+331001,El Cacique,409254,2080836,37,,Hidrométrica,Convencional,259,44,16,19,51,12,38,79
+332101,Los Hidalgos,429996,2087346,,,Hidrométrica,Convencional,269,42,35,58,6,71,44,13
+332321,El Salto,436065,2082957,,,Hidrométrica,Convencional,272,29,72,17,50,68,0,36
+,Sierra de Agua,439101,2086265,,,Hidrométrica,Convencional,152,36,17,10,13,5,29,42
+Capita-1,El Tablón,445301,2082623,,,Hidrométrica,Convencional,328,35,22,70,48,29,76,48
+,El Puerto,453246,2074626,,,Hidrométrica,Convencional,388,80,79,26,48,57,40,58
+311001,Excavacion,457608,2060018,,,Hidrométrica,Convencional,244,16,63,57,25,11,64,8
+300002,Paso al Medio,481858,2052973,15,,Hidrométrica,Convencional,181,46,10,42,16,9,52,6
+260001,Santa Lucía,506654,2065639,67,,Hidrométrica,Convencional,297,20,72,61,6,64,28,46
+240001,El Mamey,526247,2064198,,,Hidrométrica,Convencional,312,13,30,69,73,48,79,0
+230001,Anamuya,537440,2067655,,,Hidrométrica,Convencional,242,60,77,0,10,38,47,10
+340002,Caobal,379822,2054438,,,Hidrométrica,Convencional,241,7,79,6,54,11,4,80
+Magua-2,Las Espinas,468257,2060099,,,Hidrométrica,Convencional,358,64,53,70,71,74,15,11
+261001,Guanito,521531,2059413,,,Hidrométrica,Convencional,436,41,67,39,79,75,56,79
+332201, Camaron,431497,2086635,,,Hidrométrica,Convencional,245,41,1,28,71,36,21,47
+360001,El Tablazo,376976,2043792,133,,Hidrométrica,Convencional,271,28,74,73,1,10,50,35
+, Las Barias,367579,2030367,,,Hidrométrica,Convencional,234,21,11,75,53,26,48,0
+Maimo-1,La Guama,535075,2080802,,,Hidrométrica,Convencional,205,19,46,35,8,19,30,48
+Cedro-1,El Cedro,512647,2096856,,,Hidrométrica,Convencional,265,49,1,20,62,74,49,10
+Yeguada-1,Miches,494972,2098140,,,Hidrométrica,Convencional,307,45,33,13,37,61,47,71
+200001,La Cruz,458045,2101362,8,,Hidrométrica,Convencional,266,17,49,70,34,26,38,32
+301001,Isabelita (Pedro Sánchez),4888950,2085250,130,,Hidrométrica,Convencional,287,18,13,70,42,63,79,2
+332001,El Jobo,436554.4,2066536.5,35,,Hidrométrica,Convencional,165,31,57,34,17,2,18,6
+361001,Pueblo Nuevo,375940.6,2039263.2,113,,Hidrométrica,Convencional,274,67,22,66,19,32,65,3
+380004,Rancho Arriba,345383.1,2070076.8,699,,Hidrométrica,Convencional,262,59,47,71,9,41,21,14
+187002,Avadesa II,402300,2102980,16,,Hidrométrica,Convencional,316,79,43,47,67,2,4,74
+331101,El Cerro,418752,2077193,22,,Hidrométrica,Convencional,283,20,78,64,77,15,12,17
+541002,El Corte,222927.7,2118433.7,281,,Hidrométrica,Convencional,344,36,67,47,51,39,36,68
+540001,El Corte,222841.4,2118527.3,279,,Hidrométrica,Convencional,299,7,62,3,54,67,58,48
+540002,Pedro Santana,216774,2114592,,,Hidrométrica,Convencional,314,13,49,22,68,61,29,72
+543401,Sonador,228369,2070350,735,,Hidrométrica,Convencional,369,61,30,32,28,71,75,72
+543003,Las Dos Bocas,196880,2097012,,,Hidrométrica,Convencional,323,70,53,0,35,22,63,80
+543002,Ranchitos,224863,2095205.3,328,,Hidrométrica,Convencional,381,20,39,77,61,69,61,54
+543001,Puertecito,234338,2083870,,,Hidrométrica,Convencional,266,13,44,3,40,52,40,74
+542001,Cajuilito,226694,2111916,,,Hidrométrica,Convencional,233,7,46,51,53,0,37,39
+543101,Pozo Hondo,238567,2103759,,,Hidrométrica,Convencional,219,19,21,12,57,40,7,63
+543201,Los Guineos,221671.2,2071561.3,780,,Hidrométrica,Convencional,340,35,53,72,72,44,53,11
+532001,Puerto Escondido,232311,2032665,425,,Hidrométrica,Convencional,242,34,54,25,63,8,24,34
+534001,Conuquitos,222376.9,2055736.4,118,,Hidrométrica,Convencional,198,44,13,41,33,43,22,2
+493902,Jaquimé,257120,2106921,,,Hidrométrica,Convencional,124,31,0,13,22,15,22,21
+493204,El Cacheo,277135,2081560,,,Hidrométrica,Convencional,245,44,37,20,26,7,43,68
+493701,Jínova,268335,2086480,,,Hidrométrica,Convencional,266,57,45,30,47,6,7,74
+493904,Jaquimé,257695,2106921,,,Hidrométrica,Convencional,291,16,70,79,74,12,22,18
+493601,Hato Viejo,257695,2106748,,,Hidrométrica,Convencional,196,9,41,12,31,45,53,5
+493201,El Cacheo,276870,2082377,,,Hidrométrica,Convencional,439,61,50,73,56,64,66,69
+491006,Palomino,292444,2080415,,,Hidrométrica,Convencional,305,17,70,48,46,14,44,66
+492002,La Guama,308617,2072021,,,Hidrométrica,Convencional,162,20,33,53,4,21,26,5
+493005,El Rosario,268346,2074724,,,Hidrométrica,Convencional,296,78,38,0,30,60,29,61
+493002,Guazumal,261588,2091952,,,Hidrométrica,Convencional,321,30,37,64,76,16,62,36
+493003,Arroyo Gajitos,257305,2106719,,,Hidrométrica,Convencional,227,1,26,1,67,45,18,69
+493004,Jaquimé,257650,2007000,,,Hidrométrica,Convencional,273,14,17,40,51,64,25,62
+493006,Paso de Lima,258050,2105850,,,Hidrométrica,Convencional,302,0,63,27,34,57,77,44
+493007,Sabana Alta,277571,2071720,,,Hidrométrica,Convencional,222,1,25,65,52,32,37,10
+493104,El Rodeo,261294,2102976,,,Hidrométrica,Convencional,308,61,32,69,52,14,77,3
+493802,Vallejuelo,255631,2064424,,,Hidrométrica,Convencional,309,19,73,1,43,46,63,64
+490009,El Palmar,284447,2081162,,,Hidrométrica,Convencional,283,19,49,53,15,77,54,16
+462001,Carrizal,307833.5,2051019.2,270,,Hidrométrica,Convencional,381,79,58,31,36,59,71,47
+490001,"El Puente, Los Bancos",282476,2066726,,,Hidrométrica,Convencional,308,5,47,21,32,65,62,76
+490014,Los Guiros,2891634,2048022,,,Hidrométrica,Convencional,415,77,32,15,71,76,79,65
+490006,Conuquito,272730,2037074.1,33,,Hidrométrica,Convencional,248,17,49,48,16,75,32,11
+490003,Palo Alto,270239,2024666,,,Hidrométrica,Convencional,240,31,61,2,29,64,27,26
+490002,Villarpando,283722,2063214,,,Hidrométrica,Convencional,216,5,43,70,0,34,28,36
+492002,La Guama,308850,2071450,770,,Hidrométrica,Convencional,374,43,75,23,80,76,31,46
+509001,San Rafael I,273674,1994713,,,Hidrométrica,Convencional,199,18,72,39,4,10,54,2
+509002,San Rafael II,273384,1995024,,,Hidrométrica,Convencional,282,55,7,0,50,42,74,54
+509101,San Rafael ,273027,1994782,,,Hidrométrica,Convencional,278,59,29,77,12,36,11,54
+520002,Paso Sena,210118,2002462,,,Hidrométrica,Convencional,381,71,49,69,57,78,56,1
+10001,Don Miguel,218929.9,2158681,45,,Hidrométrica,Convencional,169,67,0,31,1,2,34,34
+10002,La Aduana,215386.9,2163444.8,23,,Hidrométrica,Convencional,307,77,61,0,31,51,19,68
+20001,La Espensa,232035.4,2166788.6,80,,Hidrométrica,Convencional,219,72,35,15,12,21,35,29
+40001,Manabao,312040.7,2110632.8,85,,Hidrométrica,Convencional,334,24,64,56,77,24,69,20
+40002,Pinar Quemado,323921.1,2111714.7,568,,Hidrométrica,Convencional,265,26,32,60,29,44,21,53
+40004,Las Charcas,320029.5,2146931,164,,Hidrométrica,Convencional,266,39,54,27,24,13,66,43
+40006,Cañeo,291928,2162056.7,80,,Hidrométrica,Convencional,274,9,55,70,32,37,66,5
+40007,Jinamagao,291901.7,2162303,65,,Hidrométrica,Convencional,225,59,2,13,31,33,39,48
+40008,Puente San Rafael,283513.5,2167938.6,50,,Hidrométrica,Convencional,199,30,5,21,6,36,31,70
+40010,Palo verde,231369.8,2186490.8,11,,Hidrométrica,Convencional,314,67,10,25,48,48,46,70
+40015,Puente Guayubin,248551.4,2175809.7,25,,Hidrométrica,Convencional,258,25,19,30,76,80,22,6
+40017,Boma,324884.5,2120776.6,435,,Hidrométrica,Convencional,244,60,60,1,29,32,20,42
+40018,Los Velazquitos,323641.6,2125216.5,375,,Hidrométrica,Convencional,215,51,3,1,33,32,73,22
+40019,Dique Juan Gómez,246613.1,2178882.9,23,,Hidrométrica,Convencional,309,79,49,17,13,58,53,40
+40020,Peña Ranchadero,254161.7,2174747.1,28,,Hidrométrica,Convencional,213,79,6,34,55,1,17,21
+41001,Hato Viejo ,328204,2116440,492,,Hidrométrica,Convencional,347,57,55,64,28,60,45,38
+41002,Casa de Máquina,331735,2112656,555,,Hidrométrica,Convencional,230,49,29,20,24,11,39,58
+41003,Redondo,333284,2102895,975,,Hidrométrica,Convencional,325,53,80,11,46,70,61,4
+41202,Paso Bajito,329883,2108307,978,,Hidrométrica,Convencional,260,48,29,38,23,68,28,26
+41740,Mata Grande,325347,2123294,980,,Hidrométrica,Convencional,347,52,46,80,53,36,43,37
+42001,Bao,311187.6,2135642.7,308,,Hidrométrica,Convencional,226,60,22,9,74,51,9,1
+42002,Sabana Iglesia,316539.5,2136510.5,230,,Hidrométrica,Convencional,250,69,27,0,25,45,63,21
+42005,Aguas Caliente,300487.1,2129052.5,542,,Hidrométrica,Convencional,259,19,34,65,19,44,76,2
+42006,Sabaneta,292755.1,2124679.1,737,,Hidrométrica,Convencional,132,37,21,25,10,9,18,12
+42101,Pinalito,315175,2134433,283,,Hidrométrica,Convencional,330,63,59,80,29,67,25,7
+42102,El Higuero,306361,2129251,241,,Hidrométrica,Convencional,245,66,31,0,39,23,12,74
+42201,Guanajuma,316590,2132851,315,,Hidrométrica,Convencional,294,21,67,51,27,35,56,37
+42202,El Cerrazo,318924,2135533,490,,Hidrométrica,Convencional,252,29,13,60,62,4,22,62
+42203,Bejucal ,317562,2121924,605,,Hidrométrica,Convencional,164,13,1,65,16,6,34,29
+42301,Los Pilones,313294,2130301,438,,Hidrométrica,Convencional,182,7,50,33,0,21,47,24
+42801,La Fortaleza,309286,2138092,442,,Hidrométrica,Convencional,376,64,62,42,11,58,71,68
+42901,Jamamú,296679,2125465,675,,Hidrométrica,Convencional,348,79,62,80,12,3,35,77
+43002,Potrero,294256,2153972,115,,Hidrométrica,Convencional,313,15,39,71,57,15,76,40
+43101,Inoa,294188.7,2137795.3,373,,Hidrométrica,Convencional,264,22,20,67,53,2,23,77
+44001,Bulla,281734.3,2148613.4,145,,Hidrométrica,Convencional,276,27,39,43,64,35,1,67
+44002,Chorrera,281151.6,2153510.9,108,,Hidrométrica,Convencional,156,19,20,13,34,31,36,3
+45002,La Antona,248006,2172341,38,,Hidrométrica,Convencional,256,33,63,4,75,6,55,20
+45301,Cana Chapetón,367970,2167701,59,,Hidrométrica,Convencional,226,20,51,65,12,46,20,12
+47002,Paso de la Palma,236105,2167867,60,,Hidrométrica,Convencional,235,3,22,73,28,29,70,10
+47003,Santa Cruz,235522,2171814,47,,Hidrométrica,Convencional,255,42,54,25,18,24,27,65
+60001,Imbert,307889,2184883,108,,Hidrométrica,Convencional,241,10,74,9,36,70,25,17
+60002,El Estrecho,296634,2191129,40,,Hidrométrica,Convencional,295,39,42,13,66,80,54,1
+100002,Los Brazos,349991,2174546,15,,Hidrométrica,Convencional,290,56,18,19,56,65,13,63
+100003,Yásica,331851.9,2172462.7,120,,Hidrométrica,Convencional,213,40,65,0,3,46,19,40
+101001,Jamao,349963,2171256,34,,Hidrométrica,Convencional,255,27,65,20,47,27,45,24
+103001,Sonador,338570,2167942,190,,Hidrométrica,Convencional,279,66,48,65,22,34,44,0
+150001,Los Jengibres,390063,2149752,17,,Hidrométrica,Convencional,281,0,75,51,41,36,48,30
+160003,Cinta Negra,398509,2132118,39,,Hidrométrica,Convencional,284,33,67,53,13,19,51,48
+170001,Valle de Samaná,465250,2120800,35,,Hidrométrica,Convencional,273,13,41,36,14,32,77,60
+180001,Los Quemados,346392,2089499,250,,Hidrométrica,Convencional,228,15,19,60,24,0,37,73
+180003,Villa Riva,404780,2119849,10,,Hidrométrica,Convencional,329,11,32,31,57,66,75,57
+180004,El Limón ,413855,2117960,8,,Hidrométrica,Convencional,272,66,45,70,12,16,9,54
+180007,Los Plátanos,370463,2100231,65,,Hidrométrica,Convencional,279,2,39,39,14,47,64,74
+180010,El pino de Yuna,346538,2078829,582,,Hidrométrica,Convencional,280,58,0,0,78,38,63,43
+180011,Piedra los Veganos,344921,2081548,470,,Hidrométrica,Convencional,282,48,32,56,29,44,15,58
+180012,La Jagua,390300,2116100,25,,Hidrométrica,Convencional,266,21,16,51,31,19,49,79
+181001,El Torito,346532,2074494,760,,Hidrométrica,Convencional,236,32,17,13,63,80,29,2
+181101,Los Arroces,377056,2099025,218,,Hidrométrica,Convencional,302,13,28,39,57,76,24,65
+182001,Los Guázaros,339600,2085900,630,,Hidrométrica,Convencional,277,4,46,58,77,17,19,56
+183101,Pinalito,364216,2089883,96,,Hidrométrica,Convencional,294,3,55,76,61,35,22,42
+183102,Tireo,334796,2088768,660,,Hidrométrica,Convencional,331,44,58,33,47,66,7,76
+184001,Maimón,364216,2089883,96,,Hidrométrica,Convencional,320,26,77,27,14,52,66,58
+184003,El pino de Yuna,346538,2078829,582,,Hidrométrica,Convencional,275,57,54,30,12,53,52,17
+185001,Bayacanes,333211,2127186,130,,Hidrométrica,Convencional,276,1,46,68,58,46,38,19
+185002,Ranchito,351920,2122044,56,,Hidrométrica,Convencional,373,48,66,74,61,12,34,78
+185003,La Bija,381251,2117834,28,,Hidrométrica,Convencional,239,17,35,44,72,11,44,16
+185501,"Cenoví, Los Limones",358300,2136400,,,Hidrométrica,Convencional,299,7,70,76,23,48,60,15
+185502,Santa Ana ,358469,2133983,81,,Hidrométrica,Convencional,340,77,61,18,45,78,26,35
+185602,La Boca,363099,2128537,61,,Hidrométrica,Convencional,305,28,46,68,66,58,19,20
+188002,Los Tres Pasos,386400,2098500,77,,Hidrométrica,Convencional,260,78,4,61,37,14,50,16
+188003,La Cabirma,382600,2098400,46,,Hidrométrica,Convencional,170,3,15,64,2,29,26,31
+3801,Nizao,346815,2058843,580,,climática,Convencional,262,19,74,45,11,66,1,46
+3802,Valdesia,364737,2035865,160,,climática,Convencional,281,57,27,31,10,61,39,56
+3809,Quijá Quieta,345738,2016148,19,,climática,Convencional,251,7,59,48,0,12,50,75
+3315,Triple Ozama,400744,2080407,50,,climática,Convencional,392,72,54,79,46,64,54,23
+3006,Piedra Blanca,505774,2081909,140,,climática,Convencional,302,59,42,69,54,34,4,40
+6691,La Guama,535700,2079800,20,,climática,Convencional,126,31,8,17,11,34,5,20
+6702,El Jobo,,,,,climática,Convencional,355,28,51,17,79,55,65,60
+3004,El Peñón ,473250,2040800,15,,climática,Convencional,322,69,74,5,38,23,35,78
+3101,Excavación,458000,2059700,25,,climática,Convencional,282,71,60,14,41,38,56,2
+1843,Aguacate,413728,2124679,16,,climática,Convencional,330,73,8,62,58,1,49,79
+,Mata Bonita,393351,2150438,33,,climática,Convencional,279,12,66,29,47,20,27,78
+1003,La Cumbre ,329946,2161995,600,,climática,Convencional,346,71,64,29,78,32,54,18
+1806,Hatillo-Yuna,368090,2095481,80,,climática,Convencional,294,52,59,15,65,47,55,1
+1830,El Novillo,344802,2077829,1225,,climática,Convencional,380,71,41,70,72,75,3,48
+1852,Casabito,337619,2103717,1420,,climática,Convencional,210,5,1,1,59,10,61,73
+7311,El Rodeo,238633,215440,181,,climática,Convencional,359,5,71,36,42,72,60,73
+7310,Naranjo Dulce,371427,2139304,176,,climática,Convencional,214,9,19,13,6,79,34,54
+7317,La Caoba,345242,2167308,342,,climática,Convencional,262,79,49,4,53,6,25,46
+7312,El Gómez,236063,2195899,98,,climática,Convencional,306,19,31,72,48,15,62,59
+7306,La Cueva,386314,2106054,71,,climática,Convencional,252,19,13,13,66,77,57,7
+7323,El Bombillo,365672,2150608,377,,climática,Convencional,411,74,78,50,79,58,34,38
+7321,Los Cajuiles,388448,2164669,104,,climática,Convencional,345,72,28,57,53,15,61,59
+4901,Valle Nuevo,322657.6,2080393.4,2300,,climática,Convencional,297,76,42,74,35,7,17,46
+4902,Constanza ,319254,2091943,1219,,climática,Convencional,319,71,72,44,8,16,40,68
+4924,Los Valencios,258850,2111944,1160,,climática,Convencional,298,72,44,54,54,16,0,58
+4986,Barahona,277615,2015150,,,climática,Convencional,279,64,31,51,50,7,0,76
+5323,Lago Enriquillo,215256.3,2054426.5,-41,,climática,Convencional,207,51,39,0,51,60,6,0
+4705,Cruce del Quince,302624,2042530,136,,climática,Automática,241,9,5,41,62,21,74,29
+6689,Yayas de Viajama,295791,2058881,315,,climática,Automática,306,5,35,50,79,50,10,77
+4931,Sabaneta,259257,2100487,686,,climática,Automática,320,14,54,76,23,63,72,18
+6694,El Pinar,233650,2073743,719,,climática,Automática,293,64,50,71,2,12,76,18
+4420,Villa Fundación,342000,2021300,,,climática,Automática,391,1,72,74,66,79,45,54
+5323,Plaza Cacique,242683,2047897,125,,climática,Automática,317,79,67,32,43,21,46,29
+5102,Juancho,259206,1977363,14,,climática,Automática,299,70,31,64,18,49,46,21
+6690,Jimaní,198729,2047090,52,,climática,Automática,314,71,34,8,68,46,80,7
+6695,Paso Sena,210197,2002350,110,,climática,Automática,255,15,38,45,79,0,64,14
+7314,Las Petacas,241543,2057295,960,,climática,Automática,250,33,59,27,0,34,43,54

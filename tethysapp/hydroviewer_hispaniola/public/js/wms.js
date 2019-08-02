@@ -995,7 +995,7 @@ function map_events() {
                         northing = feature.get('X'),
                         easting = "%.2f" % feature.get('Y'),
                         region = feature.get('REGION')
-                        precipitation = feature.get('PRECIPITATION')
+                        precipitation = feature.get('HOY')
                         cumul_precip = feature.get('Cumul. Precip.')
                     //    today = new Date();
                     //    date = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
@@ -1548,20 +1548,21 @@ updateCSV = function() {
 
 /* This function adds the shapefile layer to the map after it's been uploaded to Geoserver */
 addLayerToMap = function(layerWorkspace, layerCode) {
-    var geoserverUrl = $('#geoserver-endpoint').text() + '/wms'
     var layerWMS = new ol.source.ImageWMS({
         url: 'https://tethys.byu.edu/geoserver/wms',
         params: { LAYERS: layerWorkspace + ':' + layerCode },
         serverType: 'geoserver',
-        crossOrigin: 'Anonymous'
-    })
+        crossOrigin: 'anonymous'
+    });
+
     mapLayers = new ol.layer.Image({
         source: layerWMS,
         opacity: 0.7
-    })
+    });
 
     map.addLayer(mapLayers)
     map.renderSync()
+
     $('#onamet-view-file-loading').addClass('hidden')
     console.log('Shapefile layer added to map')
 }
@@ -1607,6 +1608,7 @@ ajaxUploadShapefile = function() {
         success: function(response) {
             if (response['success'] === 'false') {
                 alert('File upload error!')
+                $('#onamet-view-file-loading').addClass('hidden')
                 console.log(type)
             } else {
                 var layerWorkspace = response['results']['workspace']

@@ -30,7 +30,7 @@ def update_ffgs(request):
 
                 csv_list = []
 
-                for line in uploaded_file.read().splitlines():
+                for line in uploaded_file.read().decode('UTF-8').splitlines():
                     csv_list.append(line.split('        '))
 
                 csv_list.pop(0)
@@ -47,7 +47,7 @@ def update_ffgs(request):
                     val = val_list[sid_list.index(sid)]
                     csv_result.append([sid, val])
 
-                with open(data_staging_file, "wb") as f:
+                with open(data_staging_file, 'w', newline='') as f:
                     writer = csv.writer(f)
                     writer.writerows(csv_result)
 
@@ -113,7 +113,6 @@ def convert_json(items):
 
     # we have to convert the text from latin encoding to utf8 so that we don't get errors
     # while trying to write it out in JSON.
-
     features = []
     for feature in items:
         if feature['X'] and feature['Y']:
@@ -125,14 +124,14 @@ def convert_json(items):
                     "geometry": {"type": "Point",
                                  "lat": newLatLong[1],
                                  "long": newLatLong[0]},
-                    "properties": {key: value.decode('iso-8859-1').encode('utf8')
+                    "properties": {key: value
                                    for key, value in feature.items()
                                    if key not in ('X', 'Y')}
                     }
                 features.append(newFeature)
             except:
-                print "Invalid Line found in CSV File"
-                print feature
+                print("Invalid Line found in CSV File")
+                print(feature)
 
     featureCollection = {"features": features}
 
@@ -172,6 +171,7 @@ def update_csv(request):
             for n, uploaded_file in enumerate(file_list):
                 with open(os.path.join(layer_dir, uploaded_file.name), 'w+') as destination:
                     for chunk in file_list[n].chunks():
+                        chunk = chunk.decode('ISO-8859-1')
                         destination.write(chunk)
 
             # To rename the uploaded csv file in the workspace folder.
@@ -181,7 +181,7 @@ def update_csv(request):
 
             # To convert csv to geojson
             path = new_file
-            with open(path, 'rb') as csvfile:
+            with open(path, 'r') as csvfile:
                 reader = csv.DictReader(csvfile)
                 rows = list(reader)
 

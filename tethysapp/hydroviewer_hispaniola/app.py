@@ -232,18 +232,6 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
-                name='user_geoserver',
-                type=CustomSetting.TYPE_STRING,
-                description='Username for geoserver account',
-                required=True
-            ),
-            CustomSetting(
-                name='password_geoserver',
-                type=CustomSetting.TYPE_STRING,
-                description='Password for geoserver account',
-                required=True
-            ),
-            CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
