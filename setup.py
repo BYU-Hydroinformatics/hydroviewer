@@ -6,7 +6,7 @@ from tethys_apps.app_installation import custom_develop_command, custom_install_
 ### Apps Definition ###
 #tethysapp_dir_list = [os.path.join(os.path.dirname(os.path.abspath(__file__)),'tethysapp', child)
 #                      for child in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)),'tethysapp'))]
-app_package = 'hydroviewer_central_america'
+app_package = 'hydroviewer_ethiopia'
 release_package = 'tethysapp-' + app_package
 app_class = '{0}.app:Hydroviewer'.format(app_package)
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)

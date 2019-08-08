@@ -7,13 +7,13 @@ base_url = base_name.replace('_', '-')
 
 class Hydroviewer(TethysAppBase):
 
-    name = 'HydroViewer Central America'
+    name = 'HydroViewer Ethiopia'
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/central_america_logo.png'.format(base_name)
+    icon = '{0}/images/ethiopia_logo.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
-    color = '#425e17'
-    description = 'Hydroviewer for Central America.'
+    color = '#b8040a'
+    description = 'Hydroviewer for Ethiopia.'
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []
