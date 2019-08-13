@@ -13,7 +13,7 @@ class Hydroviewer(TethysAppBase):
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#000099'
-    description = 'View the FFGS and Streamflow Prediction Tool, along with precipitation data for the' \
+    description = 'View the FFGS and Streamflow Prediction Tool, along with precipitation data for the ' \
                   'Dominican Republic.'
     tags = 'Hydrology'
     enable_feedback = False
@@ -223,12 +223,6 @@ class Hydroviewer(TethysAppBase):
                 name='spt_token',
                 type=CustomSetting.TYPE_STRING,
                 description='Unique token to access data from the Streamflow Prediction Tool',
-                required=True
-            ),
-            CustomSetting(
-                name='geoserver',
-                type=CustomSetting.TYPE_STRING,
-                description='Spatial dataset service for app to use',
                 required=True
             ),
             CustomSetting(

@@ -144,10 +144,11 @@ def ecmwf(request):
 
     geos_username = geoserver_engine.username
     geos_password = geoserver_engine.password
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
 
     watershed_list = [['Select Watershed', '']]  # + watershed_list
 
-    res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') +
+    res2 = requests.get(my_geoserver + '/rest/workspaces/' + app.get_custom_setting('workspace') +
                         '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
@@ -179,7 +180,13 @@ def ecmwf(request):
                           name='zoom_info',
                           disabled=True)
 
-    geoserver_base_url = app.get_custom_setting('geoserver')
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+
+    geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     geoserver_endpoint = TextInput(display_text='',
