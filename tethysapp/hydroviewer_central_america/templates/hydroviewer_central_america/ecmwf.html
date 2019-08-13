@@ -49,6 +49,10 @@
               </svg>
               2-Year Return Period <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
+          <div>
+              <br>
+              {% gizmo select_input regions %}
+          </div>
       </div>
   </div>
   <img id="featureLoader" style="display: none; position:fixed; z-index: 100; left : 0; bottom : 0; right : 0; top : 0; margin:auto;" src="{% static base_name|add:'/images/loader2.gif' %}">

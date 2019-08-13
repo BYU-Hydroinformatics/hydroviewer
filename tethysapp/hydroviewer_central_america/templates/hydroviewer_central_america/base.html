@@ -34,6 +34,7 @@
 {% block scripts %}
 {{ block.super }}
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js" type="text/javascript"></script> -->
+<script src="{% static 'hydroviewer_central_america/js/regionsIndex.js' %}" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.20.1/ol.js" type="text/javascript"></script>
 <script src="{% static base_name|add:'/js/wms.js' %}" type="text/javascript"></script>
 {% endblock %}

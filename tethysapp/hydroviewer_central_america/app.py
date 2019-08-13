@@ -209,12 +209,6 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
-                name='geoserver',
-                type=CustomSetting.TYPE_STRING,
-                description='Spatial dataset service for app to use',
-                required=True
-            ),
-            CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',

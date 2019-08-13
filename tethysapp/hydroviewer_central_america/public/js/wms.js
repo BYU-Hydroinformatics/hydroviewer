@@ -15,7 +15,8 @@ var default_extent,
     ten_year_warning,
     twenty_year_warning,
     map,
-    wms_layers;
+    wms_layers,
+    regionsLayer
 
 
 var $loading = $('#view-file-loading');
@@ -1116,6 +1117,43 @@ $(function() {
     });
 });
 
+
+function getRegionGeoJsons() {
+
+    let geojsons = region_index[$("#regions").val()]['geojsons'];
+
+    for (let i in geojsons) {
+        var regionsSource = new ol.source.Vector({
+           url: '/static/' + 'hydroviewer_central_america' + '/geojson/' + geojsons[i],
+           format: new ol.format.GeoJSON()
+        });
+
+        var regionStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 3
+            })
+        });
+
+        var regionsLayer = new ol.layer.Vector({
+            name: 'myRegion',
+            source: regionsSource,
+            style: regionStyle
+        });
+
+        map.getLayers().forEach(function(regionsLayer) {
+        if (regionsLayer.get('name')=='myRegion')
+            map.removeLayer(regionsLayer);
+        });
+        map.addLayer(regionsLayer)
+
+        setTimeout(function() {
+            var myExtent = regionsLayer.getSource().getExtent();
+            map.getView().fit(myExtent, map.getSize());
+        }, 500);
+    }
+}
+
 $('#stp-stream-toggle').on('change', function() {
     wmsLayer.setVisible($('#stp-stream-toggle').prop('checked'))
 })
@@ -1128,3 +1166,5 @@ $('#stp-10-toggle').on('change', function() {
 $('#stp-2-toggle').on('change', function() {
     two_year_warning.setVisible($('#stp-2-toggle').prop('checked'))
 })
+// Regions gizmo listener
+$('#regions').change(function() {getRegionGeoJsons()});
