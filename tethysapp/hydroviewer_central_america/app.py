@@ -9,7 +9,7 @@ class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer Central America'
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/central_america_logo.png'.format(base_name)
+    icon = '{0}/images/central_america_logo_2.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#425e17'
