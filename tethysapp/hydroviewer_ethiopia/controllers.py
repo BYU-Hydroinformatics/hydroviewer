@@ -5,7 +5,6 @@ from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
 from tethys_sdk.base import TethysAppBase
 
-
 import os
 import requests
 from requests.auth import HTTPBasicAuth
@@ -69,14 +68,23 @@ def home_standard(request):
                           name='zoom_info',
                           disabled=True)
 
-    geoserver_base_url = app.get_custom_setting('geoserver')
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+
+    geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
+
 
     context = {
         "base_name": base_name,
@@ -141,9 +149,11 @@ def ecmwf(request):
 
     geos_username = geoserver_engine.username
     geos_password = geoserver_engine.password
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+    print(my_geoserver)
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-    res2 = requests.get(app.get_custom_setting('geoserver') + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
+    res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
@@ -171,12 +181,20 @@ def ecmwf(request):
                           name='zoom_info',
                           disabled=True)
 
-    geoserver_base_url = app.get_custom_setting('geoserver')
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+
+    geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -257,12 +275,20 @@ def lis(request):
                           name='zoom_info',
                           disabled=True)
 
-    geoserver_base_url = app.get_custom_setting('geoserver')
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+
+    geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -342,12 +368,20 @@ def hiwat(request):
                           name='zoom_info',
                           disabled=True)
 
-    geoserver_base_url = app.get_custom_setting('geoserver')
+    # Retrieve a geoserver engine and geoserver credentials.
+    geoserver_engine = app.get_spatial_dataset_service(
+        name='main_geoserver', as_engine=True)
+
+    my_geoserver = geoserver_engine.endpoint.replace('rest', '')
+
+    geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 

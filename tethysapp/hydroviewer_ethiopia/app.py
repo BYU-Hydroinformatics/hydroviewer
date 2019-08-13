@@ -12,7 +12,7 @@ class Hydroviewer(TethysAppBase):
     icon = '{0}/images/ethiopia_logo.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
-    color = '#b8040a'
+    color = '#CCCC00'
     description = 'Hydroviewer for Ethiopia.'
     tags = 'Hydrology'
     enable_feedback = False
@@ -209,15 +209,15 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
-                name='geoserver',
-                type=CustomSetting.TYPE_STRING,
-                description='Spatial dataset service for app to use',
-                required=True
-            ),
-            CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
+                required=True
+            ),
+            CustomSetting(
+                name='layer_name',
+                type=CustomSetting.TYPE_STRING,
+                description='Layer name in Geoserver for the drainage lines (e.g. ethiopia-drainage_line)',
                 required=True
             ),
             CustomSetting(
@@ -241,7 +241,7 @@ class Hydroviewer(TethysAppBase):
             CustomSetting(
                 name='extra_feature',
                 type=CustomSetting.TYPE_STRING,
-                description='Name of an additional feature to load from  the provided geoserver (e.g. a boundary layer).',
+                description='Name of an additional feature to load from the provided geoserver (e.g. a boundary layer).',
                 required=False,
             ),
             CustomSetting(

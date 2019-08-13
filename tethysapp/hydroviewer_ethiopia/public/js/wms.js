@@ -253,9 +253,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
@@ -308,9 +309,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         $.ajax({
             type: 'GET',
             url: 'get-lis-shp/',
@@ -358,9 +360,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         $.ajax({
             type: 'GET',
             url: 'get-hiwat-shp/',
