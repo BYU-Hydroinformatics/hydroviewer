@@ -93,7 +93,7 @@ def home_standard(request):
         "model_input": get_model_input('Select Model'),
         "zoom_info": get_zoom_info(),
         "geoserver_endpoint": get_geoserver_endpoint()
-        }
+    }
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
@@ -114,7 +114,7 @@ def lis_ecmwf(request):
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
                 'title': 'Save as Default Options for WS'
-                })
+            })
     else:
         defaultUpdateButton = False
 
@@ -170,7 +170,7 @@ def lis_ecmwf(request):
         "zoom_info": get_zoom_info(),
         "geoserver_endpoint": get_geoserver_endpoint(),
         "defaultUpdateButton": defaultUpdateButton
-        }
+    }
 
     if (init_model_val == 'ECMWF-RAPID'):
         renderer = '{0}/ecmwf.html'.format(base_name)
@@ -194,7 +194,7 @@ def hiwat(request):
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
                 'title': 'Save as Default Options for WS'
-                })
+            })
     else:
         defaultUpdateButton = False
 
@@ -256,7 +256,7 @@ def hiwat(request):
         "zoom_info": zoom_info,
         "geoserver_endpoint": get_geoserver_endpoint(),
         "defaultUpdateButton": defaultUpdateButton
-        }
+    }
 
     return render(request, '{0}/hiwat.html'.format(base_name), context)
 
@@ -288,9 +288,9 @@ def get_warning_points(request):
                 "warning20": json.loads(res20.content)["features"],
                 "warning10": json.loads(res10.content)["features"],
                 "warning2": json.loads(res2.content)["features"]
-                })
+            })
         except Exception as e:
-            print str(e)
+            print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -315,7 +315,7 @@ def ecmwf_get_time_series(request):
             startdate + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        pairs = res.content.splitlines()
+        pairs = res.content.decode('utf-8').splitlines()
         header = pairs.pop(0)
 
         dates = []
@@ -365,8 +365,8 @@ def ecmwf_get_time_series(request):
             y=mean_values,
             line=dict(
                 color='blue',
-                )
             )
+        )
 
         max_series = go.Scatter(
             name='Max',
@@ -377,8 +377,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 color='rgb(152, 251, 152)',
                 width=0,
-                )
             )
+        )
 
         min_series = go.Scatter(
             name='Min',
@@ -388,8 +388,8 @@ def ecmwf_get_time_series(request):
             mode='lines',
             line=dict(
                 color='rgb(152, 251, 152)',
-                )
             )
+        )
 
         std_dev_lower_series = go.Scatter(
             name='Std. Dev. Lower',
@@ -400,8 +400,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 color='rgb(152, 251, 152)',
                 width=0,
-                )
             )
+        )
 
         std_dev_upper_series = go.Scatter(
             name='Std. Dev. Upper',
@@ -412,8 +412,8 @@ def ecmwf_get_time_series(request):
             line=dict(
                 width=0,
                 color='rgb(34, 139, 34)',
-                )
             )
+        )
 
         plot_series = [min_series,
                        std_dev_lower_series,
@@ -428,8 +428,8 @@ def ecmwf_get_time_series(request):
                 y=hres_values,
                 line=dict(
                     color='black',
-                    )
-                ))
+                )
+            ))
 
         try:
             return_shapes, return_annotations = get_return_period_ploty_info(
@@ -443,28 +443,28 @@ def ecmwf_get_time_series(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'.format(get_units_title(units)),
                 range=[0, max(max_values) + max(max_values)/5]
-                ),
+            ),
             shapes=return_shapes,
             annotations=return_annotations
-            )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=plot_series,
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -502,7 +502,7 @@ def lis_get_historic_data(request):
             '&river_id=' + comid + '&return_format=csv&type=historical',
             headers={'Authorization': 'Token ' + app.get_custom_setting('sldas_token')}, verify=False)
 
-        pairs = res.content.splitlines()
+        pairs = res.content.decode('utf-8').splitlines()
         header = pairs.pop(0)
 
         dates = []
@@ -525,8 +525,8 @@ def lis_get_historic_data(request):
             y=mean_values,
             line=dict(
                 color='blue',
-                )
             )
+        )
 
         plot_series = [avg_series]
 
@@ -535,26 +535,26 @@ def lis_get_historic_data(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='LDAS Streamflow ({}<sup>3</sup>/s)'.format(
                     get_units_title(units))
-                )
             )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=plot_series,
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -574,7 +574,7 @@ def lis_get_time_series(request):
             '&river_id=' + comid + '&return_format=csv&type=forecast',
             headers={'Authorization': 'Token ' + app.get_custom_setting('sldas_token')}, verify=False)
 
-        pairs = res.content.splitlines()
+        pairs = res.content.decode('utf-8').splitlines()
         header = pairs.pop(0)
 
         dates = []
@@ -597,8 +597,8 @@ def lis_get_time_series(request):
             y=mean_values,
             line=dict(
                 color='blue',
-                )
             )
+        )
 
         plot_series = [avg_series]
 
@@ -607,26 +607,26 @@ def lis_get_time_series(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='LDAS Streamflow ({}<sup>3</sup>/s)'.format(
                     get_units_title(units))
-                )
             )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=plot_series,
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -665,33 +665,33 @@ def hiwat_get_time_series(request):
             name='HIWAT',
             x=dates,
             y=values,
-            )
+        )
 
         layout = go.Layout(
             title="HIWAT Streamflow<br><sub>{0} ({1}): {2}</sub>".format(
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
                       .format(get_units_title(units))
-                )
             )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=[series],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No HIWAT data found for the selected reach.'})
 
 
@@ -708,7 +708,7 @@ def get_available_dates(request):
         headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
     dates = []
-    for date in eval(res.content):
+    for date in eval(res.content.decode('utf-8')):
         if len(date) == 10:
             date_mod = date + '000'
             date_f = dt.datetime.strptime(
@@ -724,7 +724,7 @@ def get_available_dates(request):
     return JsonResponse({
         "success": "Data analysis complete!",
         "available_dates": json.dumps(dates)
-        })
+    })
 
 
 def get_return_periods(request):
@@ -739,7 +739,7 @@ def get_return_periods(request):
         watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
         headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-    return eval(res.content)
+    return eval(res.content.decode('utf-8'))
 
 
 def ecmwf_get_historic_data(request):
@@ -762,7 +762,7 @@ def ecmwf_get_historic_data(request):
             '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        era_pairs = era_res.content.splitlines()
+        era_pairs = era_res.content.decode('utf-8').splitlines()
         era_pairs.pop(0)
 
         era_dates = []
@@ -780,7 +780,7 @@ def ecmwf_get_historic_data(request):
             name='ERA Interim',
             x=era_dates,
             y=era_values,
-            )
+        )
 
         return_shapes, return_annotations = get_return_period_ploty_info(
             request, era_dates[0], era_dates[-1])
@@ -790,28 +790,28 @@ def ecmwf_get_historic_data(request):
                 watershed, subbasin, comid),
             xaxis=dict(
                 title='Date',
-                ),
+            ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
                       .format(get_units_title(units))
-                ),
+            ),
             shapes=return_shapes,
             annotations=return_annotations
-            )
+        )
 
         chart_obj = PlotlyView(
             go.Figure(data=[era_series],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -831,7 +831,7 @@ def get_flow_duration_curve(request):
             '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        era_pairs = era_res.content.splitlines()
+        era_pairs = era_res.content.decode('utf-8').splitlines()
         era_pairs.pop(0)
 
         era_values = []
@@ -852,7 +852,7 @@ def get_flow_duration_curve(request):
         flow_duration_sc = go.Scatter(
             x=prob,
             y=sorted_daily_avg,
-            )
+        )
 
         layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}</sub>"
                                  .format(watershed, subbasin, comid),
@@ -868,16 +868,16 @@ def get_flow_duration_curve(request):
         chart_obj = PlotlyView(
             go.Figure(data=[flow_duration_sc],
                       layout=layout)
-            )
+        )
 
         context = {
             'gizmo_object': chart_obj,
-            }
+        }
 
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -907,7 +907,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=max(return_max, band_alt_max),
             line=dict(width=0),
             fillcolor='rgba(128, 0, 128, 0.4)',
-            ),
+        ),
         # return 10 band
         dict(
             type='rect',
@@ -919,7 +919,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=return_20,
             line=dict(width=0),
             fillcolor='rgba(255, 0, 0, 0.4)',
-            ),
+        ),
         # return 2 band
         dict(
             type='rect',
@@ -931,8 +931,8 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             y1=return_10,
             line=dict(width=0),
             fillcolor='rgba(255, 255, 0, 0.4)',
-            ),
-        ]
+        ),
+    ]
     annotations = [
         # return max
         dict(
@@ -943,7 +943,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='Max. ({:.1f})'.format(return_max),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 20 band
         dict(
             x=datetime_end,
@@ -953,7 +953,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='20-yr ({:.1f})'.format(return_20),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 10 band
         dict(
             x=datetime_end,
@@ -963,7 +963,7 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='10-yr ({:.1f})'.format(return_10),
             showarrow=False,
             xanchor='left',
-            ),
+        ),
         # return 2 band
         dict(
             x=datetime_end,
@@ -973,8 +973,8 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
             text='2-yr ({:.1f})'.format(return_2),
             showarrow=False,
             xanchor='left',
-            ),
-        ]
+        ),
+    ]
 
     return shapes, annotations
 
@@ -998,7 +998,7 @@ def get_historic_data_csv(request):
             '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = era_res.content.splitlines()
+        qout_data = era_res.content.decode('utf-8').splitlines()
         qout_data.pop(0)
 
         response = HttpResponse(content_type='text/csv')
@@ -1016,7 +1016,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -1043,7 +1043,7 @@ def get_forecast_data_csv(request):
             startdate + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = res.content.splitlines()
+        qout_data = res.content.decode('utf-8').splitlines()
         qout_data.pop(0)
 
         init_time = qout_data[0].split(',')[0].split(' ')[0]
@@ -1063,7 +1063,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1121,7 +1121,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1179,7 +1179,7 @@ def get_hiwat_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1200,7 +1200,7 @@ def shp_to_geojson(request):
                          ).replace(' ', '_'),
                 '-'.join([watershed, subbasin, 'drainage_line',
                           '3857.shp']).replace(' ', '_')
-                )
+            )
         elif model == 'HIWAT-RAPID':
             reprojected_shp_path = os.path.join(
                 app.get_custom_setting('hiwat_path'),
@@ -1209,7 +1209,7 @@ def shp_to_geojson(request):
                          ).replace(' ', '_'),
                 '-'.join([watershed, subbasin, 'drainage_line',
                           '3857.shp']).replace(' ', '_')
-                )
+            )
 
         if not os.path.exists(reprojected_shp_path):
 
@@ -1247,7 +1247,7 @@ def shp_to_geojson(request):
                     EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"],
                     AUTHORITY["EPSG","3857"]]
                 """
-                )
+            )
 
             coordTrans = osr.CoordinateTransformation(in_prj, out_prj)
 
@@ -1289,7 +1289,7 @@ def shp_to_geojson(request):
             fc = {
                 'type': 'FeatureCollection',
                 'features': []
-                }
+            }
 
             for feature in reprojected_shp:
                 fc['features'].append(feature.ExportToJson(as_object=True))
@@ -1317,12 +1317,12 @@ def shp_to_geojson(request):
                 'legend_extent': [xmin, ymin, xmax, ymax],
                 'legend_extent_projection': 'EPSG:3857',
                 'feature_selection': True
-                }
+            }
 
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1465,7 +1465,7 @@ def forecastpercent(request):
         dicts = ens.content.splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content)
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
         rpdict.pop('max', None)
 
         rivperc = {}
@@ -1497,7 +1497,7 @@ def forecastpercent(request):
         for keyss in rivperc:
             data = riverpercent[keyss]
             ordered_data = sorted(
-                data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+                list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
