@@ -10,7 +10,7 @@ import os
 import requests
 from requests.auth import HTTPBasicAuth
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import numpy as np
 import netCDF4 as nc
 
@@ -338,7 +338,7 @@ def get_warning_points(request):
                 "warning2":json.loads(res2.content)["features"]
             })
         except Exception as e:
-            print str(e)
+            print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
@@ -510,7 +510,7 @@ def ecmwf_get_time_series(request):
         return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
 
@@ -573,7 +573,7 @@ def lis_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No LIS data found for the selected reach.'})
 
 
@@ -636,7 +636,7 @@ def hiwat_get_time_series(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No HIWAT data found for the selected reach.'})
 
 
@@ -750,7 +750,7 @@ def get_historic_data(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
@@ -815,7 +815,7 @@ def get_flow_duration_curve(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
@@ -953,7 +953,7 @@ def get_historic_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
 
@@ -1000,7 +1000,7 @@ def get_forecast_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1055,7 +1055,7 @@ def get_lis_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1110,7 +1110,7 @@ def get_hiwat_data_csv(request):
         return response
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
 
@@ -1248,7 +1248,7 @@ def shp_to_geojson(request):
             return JsonResponse(geojson_layer)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
 
@@ -1419,7 +1419,7 @@ def forecastpercent(request):
 
         for keyss in rivperc:
             data = riverpercent[keyss]
-            ordered_data = sorted(data.items(), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            ordered_data = sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
             rivpercorder[keyss] = ordered_data
 
         rivdates = []
@@ -1465,8 +1465,8 @@ def get_discharge_data(request):
 
         url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-        req = urllib2.Request(url)
-        opener = urllib2.build_opener()
+        req = urllib.request.Request(url)
+        opener = urllib.request.build_opener()
         f = opener.open(req)
         data = json.loads(f.read())
 
@@ -1544,7 +1544,7 @@ def get_discharge_data(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
@@ -1561,8 +1561,8 @@ def get_observed_discharge_csv(request):
 
 		url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-		req = urllib2.Request(url)
-		opener = urllib2.build_opener()
+		req = urllib.request.Request(url)
+		opener = urllib.request.build_opener()
 		f = opener.open(req)
 		data = json.loads(f.read())
 
@@ -1601,7 +1601,7 @@ def get_observed_discharge_csv(request):
 		return response
 
 	except Exception as e:
-		print str(e)
+		print(str(e))
 		return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
@@ -1618,8 +1618,8 @@ def get_sensor_discharge_csv(request):
 
 		url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-		req = urllib2.Request(url)
-		opener = urllib2.build_opener()
+		req = urllib.request.Request(url)
+		opener = urllib.request.build_opener()
 		f = opener.open(req)
 		data = json.loads(f.read())
 
@@ -1657,7 +1657,7 @@ def get_sensor_discharge_csv(request):
 		return response
 
 	except Exception as e:
-		print str(e)
+		print(str(e))
 		return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
@@ -1674,8 +1674,8 @@ def get_waterlevel_data(request):
 
         url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-        req2 = urllib2.Request(url2)
-        opener2 = urllib2.build_opener()
+        req2 = urllib.request.Request(url2)
+        opener2 = urllib.request.build_opener()
         f2 = opener2.open(req2)
         data2 = json.loads(f2.read())
 
@@ -1753,7 +1753,7 @@ def get_waterlevel_data(request):
         return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
@@ -1770,8 +1770,8 @@ def get_observed_waterlevel_csv(request):
 
 		url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-		req2 = urllib2.Request(url2)
-		opener2 = urllib2.build_opener()
+		req2 = urllib.request.Request(url2)
+		opener2 = urllib.request.build_opener()
 		f2 = opener2.open(req2)
 		data2 = json.loads(f2.read())
 
@@ -1810,7 +1810,7 @@ def get_observed_waterlevel_csv(request):
 		return response
 
 	except Exception as e:
-		print str(e)
+		print(str(e))
 		return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
 
@@ -1827,8 +1827,8 @@ def get_sensor_waterlevel_csv(request):
 
 		url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-		req2 = urllib2.Request(url2)
-		opener2 = urllib2.build_opener()
+		req2 = urllib.request.Request(url2)
+		opener2 = urllib.request.build_opener()
 		f2 = opener2.open(req2)
 		data2 = json.loads(f2.read())
 
@@ -1867,5 +1867,5 @@ def get_sensor_waterlevel_csv(request):
 		return response
 
 	except Exception as e:
-		print str(e)
+		print(str(e))
 		return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
