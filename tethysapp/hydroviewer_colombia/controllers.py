@@ -48,7 +48,7 @@ def set_custom_setting(defaultModelName, defaultWSName):
 def home(request):
 
     # Check if we have a default model. If we do, then redirect the user to the default model's page
-    default_model = app.get_custom_setting('default_model_type');
+    default_model = app.get_custom_setting('default_model_type')
     if default_model:
         model_func = switch_model(default_model)
         if model_func is not 'invalid':
@@ -88,14 +88,14 @@ def ecmwf(request):
 
     if(can_update_default):
         defaultUpdateButton = Button(
-        display_text='Save',
-        name='update_button',
-        style='success',
-        attributes={
-            'data-toggle': 'tooltip',
-            'data-placement': 'bottom',
-            'title': 'Save as Default Options for WS'
-        })
+            display_text='Save',
+            name='update_button',
+            style='success',
+            attributes={
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Save as Default Options for WS'
+            })
     else:
         defaultUpdateButton = False
 
@@ -111,7 +111,7 @@ def ecmwf(request):
                               name='model',
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                        ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               classes=hiddenAttr,
                               original=True)
@@ -136,7 +136,7 @@ def ecmwf(request):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
         if 'drainage_line' in raw_feature and any(n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
             feat_name = raw_feature.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        raw_feature.split('-')[1].replace('_', ' ').title() + ')'
+                raw_feature.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, feat_name])
 
@@ -218,7 +218,7 @@ def lis(request):
                               name='model',
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                        ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               original=True)
 
@@ -229,7 +229,7 @@ def lis(request):
 
         for i in res:
             feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
+                i.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, i])
 
@@ -269,7 +269,7 @@ def hiwat(request):
                               name='model',
                               multiple=False,
                               options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                        ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               original=True)
 
@@ -280,7 +280,7 @@ def hiwat(request):
 
         for i in res:
             feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
+                i.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, i])
 
@@ -527,7 +527,7 @@ def lis_get_time_series(request):
         path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
         res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'),
-                         '-'.join([watershed, subbasin]), filename[0]), 'r')
+                                      '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -591,7 +591,7 @@ def hiwat_get_time_series(request):
         path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
         res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'),
-                         '-'.join([watershed, subbasin]), filename[0]), 'r')
+                                      '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -649,9 +649,9 @@ def get_available_dates(request):
     subbasin = get_data['subbasin']
     comid = get_data['comid']
     res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+        app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
+        watershed + '&subbasin_name=' + subbasin,
+        headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
     dates = []
     for date in eval(res.content.decode('utf-8')):
@@ -679,9 +679,9 @@ def get_return_periods(request):
     comid = get_data['comid']
 
     res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+        app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
+        watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
+        headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
     return eval(res.content.decode('utf-8'))
 
@@ -836,42 +836,42 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
 
     # plotly info section
     shapes = [
-         # return 20 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_20,
-             x1=datetime_end,
-             y1=max(return_max, band_alt_max),
-             line=dict(width=0),
-             fillcolor='rgba(128, 0, 128, 0.4)',
-         ),
-         # return 10 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_10,
-             x1=datetime_end,
-             y1=return_20,
-             line=dict(width=0),
-             fillcolor='rgba(255, 0, 0, 0.4)',
-         ),
-         # return 2 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_2,
-             x1=datetime_end,
-             y1=return_10,
-             line=dict(width=0),
-             fillcolor='rgba(255, 255, 0, 0.4)',
-         ),
+        # return 20 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_20,
+            x1=datetime_end,
+            y1=max(return_max, band_alt_max),
+            line=dict(width=0),
+            fillcolor='rgba(128, 0, 128, 0.4)',
+        ),
+        # return 10 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_10,
+            x1=datetime_end,
+            y1=return_20,
+            line=dict(width=0),
+            fillcolor='rgba(255, 0, 0, 0.4)',
+        ),
+        # return 2 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_2,
+            x1=datetime_end,
+            y1=return_10,
+            line=dict(width=0),
+            fillcolor='rgba(255, 255, 0, 0.4)',
+        ),
     ]
     annotations = [
         # return max
@@ -1026,7 +1026,7 @@ def get_lis_data_csv(request):
         path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
         res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'),
-                         '-'.join([watershed, subbasin]), filename[0]), 'r')
+                                      '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -1045,9 +1045,9 @@ def get_lis_data_csv(request):
         init_time = pairs[0][0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=lis_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
-                                                                                                                subbasin,
-                                                                                                                comid,
-                                                                                                                init_time)
+                                                                                                           subbasin,
+                                                                                                           comid,
+                                                                                                           init_time)
 
         writer = csv_writer(response)
         writer.writerow(['datetime', 'flow (m3/s)'])
@@ -1082,7 +1082,7 @@ def get_hiwat_data_csv(request):
         path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
         res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'),
-                         '-'.join([watershed, subbasin]), filename[0]), 'r')
+                                      '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -1129,17 +1129,17 @@ def shp_to_geojson(request):
         driver = ogr.GetDriverByName('ESRI Shapefile')
         if model == 'LIS-RAPID':
             reprojected_shp_path = os.path.join(
-                    app.get_custom_setting('lis_path'),
-                    '-'.join([watershed, subbasin]).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+                app.get_custom_setting('lis_path'),
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
             )
         elif model == 'HIWAT-RAPID':
             reprojected_shp_path = os.path.join(
-                    app.get_custom_setting('hiwat_path'),
-                    '-'.join([watershed, subbasin]).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+                app.get_custom_setting('hiwat_path'),
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
             )
 
         if not os.path.exists(reprojected_shp_path):
@@ -1393,44 +1393,44 @@ def forecastpercent(request):
         dicts = ens.content.decode('utf-8').splitlines()
         dictstr = []
 
-        rpdict = ast.literal_eval(rpall.content.decode('utf-8')
+        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
         rpdict.pop('max', None)
 
-        rivperc={}
-        riverpercent={}
-        rivpercorder={}
+        rivperc = {}
+        riverpercent = {}
+        rivpercorder = {}
 
         for q in rpdict:
-            rivperc[q]={}
-            riverpercent[q]={}
+            rivperc[q] = {}
+            riverpercent[q] = {}
 
-        dictlen=len(dicts)
+        dictlen = len(dicts)
         for i in range(1, dictlen):
             dictstr.append(dicts[i].split(","))
 
         for rps in rivperc:
-            rp=float(rpdict[rps])
+            rp = float(rpdict[rps])
             for b in dictstr:
-                date=b[0][:10]
+                date = b[0][:10]
                 if date not in rivperc[rps]:
-                    rivperc[rps][date]=[]
-                length=len(b)
+                    rivperc[rps][date] = []
+                length = len(b)
                 for x in range(1, length):
-                    flow=float(b[x])
+                    flow = float(b[x])
                     if x not in rivperc[rps][date] and flow > rp:
                         rivperc[rps][date].append(x)
             for e in rivperc[rps]:
-                riverpercent[rps][e]=float(len(rivperc[rps][e])) / 51.0 * 100
+                riverpercent[rps][e] = float(len(rivperc[rps][e])) / 51.0 * 100
 
         for keyss in rivperc:
-            data=riverpercent[keyss]
-            ordered_data=sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
-            rivpercorder[keyss]=ordered_data
+            data = riverpercent[keyss]
+            ordered_data = sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
+            rivpercorder[keyss] = ordered_data
 
-        rivdates=[]
-        rivperctwo=[]
-        rivpercten=[]
-        rivperctwenty=[]
+        rivdates = []
+        rivperctwo = []
+        rivpercten = []
+        rivperctwenty = []
 
         for a in rivpercorder['two']:
             rivdates.append(a[0])
@@ -1442,94 +1442,95 @@ def forecastpercent(request):
         for d in rivpercorder['twenty']:
             rivperctwenty.append(d[1])
 
-        formatteddates=[str(elem)[-4:] for elem in rivdates]
-        formattedtwo=["%.0f" % elem for elem in rivperctwo]
-        formattedten=["%.0f" % elem for elem in rivpercten]
-        formattedtwenty=["%.0f" % elem for elem in rivperctwenty]
+        formatteddates = [str(elem)[-4:] for elem in rivdates]
+        formattedtwo = ["%.0f" % elem for elem in rivperctwo]
+        formattedten = ["%.0f" % elem for elem in rivpercten]
+        formattedtwenty = ["%.0f" % elem for elem in rivperctwenty]
 
-        formatteddates=formatteddates[:len(formatteddates) - 5]
-        formattedtwo=formattedtwo[:len(formattedtwo) - 5]
-        formattedten=formattedten[:len(formattedten) - 5]
-        formattedtwenty=formattedtwenty[:len(formattedtwenty) - 5]
+        formatteddates = formatteddates[:len(formatteddates) - 5]
+        formattedtwo = formattedtwo[:len(formattedtwo) - 5]
+        formattedten = formattedten[:len(formattedten) - 5]
+        formattedtwenty = formattedtwenty[:len(formattedtwenty) - 5]
 
-        dataformatted={'percdates': formatteddates, 'two': formattedtwo, 'ten': formattedten,
+        dataformatted = {'percdates': formatteddates, 'two': formattedtwo, 'ten': formattedten,
                          'twenty': formattedtwenty}
 
         return JsonResponse(dataformatted)
+
 
 def get_discharge_data(request):
     """
     Get data from fews stations
     """
-    get_data=request.GET
+    get_data = request.GET
 
     try:
 
-        codEstacion=get_data['stationcode']
+        codEstacion = get_data['stationcode']
         # YYYY/MM/DD
 
-        url='http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-        req=urllib.request.Request(url)
-        opener=urllib.request.build_opener()
-        f=opener.open(req)
-        data=json.loads(f.read())
+        req = urllib.request.Request(url)
+        opener = urllib.request.build_opener()
+        f = opener.open(req)
+        data = json.loads(f.read())
 
-        observedDischarge=(data.get('obs'))
-        sensorDischarge=(data.get('sen'))
+        observedDischarge = (data.get('obs'))
+        sensorDischarge = (data.get('sen'))
 
-        observedDischarge=(observedDischarge.get('data'))
-        sensorDischarge=(sensorDischarge.get('data'))
+        observedDischarge = (observedDischarge.get('data'))
+        sensorDischarge = (sensorDischarge.get('data'))
 
-        datesObservedDischarge=[row[0] for row in observedDischarge]
-        observedDischarge=[row[1] for row in observedDischarge]
+        datesObservedDischarge = [row[0] for row in observedDischarge]
+        observedDischarge = [row[1] for row in observedDischarge]
 
-        datesSensorDischarge=[row[0] for row in sensorDischarge]
-        sensorDischarge=[row[1] for row in sensorDischarge]
+        datesSensorDischarge = [row[0] for row in sensorDischarge]
+        sensorDischarge = [row[1] for row in sensorDischarge]
 
-        dates=[]
-        discharge=[]
+        dates = []
+        discharge = []
 
         for i in range(0, len(datesObservedDischarge) - 1):
-            year=int(datesObservedDischarge[i][0:4])
-            month=int(datesObservedDischarge[i][5:7])
-            day=int(datesObservedDischarge[i][8:10])
-            hh=int(datesObservedDischarge[i][11:13])
-            mm=int(datesObservedDischarge[i][14:16])
+            year = int(datesObservedDischarge[i][0:4])
+            month = int(datesObservedDischarge[i][5:7])
+            day = int(datesObservedDischarge[i][8:10])
+            hh = int(datesObservedDischarge[i][11:13])
+            mm = int(datesObservedDischarge[i][14:16])
             dates.append(dt.datetime(year, month, day, hh, mm))
             discharge.append(observedDischarge[i])
 
-        datesObservedDischarge=dates
-        observedDischarge=discharge
+        datesObservedDischarge = dates
+        observedDischarge = discharge
 
-        dates=[]
-        discharge=[]
+        dates = []
+        discharge = []
 
         for i in range(0, len(datesSensorDischarge) - 1):
-            year=int(datesSensorDischarge[i][0:4])
-            month=int(datesSensorDischarge[i][5:7])
-            day=int(datesSensorDischarge[i][8:10])
-            hh=int(datesSensorDischarge[i][11:13])
-            mm=int(datesSensorDischarge[i][14:16])
+            year = int(datesSensorDischarge[i][0:4])
+            month = int(datesSensorDischarge[i][5:7])
+            day = int(datesSensorDischarge[i][8:10])
+            hh = int(datesSensorDischarge[i][11:13])
+            mm = int(datesSensorDischarge[i][14:16])
             dates.append(dt.datetime(year, month, day, hh, mm))
             discharge.append(sensorDischarge[i])
 
-        datesSensorDischarge=dates
-        sensorDischarge=discharge
+        datesSensorDischarge = dates
+        sensorDischarge = discharge
 
-        observed_Q=go.Scatter(
+        observed_Q = go.Scatter(
             x=datesObservedDischarge,
             y=observedDischarge,
             name='Observed'
         )
 
-        sensor_Q=go.Scatter(
+        sensor_Q = go.Scatter(
             x=datesSensorDischarge,
             y=sensorDischarge,
             name='Sensor'
         )
 
-        layout=go.Layout(title='Observed Discharge',
+        layout = go.Layout(title='Observed Discharge',
                            xaxis=dict(
                                title='Dates',),
                            yaxis=dict(
@@ -1537,12 +1538,12 @@ def get_discharge_data(request):
                                autorange=True),
                            showlegend=True)
 
-        chart_obj=PlotlyView(
+        chart_obj = PlotlyView(
             go.Figure(data=[observed_Q, sensor_Q],
                       layout=layout)
         )
 
-        context={
+        context = {
             'gizmo_object': chart_obj,
         }
 
@@ -1554,192 +1555,193 @@ def get_discharge_data(request):
 
 
 def get_observed_discharge_csv(request):
-  """
-  Get data from fews stations
-  """
-
-  get_data=request.GET
-
-  try:
-    codEstacion=get_data['stationcode']
-    nomEstacion=get_data['stationname']
-
-    url='http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-    req=urllib.request.Request(url)
-    opener=urllib.request.build_opener()
-    f=opener.open(req)
-    data=json.loads(f.read())
-
-    observedDischarge=(data.get('obs'))
-    observedDischarge=(observedDischarge.get('data'))
-
-    datesObservedDischarge=[row[0] for row in observedDischarge]
-    observedDischarge=[row[1] for row in observedDischarge]
-
-    dates=[]
-    discharge=[]
-
-    for i in range(0, len(datesObservedDischarge) - 1):
-      year=int(datesObservedDischarge[i][0:4])
-      month=int(datesObservedDischarge[i][5:7])
-      day=int(datesObservedDischarge[i][8:10])
-      hh=int(datesObservedDischarge[i][11:13])
-      mm=int(datesObservedDischarge[i][14:16])
-      dates.append(dt.datetime(year, month, day, hh, mm))
-      discharge.append(observedDischarge[i])
-
-    datesObservedDischarge=dates
-    observedDischarge=discharge
-
-    pairs=[list(a) for a in zip(datesObservedDischarge, observedDischarge)]
-
-    response=HttpResponse(content_type='text/csv')
-    response['Content-Disposition']='attachment; filename=observed_discharge_{0}_{1}.csv'.format(
-        codEstacion, nomEstacion)
-
-    writer=csv_writer(response)
-    writer.writerow(['datetime', 'flow (m3/s)'])
-
-    for row_data in pairs:
-      writer.writerow(row_data)
-
-    return response
-
-  except Exception as e:
-    print(str(e))
-    return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
-
-
-def get_sensor_discharge_csv(request):
-  """
+    """
     Get data from fews stations
     """
 
-  get_data=request.GET
+    get_data = request.GET
 
-  try:
-    codEstacion=get_data['stationcode']
-    nomEstacion=get_data['stationname']
+    try:
+        codEstacion = get_data['stationcode']
+        nomEstacion = get_data['stationname']
 
-    url='http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-    req=urllib.request.Request(url)
-    opener=urllib.request.build_opener()
-    f=opener.open(req)
-    data=json.loads(f.read())
+        req = urllib.request.Request(url)
+        opener = urllib.request.build_opener()
+        f = opener.open(req)
+        data = json.loads(f.read())
 
-    sensorDischarge=(data.get('sen'))
-    sensorDischarge=(sensorDischarge.get('data'))
-    datesSensorDischarge=[row[0] for row in sensorDischarge]
-    sensorDischarge=[row[1] for row in sensorDischarge]
+        observedDischarge = (data.get('obs'))
+        observedDischarge = (observedDischarge.get('data'))
 
-    dates=[]
-    discharge=[]
+        datesObservedDischarge = [row[0] for row in observedDischarge]
+        observedDischarge = [row[1] for row in observedDischarge]
 
-    for i in range(0, len(datesSensorDischarge) - 1):
-      year=int(datesSensorDischarge[i][0:4])
-      month=int(datesSensorDischarge[i][5:7])
-      day=int(datesSensorDischarge[i][8:10])
-      hh=int(datesSensorDischarge[i][11:13])
-      mm=int(datesSensorDischarge[i][14:16])
-      dates.append(dt.datetime(year, month, day, hh, mm))
-      discharge.append(sensorDischarge[i])
+        dates = []
+        discharge = []
 
-    datesSensorDischarge=dates
-    sensorDischarge=discharge
+        for i in range(0, len(datesObservedDischarge) - 1):
+            year = int(datesObservedDischarge[i][0:4])
+            month = int(datesObservedDischarge[i][5:7])
+            day = int(datesObservedDischarge[i][8:10])
+            hh = int(datesObservedDischarge[i][11:13])
+            mm = int(datesObservedDischarge[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            discharge.append(observedDischarge[i])
 
-    pairs=[list(a) for a in zip(datesSensorDischarge, sensorDischarge)]
+        datesObservedDischarge = dates
+        observedDischarge = discharge
 
-    response=HttpResponse(content_type='text/csv')
-    response['Content-Disposition']='attachment; filename=sensor_discharge_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+        pairs = [list(a) for a in zip(datesObservedDischarge, observedDischarge)]
 
-    writer=csv_writer(response)
-    writer.writerow(['datetime', 'flow (m3/s)'])
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=observed_discharge_{0}_{1}.csv'.format(
+            codEstacion, nomEstacion)
 
-    for row_data in pairs:
-      writer.writerow(row_data)
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'flow (m3/s)'])
 
-    return response
+        for row_data in pairs:
+            writer.writerow(row_data)
 
-  except Exception as e:
-    print(str(e))
-    return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
+        return response
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
+
+
+def get_sensor_discharge_csv(request):
+    """
+      Get data from fews stations
+      """
+
+    get_data = request.GET
+
+    try:
+        codEstacion = get_data['stationcode']
+        nomEstacion = get_data['stationname']
+
+        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
+
+        req = urllib.request.Request(url)
+        opener = urllib.request.build_opener()
+        f = opener.open(req)
+        data = json.loads(f.read())
+
+        sensorDischarge = (data.get('sen'))
+        sensorDischarge = (sensorDischarge.get('data'))
+        datesSensorDischarge = [row[0] for row in sensorDischarge]
+        sensorDischarge = [row[1] for row in sensorDischarge]
+
+        dates = []
+        discharge = []
+
+        for i in range(0, len(datesSensorDischarge) - 1):
+            year = int(datesSensorDischarge[i][0:4])
+            month = int(datesSensorDischarge[i][5:7])
+            day = int(datesSensorDischarge[i][8:10])
+            hh = int(datesSensorDischarge[i][11:13])
+            mm = int(datesSensorDischarge[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            discharge.append(sensorDischarge[i])
+
+        datesSensorDischarge = dates
+        sensorDischarge = discharge
+
+        pairs = [list(a) for a in zip(datesSensorDischarge, sensorDischarge)]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=sensor_discharge_{0}_{1}.csv'.format(
+            codEstacion, nomEstacion)
+
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'flow (m3/s)'])
+
+        for row_data in pairs:
+            writer.writerow(row_data)
+
+        return response
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
     """
-    get_data=request.GET
+    get_data = request.GET
 
     try:
 
-        codEstacion=get_data['stationcode']
+        codEstacion = get_data['stationcode']
         # YYYY/MM/DD
 
-        url2='http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-        req2=urllib.request.Request(url2)
-        opener2=urllib.request.build_opener()
-        f2=opener2.open(req2)
-        data2=json.loads(f2.read())
+        req2 = urllib.request.Request(url2)
+        opener2 = urllib.request.build_opener()
+        f2 = opener2.open(req2)
+        data2 = json.loads(f2.read())
 
-        observedWaterLevel=(data2.get('obs'))
-        sensorWaterLevel=(data2.get('sen'))
+        observedWaterLevel = (data2.get('obs'))
+        sensorWaterLevel = (data2.get('sen'))
 
-        observedWaterLevel=(observedWaterLevel.get('data'))
-        sensorWaterLevel=(sensorWaterLevel.get('data'))
+        observedWaterLevel = (observedWaterLevel.get('data'))
+        sensorWaterLevel = (sensorWaterLevel.get('data'))
 
-        datesObservedWaterLevel=[row[0] for row in observedWaterLevel]
-        observedWaterLevel=[row[1] for row in observedWaterLevel]
+        datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
+        observedWaterLevel = [row[1] for row in observedWaterLevel]
 
-        datesSensorWaterLevel=[row[0] for row in sensorWaterLevel]
-        sensorWaterLevel=[row[1] for row in sensorWaterLevel]
+        datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
+        sensorWaterLevel = [row[1] for row in sensorWaterLevel]
 
-        dates=[]
-        waterLevel=[]
+        dates = []
+        waterLevel = []
 
         for i in range(0, len(datesObservedWaterLevel) - 1):
-            year=int(datesObservedWaterLevel[i][0:4])
-            month=int(datesObservedWaterLevel[i][5:7])
-            day=int(datesObservedWaterLevel[i][8:10])
-            hh=int(datesObservedWaterLevel[i][11:13])
-            mm=int(datesObservedWaterLevel[i][14:16])
+            year = int(datesObservedWaterLevel[i][0:4])
+            month = int(datesObservedWaterLevel[i][5:7])
+            day = int(datesObservedWaterLevel[i][8:10])
+            hh = int(datesObservedWaterLevel[i][11:13])
+            mm = int(datesObservedWaterLevel[i][14:16])
             dates.append(dt.datetime(year, month, day, hh, mm))
             waterLevel.append(observedWaterLevel[i])
 
-        datesObservedWaterLevel=dates
-        observedWaterLevel=waterLevel
+        datesObservedWaterLevel = dates
+        observedWaterLevel = waterLevel
 
-        dates=[]
-        waterLevel=[]
+        dates = []
+        waterLevel = []
 
         for i in range(0, len(datesSensorWaterLevel) - 1):
-            year=int(datesSensorWaterLevel[i][0:4])
-            month=int(datesSensorWaterLevel[i][5:7])
-            day=int(datesSensorWaterLevel[i][8:10])
-            hh=int(datesSensorWaterLevel[i][11:13])
-            mm=int(datesSensorWaterLevel[i][14:16])
+            year = int(datesSensorWaterLevel[i][0:4])
+            month = int(datesSensorWaterLevel[i][5:7])
+            day = int(datesSensorWaterLevel[i][8:10])
+            hh = int(datesSensorWaterLevel[i][11:13])
+            mm = int(datesSensorWaterLevel[i][14:16])
             dates.append(dt.datetime(year, month, day, hh, mm))
             waterLevel.append(sensorWaterLevel[i])
 
-        datesSensorWaterLevel=dates
-        sensorWaterLevel=waterLevel
+        datesSensorWaterLevel = dates
+        sensorWaterLevel = waterLevel
 
-        observed_WL=go.Scatter(
+        observed_WL = go.Scatter(
             x=datesObservedWaterLevel,
             y=observedWaterLevel,
             name='Observed'
         )
 
-        sensor_WL=go.Scatter(
+        sensor_WL = go.Scatter(
             x=datesSensorWaterLevel,
             y=sensorWaterLevel,
             name='Sensor'
         )
 
-        layout=go.Layout(title='Observed Water Level',
+        layout = go.Layout(title='Observed Water Level',
                            xaxis=dict(
                                title='Dates', ),
                            yaxis=dict(
@@ -1747,12 +1749,12 @@ def get_waterlevel_data(request):
                                autorange=True),
                            showlegend=True)
 
-        chart_obj=PlotlyView(
+        chart_obj = PlotlyView(
             go.Figure(data=[observed_WL, sensor_WL],
                       layout=layout)
         )
 
-        context={
+        context = {
             'gizmo_object': chart_obj,
         }
 
@@ -1764,116 +1766,116 @@ def get_waterlevel_data(request):
 
 
 def get_observed_waterlevel_csv(request):
-  """
-  Get data from fews stations
-  """
-
-  get_data=request.GET
-
-  try:
-    codEstacion=get_data['stationcode']
-    nomEstacion=get_data['stationname']
-
-    url2='http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
-
-    req2=urllib.request.Request(url2)
-    opener2=urllib.request.build_opener()
-    f2=opener2.open(req2)
-    data2=json.loads(f2.read())
-
-    observedWaterLevel=(data2.get('obs'))
-    observedWaterLevel=(observedWaterLevel.get('data'))
-
-    datesObservedWaterLevel=[row[0] for row in observedWaterLevel]
-    observedWaterLevel=[row[1] for row in observedWaterLevel]
-
-    dates=[]
-    waterLevel=[]
-
-    for i in range(0, len(datesObservedWaterLevel) - 1):
-      year=int(datesObservedWaterLevel[i][0:4])
-      month=int(datesObservedWaterLevel[i][5:7])
-      day=int(datesObservedWaterLevel[i][8:10])
-      hh=int(datesObservedWaterLevel[i][11:13])
-      mm=int(datesObservedWaterLevel[i][14:16])
-      dates.append(dt.datetime(year, month, day, hh, mm))
-      waterLevel.append(observedWaterLevel[i])
-
-    datesObservedWaterLevel=dates
-    observedWaterLevel=waterLevel
-
-    pairs=[list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
-
-    response=HttpResponse(content_type='text/csv')
-    response['Content-Disposition']='attachment; filename=observed_water_level_{0}_{1}.csv'.format(
-        codEstacion, nomEstacion)
-
-    writer=csv_writer(response)
-    writer.writerow(['datetime', 'water level (m)'])
-
-    for row_data in pairs:
-      writer.writerow(row_data)
-
-    return response
-
-  except Exception as e:
-    print(str(e))
-    return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
-
-
-def get_sensor_waterlevel_csv(request):
-  """
+    """
     Get data from fews stations
     """
 
-  get_data=request.GET
+    get_data = request.GET
 
-  try:
-    codEstacion=get_data['stationcode']
-    nomEstacion=get_data['stationname']
+    try:
+        codEstacion = get_data['stationcode']
+        nomEstacion = get_data['stationname']
 
-    url2='http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-    req2=urllib.request.Request(url2)
-    opener2=urllib.request.build_opener()
-    f2=opener2.open(req2)
-    data2=json.loads(f2.read())
+        req2 = urllib.request.Request(url2)
+        opener2 = urllib.request.build_opener()
+        f2 = opener2.open(req2)
+        data2 = json.loads(f2.read())
 
-    sensorWaterLevel=(data2.get('sen'))
-    sensorWaterLevel=(sensorWaterLevel.get('data'))
+        observedWaterLevel = (data2.get('obs'))
+        observedWaterLevel = (observedWaterLevel.get('data'))
 
-    datesSensorWaterLevel=[row[0] for row in sensorWaterLevel]
-    sensorWaterLevel=[row[1] for row in sensorWaterLevel]
+        datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
+        observedWaterLevel = [row[1] for row in observedWaterLevel]
 
-    dates=[]
-    waterLevel=[]
+        dates = []
+        waterLevel = []
 
-    for i in range(0, len(datesSensorWaterLevel) - 1):
-      year=int(datesSensorWaterLevel[i][0:4])
-      month=int(datesSensorWaterLevel[i][5:7])
-      day=int(datesSensorWaterLevel[i][8:10])
-      hh=int(datesSensorWaterLevel[i][11:13])
-      mm=int(datesSensorWaterLevel[i][14:16])
-      dates.append(dt.datetime(year, month, day, hh, mm))
-      waterLevel.append(sensorWaterLevel[i])
+        for i in range(0, len(datesObservedWaterLevel) - 1):
+            year = int(datesObservedWaterLevel[i][0:4])
+            month = int(datesObservedWaterLevel[i][5:7])
+            day = int(datesObservedWaterLevel[i][8:10])
+            hh = int(datesObservedWaterLevel[i][11:13])
+            mm = int(datesObservedWaterLevel[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            waterLevel.append(observedWaterLevel[i])
 
-    datesSensorWaterLevel=dates
-    sensorWaterLevel=waterLevel
+        datesObservedWaterLevel = dates
+        observedWaterLevel = waterLevel
 
-    pairs=[list(a) for a in zip(datesSensorWaterLevel, sensorWaterLevel)]
+        pairs = [list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
 
-    response=HttpResponse(content_type='text/csv')
-    response['Content-Disposition']='attachment; filename=sensor_water_level_{0}_{1}.csv'.format(
-        codEstacion, nomEstacion)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(
+            codEstacion, nomEstacion)
 
-    writer=csv_writer(response)
-    writer.writerow(['datetime', 'water level (m)'])
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'water level (m)'])
 
-    for row_data in pairs:
-      writer.writerow(row_data)
+        for row_data in pairs:
+            writer.writerow(row_data)
 
-    return response
+        return response
 
-  except Exception as e:
-    print(str(e))
-    return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
+
+
+def get_sensor_waterlevel_csv(request):
+    """
+      Get data from fews stations
+      """
+
+    get_data = request.GET
+
+    try:
+        codEstacion = get_data['stationcode']
+        nomEstacion = get_data['stationname']
+
+        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+
+        req2 = urllib.request.Request(url2)
+        opener2 = urllib.request.build_opener()
+        f2 = opener2.open(req2)
+        data2 = json.loads(f2.read())
+
+        sensorWaterLevel = (data2.get('sen'))
+        sensorWaterLevel = (sensorWaterLevel.get('data'))
+
+        datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
+        sensorWaterLevel = [row[1] for row in sensorWaterLevel]
+
+        dates = []
+        waterLevel = []
+
+        for i in range(0, len(datesSensorWaterLevel) - 1):
+            year = int(datesSensorWaterLevel[i][0:4])
+            month = int(datesSensorWaterLevel[i][5:7])
+            day = int(datesSensorWaterLevel[i][8:10])
+            hh = int(datesSensorWaterLevel[i][11:13])
+            mm = int(datesSensorWaterLevel[i][14:16])
+            dates.append(dt.datetime(year, month, day, hh, mm))
+            waterLevel.append(sensorWaterLevel[i])
+
+        datesSensorWaterLevel = dates
+        sensorWaterLevel = waterLevel
+
+        pairs = [list(a) for a in zip(datesSensorWaterLevel, sensorWaterLevel)]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=sensor_water_level_{0}_{1}.csv'.format(
+            codEstacion, nomEstacion)
+
+        writer = csv_writer(response)
+        writer.writerow(['datetime', 'water level (m)'])
+
+        for row_data in pairs:
+            writer.writerow(row_data)
+
+        return response
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
