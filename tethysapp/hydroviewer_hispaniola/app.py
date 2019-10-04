@@ -13,7 +13,7 @@ class Hydroviewer(TethysAppBase):
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#000099'
-    description = 'View the FFGS and Streamflow Prediction Tool, along with precipitation data for the ' \
+    description = 'View FFGS and Streamflow Prediction results, along with precipitation data for the ' \
                   'Dominican Republic.'
     tags = 'Hydrology'
     enable_feedback = False
@@ -34,16 +34,16 @@ class Hydroviewer(TethysAppBase):
 
         return sds_settings
 
-    def persistent_store_setting(self):
+    def persistent_store_settings(self):
         """
         Define Persistent Store Settings.
         """
         ps_settings = (
             PersistentStoreDatabaseSetting(
-                name='primary_db',
-                description='primary database',
-                initializer='hydroviewer_hispaniola.model.init_primary_db',
-                required=False,
+                name='hydroviewer_hispaniola_db',
+                description='Primary database for HydroViewer Hispaniola',
+                initializer='hydroviewer_hispaniola.model.init_hydroviewer_hispaniola_db',
+                required=False
             ),
         )
 

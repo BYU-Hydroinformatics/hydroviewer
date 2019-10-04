@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from tethys_sdk.permissions import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
 from tethys_sdk.base import TethysAppBase

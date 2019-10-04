@@ -9,7 +9,9 @@ import ast
 import json
 import utm
 from .app import Hydroviewer as app
-#from hs_restclient import HydroShare, HydroShareAuthBasic
+from sqlalchemy.orm import sessionmaker
+from .model import Base, FFGSPrecip
+
 
 
 @csrf_exempt
@@ -79,6 +81,26 @@ def update_ffgs(request):
 
                 with open(data_staging_file, 'r') as g:
 
+                    # db_engine = app.get_persistent_store_database('hydroviewer_hispaniola_db')
+                    # db_url = app.get_persistent_store_database('hydroviewer_hispaniola_db', as_url=True)
+                    # SessionMaker = app.get_persistent_store_database('hydroviewer_hispaniola_db', as_sessionmaker=True)
+                    # session = SessionMaker()
+                    #
+                    # with open(data_staging_file, 'r') as f:
+                    #     reader = csv.reader(f)
+                    #     data_list = map(tuple, reader)
+                    #     id_list = []
+                    #     value_list = []
+                    #     for n in data_list:
+                    #         if len(n) == 2:
+                    #             id_list.append(n[0])
+                    #             value_list.append(n[1])
+                    #         new_row = FFGSPrecip(id=n[0], value=n[1])
+                    #         session.add(new_row)
+                    #
+                    # session.commit()
+                    # session.close()
+
                     conn = pg.connect(
                         'host=tethys-staging.byu.edu dbname=hydroviewer_hispaniola user=tethys_super password=zpwt49x3 port=5435')
 
@@ -138,15 +160,6 @@ def convert_json(items):
     return json.dumps(featureCollection, ensure_ascii=False)
 
 
-# Retrieve Precipitation Historical Data from HydroShare
-#def hydroshare_retrieve(filename, destination):
-
-#    auth = HydroShareAuthBasic(username='', password='')
-#    hs = HydroShare(auth=auth)
-#    fname = filename
-#    fpath = hs.getResourceFile('71d674ad26ab40d89baa319aa4a5b1cd', fname, destination=destination)
-
-#    return fpath
 
 @csrf_exempt
 def update_csv(request):

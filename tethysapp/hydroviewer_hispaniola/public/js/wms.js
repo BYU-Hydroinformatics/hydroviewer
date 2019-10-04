@@ -280,7 +280,7 @@ function view_watershed() {
         var layerNameCatchment = 'hispaniola_hydroviewer:ffgs_basin_view'
         wmsLayerCatchment = new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'https://tethys.byu.edu/geoserver/wms',
+                url: 'https://tethys2.byu.edu/geoserver/wms',
                 params: { LAYERS: layerNameCatchment },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -1547,7 +1547,7 @@ updateCSV = function() {
 /* This function adds the shapefile layer to the map after it's been uploaded to Geoserver */
 addLayerToMap = function(layerWorkspace, layerCode) {
     var layerWMS = new ol.source.ImageWMS({
-        url: 'https://tethys.byu.edu/geoserver/wms',
+        url: 'https://tethys2.byu.edu/geoserver/wms',
         params: { LAYERS: layerWorkspace + ':' + layerCode },
         serverType: 'geoserver',
         crossOrigin: 'anonymous'
