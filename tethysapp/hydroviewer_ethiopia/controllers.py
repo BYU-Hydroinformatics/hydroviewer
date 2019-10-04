@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from tethys_sdk.permissions import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
@@ -150,7 +150,6 @@ def ecmwf(request):
     geos_username = geoserver_engine.username
     geos_password = geoserver_engine.password
     my_geoserver = geoserver_engine.endpoint.replace('rest', '')
-    print(my_geoserver)
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
     res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
