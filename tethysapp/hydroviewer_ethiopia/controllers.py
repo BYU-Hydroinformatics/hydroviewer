@@ -458,7 +458,7 @@ def ecmwf_get_time_series(request):
             startdate + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        pairs = res.content.decode('utf-8').splitlines()
+        pairs = res.content.splitlines()
         header = pairs.pop(0)
 
         dates = []
@@ -758,7 +758,7 @@ def get_available_dates(request):
         headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
     dates = []
-    for date in eval(res.content.decode('utf-8')):
+    for date in eval(res.content):
         if len(date) == 10:
             date_mod = date + '000'
             date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
@@ -787,7 +787,7 @@ def get_return_periods(request):
         watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
         headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-    return eval(res.content.decode('utf-8'))
+    return eval(res.content)
 
 
 def get_historic_data(request):
@@ -811,7 +811,7 @@ def get_historic_data(request):
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        era_pairs = era_res.content.decode('utf-8').splitlines()
+        era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
 
         era_dates = []
@@ -880,7 +880,7 @@ def get_flow_duration_curve(request):
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        era_pairs = era_res.content.decode('utf-8').splitlines()
+        era_pairs = era_res.content.splitlines()
         era_pairs.pop(0)
 
         era_values = []
@@ -1047,7 +1047,7 @@ def get_historic_data_csv(request):
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = era_res.content.decode('utf-8').splitlines()
+        qout_data = era_res.content.splitlines()
         qout_data.pop(0)
 
         response = HttpResponse(content_type='text/csv')
@@ -1092,7 +1092,7 @@ def get_forecast_data_csv(request):
             startdate + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = res.content.decode('utf-8').splitlines()
+        qout_data = res.content.splitlines()
         qout_data.pop(0)
 
         init_time = qout_data[0].split(',')[0].split(' ')[0]
@@ -1500,7 +1500,7 @@ def forecastpercent(request):
         rpall = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/',
                              params=request_params1, headers=request_headers, verify=False)
 
-        dicts = ens.content.decode('utf-8').splitlines()
+        dicts = ens.content.splitlines()
         dictstr = []
 
         rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
