@@ -232,6 +232,12 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
+                name='layer_name',
+                type=CustomSetting.TYPE_STRING,
+                description='Layer name in Geoserver for the drainage lines (e.g. hispaniola-geoglows-drainage_line)',
+                required=True
+            ),
+            CustomSetting(
                 name='region',
                 type=CustomSetting.TYPE_STRING,
                 description='Streamflow Prediction Tool Region',

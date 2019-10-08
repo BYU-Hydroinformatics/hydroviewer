@@ -270,6 +270,7 @@ function view_watershed() {
             .text()
             .split(' (')[1]
             .replace(')', '')
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[3];
         $('#watershed-info').append(
             '<h3>Current Watershed: ' +
                 watershed_display_name +
@@ -291,7 +292,7 @@ function view_watershed() {
         map.addLayer(wmsLayerCatchment)
 
         var layerName =
-            workspace + ':' + watershed + '-' + subbasin + '-drainage_line'
+            workspace + ':' + layer_name;
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url:
@@ -310,17 +311,13 @@ function view_watershed() {
         get_warning_points(model, watershed, subbasin)
 
         map.addLayer(wmsLayer)
-
         $loading.addClass('hidden')
         var ajax_url =
             JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, '') +
             '/' +
             workspace +
             '/' +
-            watershed +
-            '-' +
-            subbasin +
-            '-drainage_line/wfs?request=GetCapabilities'
+            layer_name + '/wfs?request=GetCapabilities'
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -380,6 +377,7 @@ function view_watershed() {
             .text()
             .split(' (')[1]
             .replace(')', '')
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[3];
         $('#watershed-info').append(
             '<h3>Current Watershed: ' +
                 watershed_display_name +
@@ -388,7 +386,7 @@ function view_watershed() {
         )
 
         var layerName =
-            workspace + ':' + watershed + '-' + subbasin + '-drainage_line'
+            workspace + ':' + layer_name;
         $.ajax({
             type: 'GET',
             url: 'get-lis-shp/',
@@ -1184,6 +1182,7 @@ function add_feature(model, workspace, comid) {
         .split(' (')[1]
         .replace(')', '')
         .toLowerCase()
+    var layer_name = JSON.parse($('#geoserver_endpoint').val())[3];
 
     if (model === 'ECMWF-RAPID') {
         var vectorSource = new ol.source.Vector({
@@ -1199,10 +1198,7 @@ function add_feature(model, workspace, comid) {
                     'version=2.0.0&request=getfeature&typename=' +
                     workspace +
                     ':' +
-                    watershed +
-                    '-' +
-                    subbasin +
-                    '-drainage_line' +
+                    layer_name +
                     '&CQL_FILTER=COMID=' +
                     comid +
                     '&outputFormat=application/json&srsname=EPSG:3857&' +

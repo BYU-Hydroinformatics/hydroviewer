@@ -148,7 +148,7 @@ def ecmwf(request):
 
     watershed_list = [['Select Watershed', '']]  # + watershed_list
 
-    res2 = requests.get(my_geoserver + '/rest/workspaces/' + app.get_custom_setting('workspace') +
+    res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') +
                         '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
@@ -189,9 +189,12 @@ def ecmwf(request):
     geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
+    layer_name = app.get_custom_setting('layer_name')
+
+
     geoserver_endpoint = TextInput(display_text='',
                                    initial=json.dumps(
-                                       [geoserver_base_url, geoserver_workspace, region]),
+                                       [geoserver_base_url, geoserver_workspace, region, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
