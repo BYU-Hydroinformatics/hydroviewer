@@ -215,6 +215,12 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
+                name='layer_name',
+                type=CustomSetting.TYPE_STRING,
+                description='Layer name in Geoserver for the drainage lines (e.g. central_america-drainage_line)',
+                required=True
+            ),
+            CustomSetting(
                 name='region',
                 type=CustomSetting.TYPE_STRING,
                 description='Streamflow Prediction Tool Region',
@@ -235,7 +241,7 @@ class Hydroviewer(TethysAppBase):
             CustomSetting(
                 name='extra_feature',
                 type=CustomSetting.TYPE_STRING,
-                description='Name of an additional feature to load from  the provided geoserver (e.g. a boundary layer).',
+                description='Name of an additional feature to load from the provided geoserver (e.g. a boundary layer).',
                 required=False,
             ),
             CustomSetting(

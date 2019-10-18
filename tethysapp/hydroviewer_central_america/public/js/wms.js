@@ -254,9 +254,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
@@ -272,7 +273,7 @@ function view_watershed() {
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
-        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + layer_name + '/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -309,9 +310,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         $.ajax({
             type: 'GET',
             url: 'get-lis-shp/',
@@ -359,9 +361,10 @@ function view_watershed() {
         var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
         var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
+        var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + layer_name;
         $.ajax({
             type: 'GET',
             url: 'get-hiwat-shp/',
@@ -925,13 +928,14 @@ function add_feature(model, workspace, comid) {
 
     var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
     var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
+    var layer_name = JSON.parse($('#geoserver_endpoint').val())[4];
 
     if (model === 'ECMWF-RAPID') {
         var vectorSource = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
             url: function(extent) {
                 return JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + 'ows?service=wfs&' +
-                    'version=2.0.0&request=getfeature&typename=' + workspace + ':' + watershed + '-' + subbasin + '-drainage_line' + '&CQL_FILTER=COMID=' + comid + '&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
+                    'version=2.0.0&request=getfeature&typename=' + workspace + ':' + layer_name + '&CQL_FILTER=COMID=' + comid + '&outputFormat=application/json&srsname=EPSG:3857&' + ',EPSG:3857';
             },
             strategy: ol.loadingstrategy.bbox
         });

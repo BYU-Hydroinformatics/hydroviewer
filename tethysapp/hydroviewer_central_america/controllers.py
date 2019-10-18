@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from tethys_sdk.permissions import login_required
 from tethys_sdk.gizmos import *
 from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
@@ -87,8 +87,10 @@ def home_standard(request):
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -159,7 +161,7 @@ def ecmwf(request):
     my_geoserver = geoserver_engine.endpoint.replace('rest', '')
 
     watershed_list = [['Select Watershed', '']] #+ watershed_list
-    res2 = requests.get(my_geoserver + '/rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
+    res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
@@ -197,8 +199,10 @@ def ecmwf(request):
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -298,8 +302,10 @@ def lis(request):
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -389,8 +395,10 @@ def hiwat(request):
     geoserver_workspace = app.get_custom_setting('workspace')
     region = app.get_custom_setting('region')
     extra_feature = app.get_custom_setting('extra_feature')
+    layer_name = app.get_custom_setting('layer_name')
+
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature]),
+                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
