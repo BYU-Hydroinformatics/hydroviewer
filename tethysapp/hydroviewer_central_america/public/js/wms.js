@@ -1121,10 +1121,10 @@ $(function() {
 function getRegionGeoJsons() {
 
     let geojsons = region_index[$("#regions").val()]['geojsons'];
-
+    let staticURL = apiServer.replace("apps", "static")
     for (let i in geojsons) {
         var regionsSource = new ol.source.Vector({
-           url: '/static/' + 'hydroviewer_central_america' + '/geojson/' + geojsons[i],
+           url: staticURL + '/geojson/' + geojsons[i],
            format: new ol.format.GeoJSON()
         });
 
