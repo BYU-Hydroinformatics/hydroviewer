@@ -1124,6 +1124,7 @@ $(function() {
 
 function getRegionGeoJsons() {
 
+    let geojsons = region_index[$("#regions").val()]['geojsons'];
     for (let i in geojsons) {
         var regionsSource = new ol.source.Vector({
            url: staticGeoJSON + geojsons[i],
