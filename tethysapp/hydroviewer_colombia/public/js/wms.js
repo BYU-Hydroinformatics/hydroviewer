@@ -22,6 +22,9 @@ var default_extent,
 var $loading = $('#view-file-loading');
 var m_downloaded_historical_streamflow = false;
 var m_downloaded_flow_duration = false;
+
+const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
+
 //create symbols for warnings
 var twenty_symbols = [new ol.style.RegularShape({
     points: 3,
@@ -120,8 +123,8 @@ function init_map() {
     wms_layers = [
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
-                params: { 'LAYERS': 'AccRainEGE', 'TILED': true },
+                url: glofasURL,
+                params: { LAYERS: 'AccRainEGE', TILED: true },
                 serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
             }),
@@ -129,8 +132,8 @@ function init_map() {
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
-                params: { 'LAYERS': 'EGE_probRgt50', 'TILED': true },
+                url: glofasURL,
+                params: { LAYERS: 'EGE_probRgt50', TILED: true },
                 serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
             }),
@@ -138,8 +141,8 @@ function init_map() {
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
-                params: { 'LAYERS': 'EGE_probRgt150', 'TILED': true },
+                url: glofasURL,
+                params: { LAYERS: 'EGE_probRgt150', TILED: true },
                 serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
             }),
@@ -147,8 +150,8 @@ function init_map() {
         }),
         new ol.layer.Tile({
             source: new ol.source.TileWMS({
-                url: 'http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/',
-                params: { 'LAYERS': 'EGE_probRgt300', 'TILED': true },
+                url: glofasURL,
+                params: { LAYERS: 'EGE_probRgt300', TILED: true },
                 serverType: 'mapserver'
                 // crossOrigin: 'Anonymous'
             }),
