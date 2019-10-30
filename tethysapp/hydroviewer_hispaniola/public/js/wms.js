@@ -1413,7 +1413,7 @@ function updateFFGS() {
     } else {
         data = prepareFilesForAjax(files)
         $.ajax({
-            url: '/apps/hydroviewer-hispaniola/update-ffgs/',
+            url: apiServer + 'update-ffgs/',
             type: 'POST',
             headers: { 'X-CSRFToken': getCookie('csrftoken') },
             data: data,
@@ -1446,7 +1446,7 @@ updateCSV = function() {
     } else {
         data = prepareFilesForAjax(files)
         $.ajax({
-            url: '/apps/hydroviewer-hispaniola/update-csv/',
+            url: apiServer + 'update-csv/',
             type: 'POST',
             headers: { 'X-CSRFToken': getCookie('csrftoken') },
             data: data,
@@ -1587,7 +1587,7 @@ ajaxUploadShapefile = function() {
     })
 
     $.ajax({
-        url: '/apps/hydroviewer-hispaniola/ajax-add-layer/',
+        url: apiServer + 'ajax-add-layer/',
         type: 'POST',
         headers: { 'X-CSRFToken': getCookies('csrftoken') },
         data: data,
