@@ -1047,7 +1047,7 @@ def get_historic_data_csv(request):
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = era_res.content.splitlines()
+        qout_data = era_res.content.decode('utf-8').splitlines()
         qout_data.pop(0)
 
         response = HttpResponse(content_type='text/csv')
@@ -1092,7 +1092,7 @@ def get_forecast_data_csv(request):
             startdate + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
-        qout_data = res.content.splitlines()
+        qout_data = res.content.decode('utf-8').splitlines()
         qout_data.pop(0)
 
         init_time = qout_data[0].split(',')[0].split(' ')[0]
