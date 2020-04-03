@@ -1488,10 +1488,8 @@ def get_discharge_data(request):
 
         url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-        req = urllib.request.Request(url)
-        opener = urllib.request.build_opener()
-        f = opener.open(req)
-        data = json.loads(f.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
         observedDischarge = (data.get('obs'))
         sensorDischarge = (data.get('sen'))
@@ -1584,10 +1582,8 @@ def get_observed_discharge_csv(request):
 
         url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-        req = urllib.request.Request(url)
-        opener = urllib.request.build_opener()
-        f = opener.open(req)
-        data = json.loads(f.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
         observedDischarge = (data.get('obs'))
         observedDischarge = (observedDischarge.get('data'))
@@ -1642,10 +1638,8 @@ def get_sensor_discharge_csv(request):
 
         url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
 
-        req = urllib.request.Request(url)
-        opener = urllib.request.build_opener()
-        f = opener.open(req)
-        data = json.loads(f.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
         sensorDischarge = (data.get('sen'))
         sensorDischarge = (sensorDischarge.get('data'))
@@ -1697,15 +1691,13 @@ def get_waterlevel_data(request):
         codEstacion = get_data['stationcode']
         # YYYY/MM/DD
 
-        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-        req2 = urllib.request.Request(url2)
-        opener2 = urllib.request.build_opener()
-        f2 = opener2.open(req2)
-        data2 = json.loads(f2.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
-        observedWaterLevel = (data2.get('obs'))
-        sensorWaterLevel = (data2.get('sen'))
+        observedWaterLevel = (data.get('obs'))
+        sensorWaterLevel = (data.get('sen'))
 
         observedWaterLevel = (observedWaterLevel.get('data'))
         sensorWaterLevel = (sensorWaterLevel.get('data'))
@@ -1793,14 +1785,12 @@ def get_observed_waterlevel_csv(request):
         codEstacion = get_data['stationcode']
         nomEstacion = get_data['stationname']
 
-        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-        req2 = urllib.request.Request(url2)
-        opener2 = urllib.request.build_opener()
-        f2 = opener2.open(req2)
-        data2 = json.loads(f2.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
-        observedWaterLevel = (data2.get('obs'))
+        observedWaterLevel = (data.get('obs'))
         observedWaterLevel = (observedWaterLevel.get('data'))
 
         datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
@@ -1851,14 +1841,12 @@ def get_sensor_waterlevel_csv(request):
         codEstacion = get_data['stationcode']
         nomEstacion = get_data['stationname']
 
-        url2 = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
 
-        req2 = urllib.request.Request(url2)
-        opener2 = urllib.request.build_opener()
-        f2 = opener2.open(req2)
-        data2 = json.loads(f2.read())
+        f = requests.get(url, verify=False)
+        data = f.json()
 
-        sensorWaterLevel = (data2.get('sen'))
+        sensorWaterLevel = (data.get('sen'))
         sensorWaterLevel = (sensorWaterLevel.get('data'))
 
         datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
