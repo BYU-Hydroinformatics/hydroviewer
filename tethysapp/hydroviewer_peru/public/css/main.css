@@ -207,6 +207,16 @@
   height: 100%;
 }
 
+#obsgraph .modal-dialog {
+  width: 75%;
+  height: 75%;
+  padding: 0;
+}
+
+#obsgraph .modal-content {
+  width: 950px;
+}
+
 .obslogos {
   width: 40%;
   padding: 0 5px 0 5px;

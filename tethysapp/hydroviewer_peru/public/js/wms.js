@@ -272,7 +272,7 @@ function view_watershed() {
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                params: {'LAYERS':"FEWS_Stations_N"},
+                params: {'LAYERS':"SENAMHI_Stations"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             })
@@ -352,7 +352,7 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
+                		params: {'LAYERS':"SENAMHI_Stations"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -414,7 +414,7 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
+                		params: {'LAYERS':"SENAMHI_Stations"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -823,124 +823,6 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
     })
 }
 
-function get_discharge_info (stationcode, stationname, startdateobs, enddateobs) {
-    $('#observed-loading-Q').removeClass('hidden');
-    $.ajax({
-        url: 'get-discharge-data',
-        type: 'GET',
-        data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
-        error: function () {
-            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
-            $('#info').removeClass('hidden');
-
-            setTimeout(function () {
-                $('#info').addClass('hidden')
-            }, 5000);
-        },
-        success: function (data) {
-            if (!data.error) {
-                $('#observed-loading-Q').addClass('hidden');
-                $('#dates').removeClass('hidden');
-//                $('#obsdates').removeClass('hidden');
-                $loading.addClass('hidden');
-                $('#observed-chart-Q').removeClass('hidden');
-                $('#observed-chart-Q').html(data);
-
-                //resize main graph
-                Plotly.Plots.resize($("#observed-chart-Q .js-plotly-plot")[0]);
-
-                var params = {
-                    stationcode: stationcode,
-                    stationname: stationname,
-                };
-
-                $('#submit-download-observed-discharge').attr({
-                    target: '_blank',
-                    href: 'get-observed-discharge-csv?' + jQuery.param(params)
-                });
-
-                $('#download_observed_discharge').removeClass('hidden');
-
-                $('#submit-download-sensor-discharge').attr({
-                    target: '_blank',
-                    href: 'get-sensor-discharge-csv?' + jQuery.param(params)
-                });
-
-                $('#download_sensor_discharge').removeClass('hidden');
-
-                } else if (data.error) {
-                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
-                	$('#info').removeClass('hidden');
-
-                	setTimeout(function() {
-                    	$('#info').addClass('hidden')
-                	}, 5000);
-            	} else {
-                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
-            	}
-            }
-    })
-}
-
-function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs) {
-    $('#observed-loading-WL').removeClass('hidden');
-    $.ajax({
-        url: 'get-waterlevel-data',
-        type: 'GET',
-        data: {'stationcode' : stationcode, 'stationname' : stationname, 'startdateobs' : startdateobs, 'enddateobs' : enddateobs},
-        error: function () {
-            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
-            $('#info').removeClass('hidden');
-
-            setTimeout(function () {
-                $('#info').addClass('hidden')
-            }, 5000);
-        },
-        success: function (data) {
-            if (!data.error) {
-                $('#observed-loading-WL').addClass('hidden');
-                $('#dates').removeClass('hidden');
-//                $('#obsdates').removeClass('hidden');
-                $loading.addClass('hidden');
-                $('#observed-chart-WL').removeClass('hidden');
-                $('#observed-chart-WL').html(data);
-
-                //resize main graph
-                Plotly.Plots.resize($("#observed-chart-WL .js-plotly-plot")[0]);
-
-                var params = {
-                    stationcode: stationcode,
-                    stationname: stationname,
-                };
-
-                $('#submit-download-observed-waterlevel').attr({
-                    target: '_blank',
-                    href: 'get-observed-waterlevel-csv?' + jQuery.param(params)
-                });
-
-                $('#download_observed_waterlevel').removeClass('hidden');
-
-                $('#submit-download-sensor-waterlevel').attr({
-                    target: '_blank',
-                    href: 'get-sensor-waterlevel-csv?' + jQuery.param(params)
-                });
-
-                $('#download_sensor_waterlevel').removeClass('hidden');
-
-                } else if (data.error) {
-                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
-                	$('#info').removeClass('hidden');
-
-                	setTimeout(function() {
-                    	$('#info').addClass('hidden')
-                	}, 5000);
-            	} else {
-                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
-            	}
-        }
-    })
-}
-
 
 function map_events() {
     map.on('pointermove', function(evt) {
@@ -986,34 +868,28 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (current_layer["H"]["source"]["i"]["LAYERS"] == "FEWS_Stations_N") {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "SENAMHI_Stations") {
 
                         $("#obsgraph").modal('show');
-                        $('#observed-chart-Q').addClass('hidden');
-                        $('#observed-chart-WL').addClass('hidden');
-                        $('#obsdates').addClass('hidden');
-                        $('#observed-loading-Q').removeClass('hidden');
-                        $('#observed-loading-WL').removeClass('hidden');
                         $("#station-info").empty()
-                        $('#download_observed_discharge').addClass('hidden');
-                        $('#download_sensor_discharge').addClass('hidden');
-                        $('#download_observed_waterlevel').addClass('hidden');
-                        $('#download_sensor_waterlevel').addClass('hidden');
+                        $("#pdf-url").empty()
 
                         $.ajax({
                             type: "GET",
                             url: wms_url,
                             dataType: 'json',
                             success: function (result) {
-                                stationcode = result["features"][0]["properties"]["id"];
-                                stationname = result["features"][0]["properties"]["nombre"];
+                                stationcode = result["features"][0]["properties"]["CODIGO"];
+                                stationname = result["features"][0]["properties"]["NOMBRE"];
+                                stream = result["features"][0]["properties"]["CORRIENTE"];
+                                pdf_url = result["features"][0]["properties"]["PDF_URL"];
                                 $('#obsdates').removeClass('hidden');
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
-                                $("#station-info").append('<h3>Current Station: '+ stationname + '</h3><h5>Station Code: '+ stationcode);
-                                get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
-                                get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
-
+                                $("#station-info").append('<h3 id="Station-Name-Tab">Current Station: '+ stationname
+                        			+ '</h3><h5 id="Station-Code-Tab">Station Code: '
+                        			+ stationcode + '</h5><h5>Stream: '+ stream);
+                        		$("#pdf-url").append('<iframe src="' + pdf_url + '" style="width:900px; height:750px;" frameborder="0"></iframe>');
                             }
                         });
 
@@ -1304,21 +1180,5 @@ $(function() {
         $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
         get_forecast_percent(watershed, subbasin, comid, startdate);
-    });
-    $('#startdateobs').change(function() { //when date is changed
-        var startdateobs = $('#startdateobs').val();
-        var enddateobs = $('#enddateobs').val();
-        $('#observed-loading-Q').removeClass('hidden');
-        $('#observed-loading-WL').removeClass('hidden');
-        get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
-        get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
-    });
-    $('#enddateobs').change(function() { //when date is changed
-        var startdateobs = $('#startdateobs').val();
-        var enddateobs = $('#enddateobs').val();
-        $('#observed-loading-Q').removeClass('hidden');
-        $('#observed-loading-WL').removeClass('hidden');
-        get_discharge_info (stationcode, stationname, startdateobs, enddateobs);
-        get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
     });
 });

@@ -7,13 +7,13 @@ base_url = base_name.replace('_', '-')
 
 class Hydroviewer(TethysAppBase):
 
-    name = 'HydroViewer Colombia'
+    name = 'HydroViewer Peru'
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/colombia-icon.jpg'.format(base_name)
+    icon = '{0}/images/peru-icon.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
     color = '#00374b'
-    description = 'This is the Hydroviewer App customized for Colombia.'
+    description = 'This is the Hydroviewer App customized for Peru.'
     tags = 'Hydrology'
     enable_feedback = False
     feedback_emails = []
@@ -173,54 +173,6 @@ class Hydroviewer(TethysAppBase):
                 name='forecastpercent',
                 url='forecastpercent',
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
-			UrlMap(
-				name='get_discharge_data',
-				url='get-discharge-data',
-				controller='{0}.controllers.get_discharge_data'.format(base_name)),
-            UrlMap(
-                name='get_discharge_data',
-                url='ecmwf-rapid/get-discharge-data',
-                controller='{0}.controllers.get_discharge_data'.format(base_name)),
-			UrlMap(
-				name='get_observed_discharge_csv',
-				url='get-observed-discharge-csv',
-				controller='{0}.controllers.get_observed_discharge_csv'.format(base_name)),
-            UrlMap(
-                name='get_observed_discharge_csv',
-                url='ecmwf-rapid/get-observed-discharge-csv',
-                controller='{0}.controllers.get_observed_discharge_csv'.format(base_name)),
-			UrlMap(
-				name='get_sensor_discharge_csv',
-				url='get-sensor-discharge-csv',
-				controller='{0}.controllers.get_sensor_discharge_csv'.format(base_name)),
-            UrlMap(
-                name='get_sensor_discharge_csv',
-                url='ecmwf-rapid/get-sensor-discharge-csv',
-                controller='{0}.controllers.get_sensor_discharge_csv'.format(base_name)),
-			UrlMap(
-				name='get_waterlevel_data',
-				url='get-waterlevel-data',
-				controller='{0}.controllers.get_waterlevel_data'.format(base_name)),
-            UrlMap(
-                name='get_waterlevel_data',
-                url='ecmwf-rapid/get-waterlevel-data',
-                controller='{0}.controllers.get_waterlevel_data'.format(base_name)),
-			UrlMap(
-				name='get_observed_waterlevel_csv',
-				url='get-observed-waterlevel-csv',
-				controller='{0}.controllers.get_observed_waterlevel_csv'.format(base_name)),
-            UrlMap(
-                name='get_observed_waterlevel_csv',
-                url='ecmwf-rapid/get-observed-waterlevel-csv',
-                controller='{0}.controllers.get_observed_waterlevel_csv'.format(base_name)),
-			UrlMap(
-				name='get_sensor_waterlevel_csv',
-				url='get-sensor-waterlevel-csv',
-				controller='{0}.controllers.get_sensor_waterlevel_csv'.format(base_name)),
-            UrlMap(
-                name='get_sensor_waterlevel_csv',
-                url='ecmwf-rapid/get-sensor-waterlevel-csv',
-                controller='{0}.controllers.get_sensor_waterlevel_csv'.format(base_name)),
         )
 
         return url_maps
