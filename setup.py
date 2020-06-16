@@ -1,43 +1,32 @@
-import os
-import sys
-from setuptools import setup, find_packages
-from tethys_apps.app_installation import custom_develop_command, custom_install_command
+from setuptools import setup, find_namespace_packages
+from tethys_apps.app_installation import find_resource_files
 
-### Apps Definition ###
-#tethysapp_dir_list = [os.path.join(os.path.dirname(os.path.abspath(__file__)),'tethysapp', child)
-#                      for child in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)),'tethysapp'))]
+# -- Apps Definition -- #
 app_package = 'hydroviewer_central_america'
 release_package = 'tethysapp-' + app_package
-app_class = '{0}.app:Hydroviewer'.format(app_package)
-app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
-### Python Dependencies ###
-dependencies = [
-    'requests',
-    'netCDF4',
-    'numpy',
-    'scipy',
-    'gdal',
-]
+# -- Python Dependencies -- #
+dependencies = []
+
+# -- Get Resource File -- #
+resource_files = find_resource_files('tethysapp/' + app_package + '/templates', 'tethysapp/' + app_package)
+resource_files += find_resource_files('tethysapp/' + app_package + '/public', 'tethysapp/' + app_package)
+resource_files += find_resource_files('tethysapp/' + app_package + '/workspaces', 'tethysapp/' + app_package)
+
 
 setup(
     name=release_package,
-    version='0.0.1',
-    tags='',
+    version='1',
     description='',
     long_description='',
-    keywords='',
-    author='',
+    keywords='hydroviewer, geoglows, streamflow',
+    author='Riley Hales',
     author_email='',
     url='',
-    license='',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    namespace_packages=['tethysapp', 'tethysapp.' + app_package],
+    license='MIT',
+    packages=find_namespace_packages(),
+    package_data={'': resource_files},
     include_package_data=True,
     zip_safe=False,
     install_requires=dependencies,
-    cmdclass={
-        'install': custom_install_command(app_package, app_package_dir, dependencies),
-        'develop': custom_develop_command(app_package, app_package_dir, dependencies)
-    }
 )

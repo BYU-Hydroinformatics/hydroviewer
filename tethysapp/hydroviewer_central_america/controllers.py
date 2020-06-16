@@ -1,35 +1,32 @@
-from django.shortcuts import render
-from tethys_sdk.permissions import login_required
-from tethys_sdk.gizmos import *
-from django.http import HttpResponse, JsonResponse
-from tethys_sdk.permissions import has_permission
-from tethys_sdk.base import TethysAppBase
-
-import os
-import requests
-from requests.auth import HTTPBasicAuth
+import ast
+import datetime as dt
 import json
-import numpy as np
-import netCDF4 as nc
+import os
+from csv import writer as csv_writer
 
+import netCDF4 as nc
+import numpy as np
+import plotly.graph_objs as go
+import requests
+import scipy.stats as sp
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from osgeo import ogr
 from osgeo import osr
-from csv import writer as csv_writer
-import scipy.stats as sp
-import datetime as dt
-import ast
-import plotly.graph_objs as go
+from requests.auth import HTTPBasicAuth
+from tethys_sdk.gizmos import *
+from tethys_sdk.permissions import has_permission
+import geoglows
 
 from .app import Hydroviewer as app
 from .helpers import *
+
 base_name = __package__.split('.')[-1]
 
-def set_custom_setting(defaultModelName, defaultWSName):
 
+def set_custom_setting(defaultModelName, defaultWSName):
     from tethys_apps.models import TethysApp
     db_app = TethysApp.objects.get(package=app.package)
-    custom_settings = db_app.custom_settings
-
 
     db_setting = db_app.custom_settings.get(name='default_model_type')
     db_setting.value = defaultModelName
@@ -38,10 +35,10 @@ def set_custom_setting(defaultModelName, defaultWSName):
     db_setting = db_app.custom_settings.get(name='default_watershed_name')
     db_setting.value = defaultWSName
     db_setting.save()
-        
+    return
+
 
 def home(request):
-
     # Check if we have a default model. If we do, then redirect the user to the default model's page
     default_model = app.get_custom_setting('default_model_type')
     if default_model:
@@ -58,10 +55,10 @@ def home_standard(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'),
+                                       ('HIWAT-RAPID', 'hiwat')],
                               initial=['Select Model'],
                               original=True)
-
 
     zoom_info = TextInput(display_text='',
                           initial=json.dumps(app.get_custom_setting('zoom_info')),
@@ -90,7 +87,8 @@ def home_standard(request):
     layer_name = app.get_custom_setting('layer_name')
 
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
+                                   initial=json.dumps(
+                                       [geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -106,28 +104,27 @@ def home_standard(request):
 
 
 def ecmwf(request):
-
-    #Can Set Default permissions : Only allowed for admin users
+    # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
-    
-    if(can_update_default):
+
+    if (can_update_default):
         defaultUpdateButton = Button(
             display_text='Save',
             name='update_button',
             style='success',
             attributes={
-                'data-toggle':'tooltip',
-                'data-placement':'bottom',
-                'title':'Save as Default Options for WS'
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Save as Default Options for WS'
             })
     else:
         defaultUpdateButton = False
 
-
-    # Check if we need to hide the WS options dropdown. 
-    hiddenAttr=""
-    if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
-        hiddenAttr="hidden"
+    # Check if we need to hide the WS options dropdown.
+    hiddenAttr = ""
+    if app.get_custom_setting('show_dropdown') and app.get_custom_setting(
+            'default_model_type') and app.get_custom_setting('default_watershed_name'):
+        hiddenAttr = "hidden"
 
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -136,7 +133,8 @@ def ecmwf(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'),
+                                       ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               classes=hiddenAttr,
                               original=True)
@@ -160,12 +158,14 @@ def ecmwf(request):
     geos_password = geoserver_engine.password
     my_geoserver = geoserver_engine.endpoint.replace('rest', '')
 
-    watershed_list = [['Select Watershed', '']] #+ watershed_list
-    res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json', auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
+    watershed_list = [['Select Watershed', '']]  # + watershed_list
+    res2 = requests.get(my_geoserver + 'rest/workspaces/' + app.get_custom_setting('workspace') + '/featuretypes.json',
+                        auth=HTTPBasicAuth(geos_username, geos_password), verify=False)
 
     for i in range(len(json.loads(res2.content)['featureTypes']['featureType'])):
         raw_feature = json.loads(res2.content)['featureTypes']['featureType'][i]['name']
-        if 'drainage_line' in raw_feature and any(n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
+        if 'drainage_line' in raw_feature and any(
+                n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
             feat_name = raw_feature.split('-')[0].replace('_', ' ').title() + ' (' + \
                         raw_feature.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
@@ -181,7 +181,7 @@ def ecmwf(request):
                                    initial=[init_ws_val],
                                    original=True,
                                    classes=hiddenAttr,
-                                   attributes={'onchange':"javascript:view_watershed();"+hiddenAttr}
+                                   attributes={'onchange': "javascript:view_watershed();" + hiddenAttr}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -197,12 +197,13 @@ def ecmwf(request):
 
     geoserver_base_url = my_geoserver
     geoserver_workspace = app.get_custom_setting('workspace')
-    region = app.get_custom_setting('region')
+    region = ''
     extra_feature = app.get_custom_setting('extra_feature')
     layer_name = app.get_custom_setting('layer_name')
 
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
+                                   initial=json.dumps(
+                                       [geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -229,26 +230,26 @@ def ecmwf(request):
 
 
 def lis(request):
-
-    #Can Set Default permissions : Only allowed for admin users
+    # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
 
-    if(can_update_default):
+    if (can_update_default):
         defaultUpdateButton = Button(
-        display_text='Save',
-        name='update_button',
-        style='success',
-        attributes={
-            'data-toggle': 'tooltip',
-            'data-placement': 'bottom',
-            'title': 'Save as Default Options for WS'
-        })
+            display_text='Save',
+            name='update_button',
+            style='success',
+            attributes={
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Save as Default Options for WS'
+            })
     else:
         defaultUpdateButton = False
 
     # Check if we need to hide the WS options dropdown.
     hiddenAttr = ""
-    if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
+    if app.get_custom_setting('show_dropdown') and app.get_custom_setting(
+            'default_model_type') and app.get_custom_setting('default_watershed_name'):
         hiddenAttr = "hidden"
 
     default_model = app.get_custom_setting('default_model_type')
@@ -258,7 +259,8 @@ def lis(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'),
+                                       ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
                               classes=hiddenAttr,
                               original=True)
@@ -284,7 +286,7 @@ def lis(request):
                                    initial=[init_ws_val],
                                    original=True,
                                    classes=hiddenAttr,
-                                   attributes={'onchange':"javascript:view_watershed();"}
+                                   attributes={'onchange': "javascript:view_watershed();"}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -305,7 +307,8 @@ def lis(request):
     layer_name = app.get_custom_setting('layer_name')
 
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
+                                   initial=json.dumps(
+                                       [geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -322,27 +325,27 @@ def lis(request):
 
 
 def hiwat(request):
-
-    #Can Set Default permissions : Only allowed for admin users
+    # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
 
-    if(can_update_default):
+    if (can_update_default):
         defaultUpdateButton = Button(
-        display_text='Save',
-        name='update_button',
-        style='success',
-        attributes={
-            'data-toggle':'tooltip',
-            'data-placement':'bottom',
-            'title':'Save as Default Options for WS'
-        })
+            display_text='Save',
+            name='update_button',
+            style='success',
+            attributes={
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Save as Default Options for WS'
+            })
     else:
         defaultUpdateButton = False
 
     # Check if we need to hide the WS options dropdown.
-    hiddenAttr=""
-    if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
-        hiddenAttr="hidden"
+    hiddenAttr = ""
+    if app.get_custom_setting('show_dropdown') and app.get_custom_setting(
+            'default_model_type') and app.get_custom_setting('default_watershed_name'):
+        hiddenAttr = "hidden"
 
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -351,9 +354,10 @@ def hiwat(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis'),
+                                       ('HIWAT-RAPID', 'hiwat')],
                               initial=[init_model_val],
-                              classes = hiddenAttr,
+                              classes=hiddenAttr,
                               original=True)
 
     watershed_list = [['Select Watershed', '']]
@@ -375,9 +379,9 @@ def hiwat(request):
                                    name='watershed',
                                    options=watershed_list,
                                    initial=[init_ws_val],
-                                   classes = hiddenAttr,
+                                   classes=hiddenAttr,
                                    original=True,
-                                   attributes = {'onchange':"javascript:view_watershed();"}
+                                   attributes={'onchange': "javascript:view_watershed();"}
                                    )
 
     zoom_info = TextInput(display_text='',
@@ -398,7 +402,8 @@ def hiwat(request):
     layer_name = app.get_custom_setting('layer_name')
 
     geoserver_endpoint = TextInput(display_text='',
-                                   initial=json.dumps([geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
+                                   initial=json.dumps(
+                                       [geoserver_base_url, geoserver_workspace, region, extra_feature, layer_name]),
                                    name='geoserver_endpoint',
                                    disabled=True)
 
@@ -408,7 +413,7 @@ def hiwat(request):
         "watershed_select": watershed_select,
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
-        "defaultUpdateButton":defaultUpdateButton
+        "defaultUpdateButton": defaultUpdateButton
     }
 
     return render(request, '{0}/hiwat.html'.format(base_name), context)
@@ -422,25 +427,28 @@ def get_warning_points(request):
             subbasin = get_data['subbasin']
 
             res20 = requests.get(
-                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                app.get_custom_setting(
+                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
             res10 = requests.get(
-                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                app.get_custom_setting(
+                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
             res2 = requests.get(
-                app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+                app.get_custom_setting(
+                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
                 watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
+                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
             return JsonResponse({
                 "success": "Data analysis complete!",
-                "warning20":json.loads(res20.content)["features"],
-                "warning10":json.loads(res10.content)["features"],
-                "warning2":json.loads(res2.content)["features"]
+                "warning20": json.loads(res20.content)["features"],
+                "warning10": json.loads(res10.content)["features"],
+                "warning2": json.loads(res2.content)["features"]
             })
         except Exception as e:
             print(str(e))
@@ -452,182 +460,21 @@ def get_warning_points(request):
 def ecmwf_get_time_series(request):
     get_data = request.GET
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        tot_drain_area = get_data['tot_drain_area']
-        region = get_data['region']
 
-        if get_data['startdate'] != '':
-            startdate = get_data['startdate']
-        else:
-            startdate = 'most_recent'
-        units = 'metric'
-
-        res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
-            startdate + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')},verify=False)
-
-        pairs = res.content.splitlines()
-        header = pairs.pop(0)
-
-        dates = []
-        hres_dates = []
-
-        mean_values = []
-        hres_values = []
-        min_values = []
-        max_values = []
-        std_dev_lower_values = []
-        std_dev_upper_values = []
-
-        for pair in pairs:
-            pair = pair.decode('utf-8')
-            if b'high_res' in header:
-                hres_dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
-                hres_values.append(float(pair.split(',')[1]))
-
-                if 'nan' not in pair:
-                    dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
-                    max_values.append(float(pair.split(',')[2]))
-                    mean_values.append(float(pair.split(',')[3]))
-                    min_values.append(float(pair.split(',')[4]))
-                    std_dev_lower_values.append(float(pair.split(',')[5]))
-                    std_dev_upper_values.append(float(pair.split(',')[6]))
-
-            else:
-                dates.append(dt.datetime.strptime(pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
-                max_values.append(float(pair.split(',')[1]))
-                mean_values.append(float(pair.split(',')[2]))
-                min_values.append(float(pair.split(',')[3]))
-                std_dev_lower_values.append(float(pair.split(',')[4]))
-                std_dev_upper_values.append(float(pair.split(',')[5]))
-
-
-        # ----------------------------------------------
-        # Chart Section
-        # ----------------------------------------------
-
-        datetime_start = dates[0]
-        datetime_end = dates[-1]
-
-        avg_series = go.Scatter(
-            name='Mean',
-            x=dates,
-            y=mean_values,
-            line=dict(
-                color='blue',
-            )
-        )
-
-        max_series = go.Scatter(
-            name='Max',
-            x=dates,
-            y=max_values,
-            fill='tonexty',
-            mode='lines',
-            line=dict(
-                color='rgb(152, 251, 152)',
-                width=0,
-            )
-        )
-
-        min_series = go.Scatter(
-            name='Min',
-            x=dates,
-            y=min_values,
-            fill=None,
-            mode='lines',
-            line=dict(
-                color='rgb(152, 251, 152)',
-            )
-        )
-
-        std_dev_lower_series = go.Scatter(
-            name='Std. Dev. Lower',
-            x=dates,
-            y=std_dev_lower_values,
-            fill='tonexty',
-            mode='lines',
-            line=dict(
-                color='rgb(152, 251, 152)',
-                width=0,
-            )
-        )
-
-        std_dev_upper_series = go.Scatter(
-            name='Std. Dev. Upper',
-            x=dates,
-            y=std_dev_upper_values,
-            fill='tonexty',
-            mode='lines',
-            line=dict(
-                width=0,
-                color='rgb(34, 139, 34)',
-            )
-        )
-
-        plot_series = [min_series,
-                       std_dev_lower_series,
-                       std_dev_upper_series,
-                       max_series,
-                       avg_series]
-
-        if hres_values:
-            plot_series.append(go.Scatter(
-                name='HRES',
-                x=hres_dates,
-                y=hres_values,
-                line=dict(
-                    color='black',
-                )
-            ))
-
-        try:
-            return_shapes, return_annotations = get_return_period_ploty_info(request, datetime_start, datetime_end)
-        except:
-            return_annotations = []
-            return_shapes = []
-
-        layout = go.Layout(
-            title="Forecast<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
-                watershed, subbasin, comid, region, tot_drain_area),
-            xaxis=dict(
-                title='Date',
-            ),
-            yaxis=dict(
-                title="Streamflow ({}<sup>3</sup>/s)".format(get_units_title(units)),
-                range=[0, max(max_values) + max(max_values)/5]
-            ),
-            shapes=return_shapes,
-            annotations=return_annotations
-        )
-
-        chart_obj = PlotlyView(
-            go.Figure(data=plot_series,
-                      layout=layout)
-        )
-
-        context = {
-            'gizmo_object': chart_obj,
-        }
-
-        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
-
+        stats = geoglows.streamflow.forecast_stats(comid)
+        rperiods = geoglows.streamflow.return_periods(comid)
+        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
+        return JsonResponse({'plot': geoglows.plots.forecast_stats(
+            stats, rperiods, titles=title, outformat='plotly_html')})
     except Exception as e:
         print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
+
 def get_time_series(request):
-    if request.GET['model'] == 'ECMWF-RAPID':
-        return ecmwf_get_time_series(request)
-    elif request.GET['model'] == 'LIS-RAPID':
-        return lis_get_time_series(request)
-    elif request.GET['model'] == 'HIWAT-RAPID':
-        return hiwat_get_time_series(request)
+    return ecmwf_get_time_series(request)
+
 
 def lis_get_time_series(request):
     get_data = request.GET
@@ -641,7 +488,8 @@ def lis_get_time_series(request):
 
         path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]),
+                         'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -672,7 +520,7 @@ def lis_get_time_series(request):
             ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
-                      .format(get_units_title(units))
+                    .format(get_units_title(units))
             )
         )
 
@@ -685,7 +533,7 @@ def lis_get_time_series(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print(str(e))
@@ -704,7 +552,8 @@ def hiwat_get_time_series(request):
 
         path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+        res = nc.Dataset(
+            os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -735,7 +584,7 @@ def hiwat_get_time_series(request):
             ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
-                      .format(get_units_title(units))
+                    .format(get_units_title(units))
             )
         )
 
@@ -748,7 +597,7 @@ def hiwat_get_time_series(request):
             'gizmo_object': chart_obj,
         }
 
-        return render(request,'{0}/gizmo_ajax.html'.format(base_name), context)
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print(str(e))
@@ -761,12 +610,12 @@ def get_available_dates(request):
     watershed = get_data['watershed']
     subbasin = get_data['subbasin']
     comid = get_data['comid']
-    
-    res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin,verify=False,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
+    res = requests.get(
+        app.get_custom_setting(
+            'api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
+        watershed + '&subbasin_name=' + subbasin, verify=False,
+        headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
     dates = []
     for date in eval(res.content):
@@ -789,14 +638,13 @@ def get_available_dates(request):
 def get_return_periods(request):
     get_data = request.GET
 
-    watershed = get_data['watershed']
-    subbasin = get_data['subbasin']
     comid = get_data['comid']
 
     res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+        app.get_custom_setting(
+            'api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/?watershed_name=' +
+        watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid,
+        headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
     return eval(res.content)
 
@@ -809,65 +657,12 @@ def get_historic_data(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        tot_drain_area = get_data['tot_drain_area']
-        region = get_data['region']
-        units = 'metric'
-
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
-
-        era_pairs = era_res.content.splitlines()
-        era_pairs.pop(0)
-
-        era_dates = []
-        era_values = []
-
-        for era_pair in era_pairs:
-            era_pair = era_pair.decode('utf-8')
-            era_dates.append(dt.datetime.strptime(era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
-            era_values.append(float(era_pair.split(',')[1]))
-
-        # ----------------------------------------------
-        # Chart Section
-        # --------------------------------------
-        era_series = go.Scatter(
-            name='ERA Interim',
-            x=era_dates,
-            y=era_values,
-        )
-
-        return_shapes, return_annotations = get_return_period_ploty_info(request, era_dates[0], era_dates[-1])
-
-        layout = go.Layout(
-            title="Historical Streamflow<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
-                watershed, subbasin, comid, region, tot_drain_area),
-            xaxis=dict(
-                title='Date',
-            ),
-            yaxis=dict(
-                title='Streamflow ({}<sup>3</sup>/s)'
-                      .format(get_units_title(units))
-            ),
-            shapes=return_shapes,
-            annotations=return_annotations
-        )
-
-        chart_obj = PlotlyView(
-            go.Figure(data=[era_series],
-                      layout=layout)
-        )
-
-        context = {
-            'gizmo_object': chart_obj,
-        }
-
-        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+        hist = geoglows.streamflow.historic_simulation(comid)
+        rperiods = geoglows.streamflow.return_periods(comid)
+        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
+        return JsonResponse({'plot': geoglows.plots.historic_simulation(
+            hist, rperiods, titles=title, outformat='plotly_html')})
 
     except Exception as e:
         print(str(e))
@@ -878,64 +673,11 @@ def get_flow_duration_curve(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        tot_drain_area = get_data['tot_drain_area']
-        region = get_data['region']
-        units = 'metric'
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
-
-        era_pairs = era_res.content.splitlines()
-        era_pairs.pop(0)
-
-        era_values = []
-
-        for era_pair in era_pairs:
-            era_pair = era_pair.decode('utf-8')
-            era_values.append(float(era_pair.split(',')[1]))
-
-        sorted_daily_avg = np.sort(era_values)[::-1]
-
-        # ranks data from smallest to largest
-        ranks = len(sorted_daily_avg) - sp.rankdata(sorted_daily_avg,
-                                                    method='average')
-
-        # calculate probability of each rank
-        prob = [100*(ranks[i] / (len(sorted_daily_avg) + 1))
-                for i in range(len(sorted_daily_avg))]
-
-        flow_duration_sc = go.Scatter(
-            x=prob,
-            y=sorted_daily_avg,
-        )
-
-        layout = go.Layout(title="Flow-Duration Curve<br><sub>{0} ({1}): {2}<br>Region: {3}, Total upstream drainage area: {4} km<sup>2</sup></sub>".format(
-                watershed, subbasin, comid, region, tot_drain_area),
-                           xaxis=dict(
-                               title='Exceedance Probability (%)',),
-                           yaxis=dict(
-                               title='Streamflow ({}<sup>3</sup>/s)'
-                                     .format(get_units_title(units)),
-                               type='log',
-                               autorange=True),
-                           showlegend=False)
-
-        chart_obj = PlotlyView(
-            go.Figure(data=[flow_duration_sc],
-                      layout=layout)
-        )
-
-        context = {
-            'gizmo_object': chart_obj,
-        }
-
-        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+        hist = geoglows.streamflow.historic_simulation(comid)
+        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
+        return JsonResponse({'plot': geoglows.plots.flow_duration_curve(hist, titles=title, outformat='plotly_html')})
 
     except Exception as e:
         print(str(e))
@@ -957,42 +699,42 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
 
     # plotly info section
     shapes = [
-         # return 20 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_20,
-             x1=datetime_end,
-             y1=max(return_max, band_alt_max),
-             line=dict(width=0),
-             fillcolor='rgba(128, 0, 128, 0.4)',
-         ),
-         # return 10 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_10,
-             x1=datetime_end,
-             y1=return_20,
-             line=dict(width=0),
-             fillcolor='rgba(255, 0, 0, 0.4)',
-         ),
-         # return 2 band
-         dict(
-             type='rect',
-             xref='x',
-             yref='y',
-             x0=datetime_start,
-             y0=return_2,
-             x1=datetime_end,
-             y1=return_10,
-             line=dict(width=0),
-             fillcolor='rgba(255, 255, 0, 0.4)',
-         ),
+        # return 20 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_20,
+            x1=datetime_end,
+            y1=max(return_max, band_alt_max),
+            line=dict(width=0),
+            fillcolor='rgba(128, 0, 128, 0.4)',
+        ),
+        # return 10 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_10,
+            x1=datetime_end,
+            y1=return_20,
+            line=dict(width=0),
+            fillcolor='rgba(255, 0, 0, 0.4)',
+        ),
+        # return 2 band
+        dict(
+            type='rect',
+            xref='x',
+            yref='y',
+            x0=datetime_start,
+            y0=return_2,
+            x1=datetime_end,
+            y1=return_10,
+            line=dict(width=0),
+            fillcolor='rgba(255, 255, 0, 0.4)',
+        ),
     ]
     annotations = [
         # return max
@@ -1054,7 +796,8 @@ def get_historic_data_csv(request):
         comid = get_data['reach_id']
 
         era_res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
+            app.get_custom_setting(
+                'api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
             watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
             headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
 
@@ -1108,14 +851,16 @@ def get_forecast_data_csv(request):
 
         init_time = qout_data[0].split(',')[0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_{0}_{1}_{2}_{3}.csv'.format(watershed,
-                                                                                                                subbasin,
-                                                                                                                comid,
-                                                                                                                init_time)
+        response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_{0}_{1}_{2}_{3}.csv'.format(
+            watershed,
+            subbasin,
+            comid,
+            init_time)
 
         writer = csv_writer(response)
-        writer.writerow(['datetime', 'high_res (m3/s)', 'max (m3/s)', 'mean (m3/s)', 'min (m3/s)', 'std_dev_range_lower (m3/s)',
-                         'std_dev_range_upper (m3/s)'])
+        writer.writerow(
+            ['datetime', 'high_res (m3/s)', 'max (m3/s)', 'mean (m3/s)', 'min (m3/s)', 'std_dev_range_lower (m3/s)',
+             'std_dev_range_upper (m3/s)'])
 
         for row_data in qout_data:
             writer.writerow(row_data.split(','))
@@ -1146,7 +891,8 @@ def get_lis_data_csv(request):
 
         path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]),
+                         'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -1165,9 +911,9 @@ def get_lis_data_csv(request):
         init_time = pairs[0][0].split(' ')[0]
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=lis_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
-                                                                                                                subbasin,
-                                                                                                                comid,
-                                                                                                                init_time)
+                                                                                                           subbasin,
+                                                                                                           comid,
+                                                                                                           init_time)
 
         writer = csv_writer(response)
         writer.writerow(['datetime', 'flow (m3/s)'])
@@ -1201,7 +947,8 @@ def get_hiwat_data_csv(request):
 
         path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
         filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
+        res = nc.Dataset(
+            os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
 
         dates_raw = res.variables['time'][:]
         dates = []
@@ -1248,17 +995,17 @@ def shp_to_geojson(request):
         driver = ogr.GetDriverByName('ESRI Shapefile')
         if model == 'LIS-RAPID':
             reprojected_shp_path = os.path.join(
-                    app.get_custom_setting('lis_path'),
-                    '-'.join([watershed, subbasin]).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+                app.get_custom_setting('lis_path'),
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
             )
         elif model == 'HIWAT-RAPID':
             reprojected_shp_path = os.path.join(
-                    app.get_custom_setting('hiwat_path'),
-                    '-'.join([watershed, subbasin]).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                    '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
+                app.get_custom_setting('hiwat_path'),
+                '-'.join([watershed, subbasin]).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
+                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
             )
 
         if not os.path.exists(reprojected_shp_path):
@@ -1327,8 +1074,8 @@ def shp_to_geojson(request):
                 # set the geometry and attribute
                 out_feature.SetGeometry(geom)
                 out_feature.SetField('COMID', in_feature.GetField(in_feature.GetFieldIndex('COMID')))
-                #out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
-                #out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
+                # out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
+                # out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
                 # add the feature to the shapefile
                 reprojected_shp.CreateFeature(out_feature)
                 # dereference the features and get the next input feature
@@ -1360,7 +1107,7 @@ def shp_to_geojson(request):
             geojson_streams = json.load(f)
 
             geojson_layer = {
-                'source':'GeoJSON',
+                'source': 'GeoJSON',
                 'options': json.dumps(geojson_streams),
                 'legend_title': '-'.join([watershed, subbasin, 'drainage_line']),
                 'legend_extent': [xmin, ymin, xmax, ymax],
@@ -1471,7 +1218,8 @@ def shp_to_geojson(request):
 def setDefault(request):
     get_data = request.GET
     set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
-    return JsonResponse({'success':True})
+    return JsonResponse({'success': True})
+
 
 def get_units_title(unit_type):
     """
@@ -1482,95 +1230,10 @@ def get_units_title(unit_type):
         units_title = "ft"
     return units_title
 
+
 def forecastpercent(request):
-
-
     # Check if its an ajax post request
     if request.is_ajax() and request.method == 'GET':
 
-        watershed = request.GET.get('watershed')
-        subbasin = request.GET.get('subbasin')
-        reach = request.GET.get('comid')
-        date = request.GET.get('startdate')
-        if date == '':
-            forecast = 'most_recent'
-        else:
-            forecast = str(date)
-# res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
-    #                    headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
-        request_params = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach,
-                              forecast_folder=forecast)
-        request_headers = dict(Authorization='Token ' + app.get_custom_setting('spt_token'))
-        ens = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetEnsemble/',
-                           params=request_params, headers=request_headers, verify=False)
-
-        request_params1 = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=reach)
-        rpall = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetReturnPeriods/',
-                             params=request_params1, headers=request_headers, verify=False)
-
-        dicts = ens.content.splitlines()
-        dictstr = []
-
-        rpdict = ast.literal_eval(rpall.content.decode('utf-8'))
-        rpdict.pop('max', None)
-
-        rivperc = {}
-        riverpercent = {}
-        rivpercorder = {}
-
-        for q in rpdict:
-            rivperc[q] = {}
-            riverpercent[q] = {}
-
-        dictlen = len(dicts)
-        for i in range(1, dictlen):
-            dictstr.append(dicts[i].decode('utf-8').split(","))
-
-        for rps in rivperc:
-            rp = float(rpdict[rps])
-            for b in dictstr:
-                date = b[0][:10]
-                if date not in rivperc[rps]:
-                    rivperc[rps][date] = []
-                length = len(b)
-                for x in range(1, length):
-                    flow = float(b[x])
-                    if x not in rivperc[rps][date] and flow > rp:
-                        rivperc[rps][date].append(x)
-            for e in rivperc[rps]:
-                riverpercent[rps][e] = float(len(rivperc[rps][e])) / 51.0 * 100
-
-        for keyss in rivperc:
-            data = riverpercent[keyss]
-            ordered_data = sorted(list(data.items()), key=lambda x: dt.datetime.strptime(x[0], '%Y-%m-%d'))
-            rivpercorder[keyss] = ordered_data
-
-        rivdates = []
-        rivperctwo = []
-        rivpercten = []
-        rivperctwenty = []
-
-        for a in rivpercorder['two']:
-            rivdates.append(a[0])
-            rivperctwo.append(a[1])
-
-        for s in rivpercorder['ten']:
-            rivpercten.append(s[1])
-
-        for d in rivpercorder['twenty']:
-            rivperctwenty.append(d[1])
-
-        formatteddates = [str(elem)[-4:] for elem in rivdates]
-        formattedtwo = ["%.0f" % elem for elem in rivperctwo]
-        formattedten = ["%.0f" % elem for elem in rivpercten]
-        formattedtwenty = ["%.0f" % elem for elem in rivperctwenty]
-
-        formatteddates = formatteddates[:len(formatteddates) - 5]
-        formattedtwo = formattedtwo[:len(formattedtwo) - 5]
-        formattedten = formattedten[:len(formattedten) - 5]
-        formattedtwenty = formattedtwenty[:len(formattedtwenty) - 5]
-
-        dataformatted = {'percdates': formatteddates, 'two': formattedtwo, 'ten': formattedten,
-                         'twenty': formattedtwenty}
-
-        return JsonResponse(dataformatted)
+        comid = request.GET.get('comid')
+        return

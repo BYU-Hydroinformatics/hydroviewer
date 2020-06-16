@@ -268,8 +268,6 @@ function view_watershed() {
         });
         feature_layer = wmsLayer;
 
-        get_warning_points(model, watershed, subbasin);
-
         map.addLayer(wmsLayer);
 
         $loading.addClass('hidden');
@@ -572,7 +570,7 @@ function get_return_periods(watershed, subbasin, comid) {
     });
 }
 
-function get_time_series(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
+function get_time_series(comid, tot_drain_area) {
     $loading.removeClass('hidden');
     $('#long-term-chart').addClass('hidden');
     $('#dates').addClass('hidden');
@@ -580,13 +578,8 @@ function get_time_series(model, watershed, subbasin, comid, startdate, tot_drain
         type: 'GET',
         url: 'get-time-series/',
         data: {
-            'model': model,
-            'watershed': watershed,
-            'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate,
             'tot_drain_area': tot_drain_area,
-            'region': region
         },
         error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
@@ -601,16 +594,13 @@ function get_time_series(model, watershed, subbasin, comid, startdate, tot_drain
                 $('#dates').removeClass('hidden');
                 $loading.addClass('hidden');
                 $('#long-term-chart').removeClass('hidden');
-                $('#long-term-chart').html(data);
+                $('#long-term-chart').html(data['plot']);
 
                 //resize main graph
                 Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
 
                 var params = {
-                    watershed_name: watershed,
-                    subbasin_name: subbasin,
                     reach_id: comid,
-                    startdate: startdate,
                 };
 
                 $('#submit-download-forecast').attr({
@@ -627,40 +617,29 @@ function get_time_series(model, watershed, subbasin, comid, startdate, tot_drain
                 setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
-            } else {
-                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
             }
         }
     });
 }
 
-
-function get_historic_data(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
+function get_historic_data(comid, tot_drain_area) {
     $('#his-view-file-loading').removeClass('hidden');
     m_downloaded_historical_streamflow = true;
     $.ajax({
         type: 'GET',
         url: 'get-historic-data',
         data: {
-            'model': model,
-            'watershed': watershed,
-            'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate,
             'tot_drain_area': tot_drain_area,
-            'region': region
         },
         success: function(data) {
             if (!data.error) {
                 $('#his-view-file-loading').addClass('hidden');
                 $('#historical-chart').removeClass('hidden');
-                $('#historical-chart').html(data);
+                $('#historical-chart').html(data['plot']);
 
                 var params = {
-                    watershed_name: watershed,
-                    subbasin_name: subbasin,
                     reach_id: comid,
-                    daily: false
                 };
 
                 $('#submit-download-interim-csv').attr({
@@ -677,34 +656,26 @@ function get_historic_data(model, watershed, subbasin, comid, startdate, tot_dra
                 setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
-            } else {
-                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
             }
         }
     });
-};
+}
 
-
-function get_flow_duration_curve(model, watershed, subbasin, comid, startdate, tot_drain_area, region) {
+function get_flow_duration_curve(comid, tot_drain_area) {
     $('#fdc-view-file-loading').removeClass('hidden');
     m_downloaded_flow_duration = true;
     $.ajax({
         type: 'GET',
         url: 'get-flow-duration-curve',
         data: {
-            'model': model,
-            'watershed': watershed,
-            'subbasin': subbasin,
             'comid': comid,
-            'startdate': startdate,
             'tot_drain_area': tot_drain_area,
-            'region': region
         },
         success: function(data) {
             if (!data.error) {
                 $('#fdc-view-file-loading').addClass('hidden');
                 $('#fdc-chart').removeClass('hidden');
-                $('#fdc-chart').html(data);
+                $('#fdc-chart').html(data['plot']);
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
@@ -712,23 +683,18 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate, t
                 setTimeout(function() {
                     $('#info').addClass('hidden')
                 }, 5000);
-            } else {
-                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
             }
         }
     });
-};
+}
 
-function get_forecast_percent(watershed, subbasin, comid, startdate) {
+function get_forecast_percent(comid) {
     $('#mytable').addClass('hidden');
     $.ajax({
         url: 'forecastpercent/',
         type: 'GET',
         data: {
             'comid': comid,
-            'watershed': watershed,
-            'subbasin': subbasin,
-            'startdate': startdate
         },
         error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast table</strong></p>');
@@ -739,61 +705,8 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
             }, 5000);
         },
         success: function(data) {
-            $("#tbody").empty()
-            var tbody = document.getElementById('tbody');
-
-            var columNames = {
-                'two': 'Percent Exceedance (2-yr)',
-                'ten': 'Percent Exceedance (10-yr)',
-                'twenty': 'Percent Exceedance (20-yr)',
-            };
-
-            for (var object1 in data) {
-                if (object1 == "dates") {
-                    cellcolor = ""
-                } else if (object1 == "two") {
-                    cellcolor = "yellow"
-                } else if (object1 == "ten") {
-                    cellcolor = "red"
-                } else if (object1 == "twenty") {
-                    cellcolor = "purple"
-                }
-                if (object1 == "percdates") {
-                    var tr = "<tr id=" + object1.toString() + "><th>Dates</th>";
-                    for (var value1 in data[object1]) {
-                        tr += "<th>" + data[object1][value1].toString() + "</th>"
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                } else {
-                    var tr = "<tr id=" + object1.toString() + "><td>" + columNames[object1.toString()] + "</td>";
-                    for (var value1 in data[object1]) {
-                        if (parseInt(data[object1][value1]) == 0) {
-                            tr += "<td class=" + cellcolor + "zero>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 20) {
-                            tr += "<td class=" + cellcolor + "twenty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 40) {
-                            tr += "<td class=" + cellcolor + "fourty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 60) {
-                            tr += "<td class=" + cellcolor + "sixty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 80) {
-                            tr += "<td class=" + cellcolor + "eighty>" + data[object1][value1].toString() + "</td>"
-                        } else {
-                            tr += "<td class=" + cellcolor + "hundred>" + data[object1][value1].toString() + "</td>"
-                        }
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                }
-            }
-
-            $("#twenty").prependTo("#mytable");
-            $("#ten").prependTo("#mytable");
-            $("#two").prependTo("#mytable");
-            $("#percdates").prependTo("#mytable");
-            $('#mytable').removeClass('hidden');
+            $("#tbody").html(data)
         }
-
     })
 }
 
@@ -845,80 +758,33 @@ function map_events() {
             var view = map.getView();
             var viewResolution = view.getResolution();
 
-            if (model === 'ECMWF-RAPID') {
-                var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
+            var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (wms_url) {
-                    $loading.removeClass('hidden');
-                    //Retrieving the details for clicked point via the url
-                    $('#dates').addClass('hidden');
-                    //$('#plot').addClass('hidden');
-                    $.ajax({
-                        type: "GET",
-                        url: wms_url,
-                        dataType: 'json',
-                        success: function(result) {
-                            var model = $('#model option:selected').text();
-                            var comid = result["features"][0]["properties"]["COMID"];
-                            var tot_drain_area = result["features"][0]["properties"]["Tot_Drain_"];
-                            tot_drain_area = (tot_drain_area/1000000).toFixed(0)
-                            var region = result["features"][0]["properties"]["region"];
+            if (wms_url) {
+                $loading.removeClass('hidden');
+                //Retrieving the details for clicked point via the url
+                $('#dates').addClass('hidden');
+                //$('#plot').addClass('hidden');
+                $.ajax({
+                    type: "GET",
+                    url: wms_url,
+                    dataType: 'json',
+                    success: function(result) {
+                        var comid = result["features"][0]["properties"]["COMID"];
+                        var tot_drain_area = result["features"][0]["properties"]["Tot_Drain_"];
+                        tot_drain_area = (tot_drain_area/1000000).toFixed(0)
 
-                            var startdate = '';
-                            if ("derived_fr" in (result["features"][0]["properties"])) {
-                                var watershed = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[0];
-                                var subbasin = (result["features"][0]["properties"]["derived_fr"]).toLowerCase().split('-')[1];
-                            } else if (JSON.parse($('#geoserver_endpoint').val())[2]) {
-                                var watershed = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[0]
-                                var subbasin = JSON.parse($('#geoserver_endpoint').val())[2].split('-')[1];
-                            } else {
-                                var watershed = (result["features"][0]["properties"]["watershed"]).toLowerCase();
-                                var subbasin = (result["features"][0]["properties"]["subbasin"]).toLowerCase();
-                            }
-
-                            get_available_dates(model, watershed, subbasin, comid);
-                            get_time_series(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
-                            get_historic_data(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
-                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate, tot_drain_area, region);
-                            if (model === 'ECMWF-RAPID') {
-                                get_forecast_percent(watershed, subbasin, comid, startdate);
-                            };
-
-                            var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
-
-                            $('#info').addClass('hidden');
-                            add_feature(model, workspace, comid);
-
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-                            console.log(Error);
-                        }
-                    });
-                }
-            } else if (model === 'LIS-RAPID') {
-                var comid = current_feature.get('COMID');
-                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
-                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
-
-                get_time_series(model, watershed, subbasin, comid);
-
-                $('#info').addClass('hidden');
-                var workspace = [watershed, subbasin];
-
-                add_feature(model, workspace, comid);
-            } else if (model === 'HIWAT-RAPID') {
-                var comid = current_feature.get('COMID');
-                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
-                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
-
-                get_time_series(model, watershed, subbasin, comid);
-
-                $('#info').addClass('hidden');
-                var workspace = [watershed, subbasin];
-
-                add_feature(model, workspace, comid);
+                        get_time_series(comid, tot_drain_area);
+                        get_historic_data(comid, tot_drain_area);
+                        get_flow_duration_curve(comid, tot_drain_area);
+                        // get_forecast_percent(comid);
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(Error);
+                    }
+                });
             }
-        };
+        }
     });
 
 }
@@ -1120,7 +986,6 @@ $(function() {
         get_forecast_percent(watershed, subbasin, comid, startdate);
     });
 });
-
 
 function getRegionGeoJsons() {
 

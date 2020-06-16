@@ -1,12 +1,11 @@
-from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting
-from tethys_sdk.permissions import Permission, PermissionGroup
+from tethys_sdk.base import TethysAppBase, url_map_maker
 
 base_name = __package__.split('.')[-1]
 base_url = base_name.replace('_', '-')
 
-class Hydroviewer(TethysAppBase):
 
+class Hydroviewer(TethysAppBase):
     name = 'HydroViewer Central America'
     index = '{0}:home'.format(base_name)
     icon = '{0}/images/central_america_logo_2.png'.format(base_name)
@@ -22,21 +21,19 @@ class Hydroviewer(TethysAppBase):
         """
         Spatial_dataset_service_settings method.
         """
-        sds_settings = (
+        return (
             SpatialDatasetServiceSetting(
                 name='main_geoserver',
-                description='spatial dataset service for app to use',
+                description='spatial dataset service for app to use (https://tethys2.byu.edu/geoserver/rest/)',
                 engine=SpatialDatasetServiceSetting.GEOSERVER,
                 required=True,
             ),
         )
 
-        return sds_settings
-
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
 
-        url_maps = (
+        return (
             UrlMap(
                 name='home',
                 url=base_url,
@@ -175,68 +172,35 @@ class Hydroviewer(TethysAppBase):
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
         )
 
-        return url_maps
-
-    # def permissions(self):
-    #
-    #     update_default = Permission(
-    #         name='update_default',
-    #         description='Update Default Settings'
-    #     )
-    #
-    #     admin = PermissionGroup(
-    #         name='admin',
-    #         permissions=(update_default,)
-    #     )
-    #
-    #
-    #     permissions = (admin,)
-    #
-    #     return permissions
-
     def custom_settings(self):
         return (
-            CustomSetting(
-                name='api_source',
-                type=CustomSetting.TYPE_STRING,
-                description='Tethys portal where Streamflow Prediction Tool is installed',
-                required=True
-            ),
-            CustomSetting(
-                name='spt_token',
-                type=CustomSetting.TYPE_STRING,
-                description='Unique token to access data from the Streamflow Prediction Tool',
-                required=True
-            ),
             CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
-                required=True
+                required=True,
+                value='hydroviewer',
             ),
             CustomSetting(
                 name='layer_name',
                 type=CustomSetting.TYPE_STRING,
                 description='Layer name in Geoserver for the drainage lines (e.g. central_america-drainage_line)',
-                required=True
-            ),
-            CustomSetting(
-                name='region',
-                type=CustomSetting.TYPE_STRING,
-                description='Streamflow Prediction Tool Region',
-                required=True
+                required=True,
+                value='central_america_hydroviewer-drainage_line',
             ),
             CustomSetting(
                 name='keywords',
                 type=CustomSetting.TYPE_STRING,
                 description='Keyword(s) for visualizing watersheds in HydroViewer',
-                required=True
+                required=True,
+                value='central_america',
             ),
             CustomSetting(
                 name='zoom_info',
                 type=CustomSetting.TYPE_STRING,
                 description='lon,lat,zoom_level',
-                required=True
+                required=True,
+                value='-87,13,5',
             ),
             CustomSetting(
                 name='extra_feature',
@@ -248,7 +212,8 @@ class Hydroviewer(TethysAppBase):
                 name='default_model_type',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID, HIWAT-RAPID)',
-                required=False
+                required=False,
+                value='ECMWF-RAPID',
             ),
             CustomSetting(
                 name='default_watershed_name',
@@ -261,18 +226,6 @@ class Hydroviewer(TethysAppBase):
                 type=CustomSetting.TYPE_BOOLEAN,
                 description='Hide Watershed Options when default present (True or False) ',
                 required=True,
-                value=False
-            ),
-            CustomSetting(
-                name='lis_path',
-                type=CustomSetting.TYPE_STRING,
-                description='Path to local LIS-RAPID directory',
-                required=False
-            ),
-            CustomSetting(
-                name='hiwat_path',
-                type=CustomSetting.TYPE_STRING,
-                description='Path to local HIWAT-RAPID directory',
-                required=False
+                value=True,
             ),
         )
