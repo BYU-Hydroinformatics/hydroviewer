@@ -16,13 +16,13 @@ resource_files += find_resource_files('tethysapp/' + app_package + '/workspaces'
 
 setup(
     name=release_package,
-    version='1',
+    version='1.0.0',
     description='',
     long_description='',
     keywords='hydroviewer, geoglows, streamflow',
     author='Riley Hales',
     author_email='',
-    url='',
+    url='https://github.com/BYU-Hydroinformatics/hydroviewer/tree/central_america/tethysapp/hydroviewer_central_america',
     license='MIT',
     packages=find_namespace_packages(),
     package_data={'': resource_files},
