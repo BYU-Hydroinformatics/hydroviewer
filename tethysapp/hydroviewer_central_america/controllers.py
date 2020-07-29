@@ -167,7 +167,7 @@ def ecmwf(request):
         if 'drainage_line' in raw_feature and any(
                 n in raw_feature for n in app.get_custom_setting('keywords').replace(' ', '').split(',')):
             feat_name = raw_feature.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        raw_feature.split('-')[1].replace('_', ' ').title() + ')'
+                raw_feature.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, feat_name])
 
@@ -272,7 +272,7 @@ def lis(request):
 
         for i in res:
             feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
+                i.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, i])
 
@@ -367,7 +367,7 @@ def hiwat(request):
 
         for i in res:
             feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
+                i.split('-')[1].replace('_', ' ').title() + ')'
             if feat_name not in str(watershed_list):
                 watershed_list.append([feat_name, i])
 
@@ -520,7 +520,7 @@ def lis_get_time_series(request):
             ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
-                    .format(get_units_title(units))
+                .format(get_units_title(units))
             )
         )
 
@@ -584,7 +584,7 @@ def hiwat_get_time_series(request):
             ),
             yaxis=dict(
                 title='Streamflow ({}<sup>3</sup>/s)'
-                    .format(get_units_title(units))
+                .format(get_units_title(units))
             )
         )
 
@@ -650,9 +650,9 @@ def get_return_periods(request):
 
 
 def get_historic_data(request):
-    """""
+    """
     Returns ERA Interim hydrograph
-    """""
+    """
 
     get_data = request.GET
 
@@ -783,9 +783,9 @@ def get_return_period_ploty_info(request, datetime_start, datetime_end,
 
 
 def get_historic_data_csv(request):
-    """""
+    """
     Returns ERA Interim data as csv
-    """""
+    """
 
     get_data = request.GET
 
@@ -824,9 +824,9 @@ def get_historic_data_csv(request):
 
 
 def get_forecast_data_csv(request):
-    """""
+    """
     Returns Forecast data as csv
-    """""
+    """
 
     get_data = request.GET
 
@@ -873,9 +873,9 @@ def get_forecast_data_csv(request):
 
 
 def get_lis_data_csv(request):
-    """""
+    """
     Returns LIS data as csv
-    """""
+    """
 
     get_data = request.GET
 
@@ -929,9 +929,9 @@ def get_lis_data_csv(request):
 
 
 def get_hiwat_data_csv(request):
-    """""
+    """
     Returns HIWAT data as csv
-    """""
+    """
 
     get_data = request.GET
 
@@ -1121,99 +1121,6 @@ def shp_to_geojson(request):
         print(str(e))
         return JsonResponse({'error': 'No shapefile found.'})
 
-
-# def get_daily_seasonal_streamflow_chart(request):
-#     """
-#     Returns daily seasonal streamflow chart for unique river ID
-#     """
-#     units = request.GET.get('units')
-#     seasonal_data_file, river_id, watershed_name, subbasin_name =\
-#         validate_historical_data(request.GET,
-#                                  "seasonal_average*.nc",
-#                                  "Seasonal Average")
-#
-#     with rivid_exception_handler('Seasonal Average', river_id):
-#         with xarray.open_dataset(seasonal_data_file) as seasonal_nc:
-#             seasonal_data = seasonal_nc.sel(rivid=river_id)
-#             base_date = datetime.datetime(2017, 1, 1)
-#             day_of_year = \
-#                 [base_date + datetime.timedelta(days=ii)
-#                  for ii in range(seasonal_data.dims['day_of_year'])]
-#             season_avg = seasonal_data.average_flow.values
-#             season_std = seasonal_data.std_dev_flow.values
-#
-#             season_avg[season_avg < 0] = 0
-#
-#             avg_plus_std = season_avg + season_std
-#             avg_min_std = season_avg - season_std
-#
-#             avg_plus_std[avg_plus_std < 0] = 0
-#             avg_min_std[avg_min_std < 0] = 0
-#
-#     if units == 'english':
-#         # convert from m3/s to ft3/s
-#         season_avg *= M3_TO_FT3
-#         avg_plus_std *= M3_TO_FT3
-#         avg_min_std *= M3_TO_FT3
-#
-#     # generate chart
-#     avg_scatter = go.Scatter(
-#         name='Average',
-#         x=day_of_year,
-#         y=season_avg,
-#         line=dict(
-#             color='#0066ff'
-#         )
-#     )
-#
-#     std_plus_scatter = go.Scatter(
-#         name='Std. Dev. Upper',
-#         x=day_of_year,
-#         y=avg_plus_std,
-#         fill=None,
-#         mode='lines',
-#         line=dict(
-#             color='#98fb98'
-#         )
-#     )
-#
-#     std_min_scatter = go.Scatter(
-#         name='Std. Dev. Lower',
-#         x=day_of_year,
-#         y=avg_min_std,
-#         fill='tonexty',
-#         mode='lines',
-#         line=dict(
-#             color='#98fb98',
-#         )
-#     )
-#
-#     layout = go.Layout(
-#         title="Daily Seasonal Streamflow<br>"
-#               "<sub>{0} ({1}): {2}</sub>"
-#               .format(watershed_name, subbasin_name, river_id),
-#         xaxis=dict(
-#             title='Day of Year',
-#             tickformat="%b"),
-#         yaxis=dict(
-#             title='Streamflow ({}<sup>3</sup>/s)'
-#                   .format(get_units_title(units)))
-#     )
-#
-#     chart_obj = PlotlyView(
-#         go.Figure(data=[std_plus_scatter,
-#                         std_min_scatter,
-#                         avg_scatter],
-#                   layout=layout)
-#     )
-#
-#     context = {
-#         'gizmo_object': chart_obj,
-#     }
-#
-#     return render(request,
-#                   'streamflow_prediction_tool/gizmo_ajax.html',
-#                   context)
 
 def setDefault(request):
     get_data = request.GET
