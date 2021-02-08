@@ -255,7 +255,7 @@ function view_watershed() {
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
@@ -691,12 +691,12 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
                     daily: false
                 };
 
-                $('#submit-download-interim-csv').attr({
+                $('#submit-download-5-csv').attr({
                     target: '_blank',
                     href: 'get-historic-data-csv?' + jQuery.param(params)
                 });
 
-                $('#download_interim').removeClass('hidden');
+                $('#download_era_5').removeClass('hidden');
 
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
@@ -746,82 +746,28 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
 };
 
 function get_forecast_percent(watershed, subbasin, comid, startdate) {
-    $('#mytable').addClass('hidden');
+    //$loading.removeClass('hidden');
+    $("#forecast-table").addClass('hidden');
     $.ajax({
-        url: 'forecastpercent/',
         type: 'GET',
+        url: 'forecastpercent/',
         data: {
-            'comid': comid,
             'watershed': watershed,
             'subbasin': subbasin,
+            'comid': comid,
             'startdate': startdate
         },
-        error: function() {
-            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast table</strong></p>');
-            $('#info').removeClass('hidden');
-
-            setTimeout(function() {
-                $('#info').addClass('hidden')
-            }, 5000);
+        error: function(xhr, errmsg, err) {
+            $('#table').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+".</div>"); // add the error to the dom
+			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         },
-        success: function(data) {
-            $("#tbody").empty()
-            var tbody = document.getElementById('tbody');
-
-            var columNames = {
-                'two': 'Percent Exceedance (2-yr)',
-                'ten': 'Percent Exceedance (10-yr)',
-                'twenty': 'Percent Exceedance (20-yr)',
-            };
-
-            for (var object1 in data) {
-                if (object1 == "dates") {
-                    cellcolor = ""
-                } else if (object1 == "two") {
-                    cellcolor = "yellow"
-                } else if (object1 == "ten") {
-                    cellcolor = "red"
-                } else if (object1 == "twenty") {
-                    cellcolor = "purple"
-                }
-                if (object1 == "percdates") {
-                    var tr = "<tr id=" + object1.toString() + "><th>Dates</th>";
-                    for (var value1 in data[object1]) {
-                        tr += "<th>" + data[object1][value1].toString() + "</th>"
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                } else {
-                    var tr = "<tr id=" + object1.toString() + "><td>" + columNames[object1.toString()] + "</td>";
-                    for (var value1 in data[object1]) {
-                        if (parseInt(data[object1][value1]) == 0) {
-                            tr += "<td class=" + cellcolor + "zero>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 20) {
-                            tr += "<td class=" + cellcolor + "twenty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 40) {
-                            tr += "<td class=" + cellcolor + "fourty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 60) {
-                            tr += "<td class=" + cellcolor + "sixty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 80) {
-                            tr += "<td class=" + cellcolor + "eighty>" + data[object1][value1].toString() + "</td>"
-                        } else {
-                            tr += "<td class=" + cellcolor + "hundred>" + data[object1][value1].toString() + "</td>"
-                        }
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                }
-            }
-
-            $("#twenty").prependTo("#mytable");
-            $("#ten").prependTo("#mytable");
-            $("#two").prependTo("#mytable");
-            $("#percdates").prependTo("#mytable");
-            $('#mytable').removeClass('hidden');
+        success: function(resp) {
+            $("#forecast-table").show();
+            $('#table').html(resp);
         }
-
-    })
+    });
 }
+
 
 function get_discharge_info (stationcode, stationname, startdateobs, enddateobs) {
     $('#observed-loading-Q').removeClass('hidden');
@@ -1025,10 +971,11 @@ function map_events() {
                     $("#graph").modal('show');
                     $("#tbody").empty()
                     $('#long-term-chart').addClass('hidden');
+                    $("#forecast-table").addClass('hidden');
                     $('#historical-chart').addClass('hidden');
                     $('#fdc-chart').addClass('hidden');
                     $('#download_forecast').addClass('hidden');
-                    $('#download_interim').addClass('hidden');
+                    $('#download_era_5').addClass('hidden');
 
                     $loading.removeClass('hidden');
                     //Retrieving the details for clicked point via the url
@@ -1060,6 +1007,7 @@ function map_events() {
                             get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
                             if (model === 'ECMWF-RAPID') {
                                 get_forecast_percent(watershed, subbasin, comid, startdate);
+                                console.log(model)
                             };
 
                             var workspace = JSON.parse($('#geoserver_endpoint').val())[1];

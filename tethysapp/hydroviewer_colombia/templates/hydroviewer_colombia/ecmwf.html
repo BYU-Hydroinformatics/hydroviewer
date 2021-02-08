@@ -223,10 +223,9 @@
                 </div>
                 <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                 <div id="long-term-chart"></div>
-                <table id="mytable">
-                  <tbody id="tbody">
-                  </tbody>
-                </table>
+                <div class="forecast-table" id="forecast-table" style="display:none">
+                    <div id="table">{# The table of forecast go here #}</div>
+                </div>
               </div>
             </div>
           </div> <!-- /.tab-pane -->
@@ -251,10 +250,10 @@
                     <span class="glyphicon glyphicon-play"></span> Download Forecast
                   </a>
                 </div>
-                <h6>Download ERA Interim Data</h6>
-                <div id="download_interim" class="btn-group hidden" role="group">
-                  <a class="btn btn-info" role="button" id="submit-download-interim-csv">
-                    <span class="glyphicon glyphicon-play"></span> Download Interim Data
+                <h6>Download ERA 5 Data</h6>
+                <div id="download_era_5" class="btn-group hidden" role="group">
+                  <a class="btn btn-info" role="button" id="submit-download-5-csv">
+                    <span class="glyphicon glyphicon-play"></span> Download ERA 5 Data
                   </a>
                 </div>
               </div>
