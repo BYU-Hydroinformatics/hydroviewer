@@ -14,7 +14,7 @@ class Hydroviewer(TethysAppBase):
     root_url = base_url
     color = '#00374b'
     description = 'This is the Hydroviewer App customized for Colombia.'
-    tags = 'Hydrology'
+    tags = '"Hydrology", "GEOGloWS", "Hydroviewer"'
     enable_feedback = False
     feedback_emails = []
 
@@ -70,22 +70,6 @@ class Hydroviewer(TethysAppBase):
                 url='ecmwf-rapid/get-time-series',
                 controller='{0}.controllers.ecmwf_get_time_series'.format(base_name)),
             UrlMap(
-                name='get-time-series',
-                url='lis-rapid/get-time-series',
-                controller='{0}.controllers.lis_get_time_series'.format(base_name)),
-            UrlMap(
-                name='get-time-series',
-                url='hiwat-rapid/get-time-series',
-                controller='{0}.controllers.hiwat_get_time_series'.format(base_name)),
-            UrlMap(
-                name='get-return-periods',
-                url='get-return-periods',
-                controller='{0}.controllers.get_return_periods'.format(base_name)),
-            UrlMap(
-                name='get-return-periods',
-                url='ecmwf-rapid/get-return-periods',
-                controller='{0}.controllers.get_return_periods'.format(base_name)),
-            UrlMap(
                 name='get-warning-points',
                 url='get-warning-points',
                 controller='{0}.controllers.get_warning_points'.format(base_name)),
@@ -125,18 +109,6 @@ class Hydroviewer(TethysAppBase):
                 name='get_forecast_data_csv',
                 url='ecmwf-rapid/get-forecast-data-csv',
                 controller='{0}.controllers.get_forecast_data_csv'.format(base_name)),
-            UrlMap(
-                name='get_forecast_data_csv',
-                url='lis-rapid/get-forecast-data-csv',
-                controller='{0}.controllers.get_lis_data_csv'.format(base_name)),
-            UrlMap(
-                name='get_forecast_data_csv',
-                url='hiwat-rapid/get-forecast-data-csv',
-                controller='{0}.controllers.get_hiwat_data_csv'.format(base_name)),
-            UrlMap(
-                name='get_forecast_data_csv',
-                url='get-forecast-data-csv',
-                controller='{0}.controllers.get_lis_data_csv'.format(base_name)),
             UrlMap(
                 name='get_lis_shp',
                 url='get-lis-shp',
