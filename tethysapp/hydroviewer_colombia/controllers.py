@@ -332,6 +332,7 @@ def get_warning_points(request,app_workspace):
 	colombia_id_path = os.path.join(app_workspace.path,'colombia_reachids.csv')
 	reach_pds = pd.read_csv(colombia_id_path)
 	reach_ids_list = reach_pds['COMID'].tolist()
+	return_obj = {}
 	# print("REACH_PDS")
 	# print(reach_ids_list)
 	if get_data['model'] == 'ECMWF-RAPID':
@@ -341,8 +342,6 @@ def get_warning_points(request,app_workspace):
 
 			res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv', verify = False).content
 			print(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv')
-			# print(res)
-			# https://geoglows.ecmwf.int/api/ForecastWarnings/?region=south_america-geoglows&return_format=csv
 			res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 			cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10','date_exceeds_return_period_25', 'date_exceeds_return_period_50','date_exceeds_return_period_100']
 			res_df["rp_all"] = res_df[cols].apply(lambda x: ','.join(x.replace(np.nan,'0')), axis=1)
@@ -405,35 +404,31 @@ def get_warning_points(request,app_workspace):
 			print(df_final_50)
 			print(df_final_100)
 
-			# res20 = requests.get(
-			# 	app.get_custom_setting(
-			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
-			#
-			# res10 = requests.get(
-			# 	app.get_custom_setting(
-			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
-			#
-			# res2 = requests.get(
-			# 	app.get_custom_setting(
-			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
-			return JsonResponse({
-				"success": "Data analysis complete!",
-				# "warning20": json.loads(res20.content)["features"],
-				# "warning10": json.loads(res10.content)["features"],
-				# "warning2": json.loads(res2.content)["features"]
-			})
+			# result.warning2[i].geometry.coordinates
+			return_obj['success'] = "Data analysis complete!"
+			return_obj['warning2'] = create_rp(df_final_2)
+			return_obj['warning5'] = create_rp(df_final_5)
+			return_obj['warning10'] = create_rp(df_final_10)
+			return_obj['warning25'] = create_rp(df_final_25)
+			return_obj['warning50'] = create_rp(df_final_50)
+			return_obj['warning100'] = create_rp(df_final_100)
+			print(return_obj)
+			return JsonResponse(return_obj)
 		except Exception as e:
 			print(str(e))
 			return JsonResponse({'error': 'No data found for the selected reach.'})
 	else:
 		pass
+
+def create_rp(df_):
+	war = {}
+	# war['geometry']
+	list_coordinates = []
+	for lat, lon in zip(df_['lat'].tolist() , df_['lon'].tolist()):
+		list_coordinates.append([lat,lon])
+	# war['geometry']= list_coordinates
+	return list_coordinates
 
 
 def ecmwf_get_time_series(request):
