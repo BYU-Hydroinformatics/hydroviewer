@@ -13,8 +13,11 @@ var default_extent,
     forecastFolder,
     select_interaction,
     two_year_warning,
+    five_year_warning,
     ten_year_warning,
-    twenty_year_warning,
+    twenty_five_year_warning,
+    fifty_year_warning,
+    hundred_year_warning,
     map,
     wms_layers;
 
@@ -26,24 +29,68 @@ var m_downloaded_flow_duration = false;
 const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
 
 //create symbols for warnings
-var twenty_symbols = [new ol.style.RegularShape({
+var hundred_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(128,0,128,0.8)'
+        color: 'rgba(128,0,246,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(128,0,128,1)',
+        color: 'rgba(128,0,246,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(128,0,128,0.3)'
+        color: 'rgba(128,0,246,1)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(128,0,128,1)',
+        color: 'rgba(128,0,246,0.4)',
+        width: 1
+    })
+})];
+
+var fifty_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(128,0,106,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(128,0,106,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(128,0,106,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(128,0,106,0.4)',
+        width: 1
+    })
+})];
+
+var twenty_five_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255,0,0,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255,0,0,0.4)',
         width: 1
     })
 })];
@@ -53,20 +100,42 @@ var ten_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(255,0,0,0.7)'
+        color: 'rgba(255,56,5,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,0,0,1)',
+        color: 'rgba(255,56,5,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(255,0,0,0.3)'
+        color: 'rgba(255,56,5,1)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,0,0,1)',
+        color: 'rgba(255,56,5,0.4)',
+        width: 1
+    })
+})];
+
+var five_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(253,154,1,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(253,154,1,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(253,154,1,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(253,154,1,0.4)',
         width: 1
     })
 })];
@@ -76,20 +145,20 @@ var two_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(255,255,0,0.7)'
+        color: 'rgba(254,240,1,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,255,0,1)',
+        color: 'rgba(254,240,1,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(255,255,0,0.3)'
+        color: 'rgba(254,240,1,0.4)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,255,0,1)',
+        color: 'rgba(254,240,1,1)',
         width: 1
     })
 })];
@@ -168,7 +237,20 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'yellow' }),
+                fill: new ol.style.Fill({ color: 'rgba(254,240,1,0.4)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    five_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(253,154,1,0.4)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -181,7 +263,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'red' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,56,5,0.4)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -190,11 +272,37 @@ function init_map() {
         })
     });
 
-    twenty_year_warning = new ol.layer.Vector({
+    twenty_five_year_warning = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(128,0,128,0.8)' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,0,0,0.4)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    fifty_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(128,0,106,0.4)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    hundred_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(128,0,246,0.4)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -214,9 +322,9 @@ function init_map() {
             })
         });
 
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
+        layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
     } else {
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
+        layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([featureOverlay])
     }
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
@@ -571,19 +679,39 @@ function get_return_periods(watershed, subbasin, comid) {
         },
         success: function(data) {
             $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.twenty),
+                from: parseFloat(data.return_periods.hundred),
                 to: parseFloat(data.return_periods.max),
-                color: 'rgba(128,0,128,0.4)',
-                id: '20-yr',
+                color: 'rgba(128,0,246,0.4)',
+                id: '100-yr',
                 label: {
-                    text: '20-yr',
+                    text: '100-yr',
+                    align: 'right'
+                }
+            });
+            $("#container").highcharts().yAxis[0].addPlotBand({
+                from: parseFloat(data.return_periods.fifty),
+                to: parseFloat(data.return_periods.hundred),
+                color: 'rgba(128,0,106,0.4)',
+                id: '50-yr',
+                label: {
+                    text: '50-yr',
+                    align: 'right'
+                }
+            });
+            $("#container").highcharts().yAxis[0].addPlotBand({
+                from: parseFloat(data.return_periods.twenty_five),
+                to: parseFloat(data.return_periods.fifty),
+                color: 'rgba(255,0,0,0.4)',
+                id: '25-yr',
+                label: {
+                    text: '25-yr',
                     align: 'right'
                 }
             });
             $("#container").highcharts().yAxis[0].addPlotBand({
                 from: parseFloat(data.return_periods.ten),
-                to: parseFloat(data.return_periods.twenty),
-                color: 'rgba(255,0,0,0.3)',
+                to: parseFloat(data.return_periods.twenty_five),
+                color: 'rgba(255,56,5,0.4)',
                 id: '10-yr',
                 label: {
                     text: '10-yr',
@@ -591,9 +719,19 @@ function get_return_periods(watershed, subbasin, comid) {
                 }
             });
             $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.two),
+                from: parseFloat(data.return_periods.five),
                 to: parseFloat(data.return_periods.ten),
-                color: 'rgba(255,255,0,0.3)',
+                color: 'rgba(253,154,1,0.4)',
+                id: '5-yr',
+                label: {
+                    text: '5-yr',
+                    align: 'right'
+                }
+            });
+            $("#container").highcharts().yAxis[0].addPlotBand({
+                from: parseFloat(data.return_periods.two),
+                to: parseFloat(data.return_periods.five),
+                color: 'rgba(254,240,1,0.4)',
                 id: '2-yr',
                 label: {
                     text: '2-yr',
