@@ -344,7 +344,7 @@ def get_warning_points(request,app_workspace):
 			# print(res)
 			# https://geoglows.ecmwf.int/api/ForecastWarnings/?region=south_america-geoglows&return_format=csv
 			res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
-			cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10', 'date_exceeds_return_period_50','date_exceeds_return_period_100']
+			cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10','date_exceeds_return_period_25', 'date_exceeds_return_period_50','date_exceeds_return_period_100']
 			res_df["rp_all"] = res_df[cols].apply(lambda x: ','.join(x.replace(np.nan,'0')), axis=1)
 			print(res_df)
 			test_list = res_df["rp_all"].tolist()
@@ -368,8 +368,42 @@ def get_warning_points(request,app_workspace):
 			res_df = res_df[res_df['comid'].isin(reach_ids_list)]
 			# res_df['rp_all'] = res_df['rp_all'].where(res_df['rp_all'] != '0', '1')
 			# res_df = pd.read_csv(io.StringIO(res), index_col=0)
+			d_2 = []
+			d_5 = []
+			d_10 = []
+			d_50 = []
+			d_100 = []
+
+			d = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist()}
+			df_final = pd.DataFrame(data=d)
+			# 'rep':res_df['rp_all2'].tolist()
+			df_final[['rp_2','rp_5','rp_10','rp_25','rp_50','rp_100']] = pd.DataFrame(res_df.rp_all2.tolist(), index= df_final.index)
+			d2 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_2']}
+			d5 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_5']}
+			d10 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_10']}
+			d25 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_25']}
+			d50 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_50']}
+			d100 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_100']}
 			print("DESPUES")
-			print(res_df.head())
+			df_final_2 = pd.DataFrame(data=d2)
+			df_final_2 = df_final_2[df_final_2['rp'] > 0]
+			df_final_5 = pd.DataFrame(data=d5)
+			df_final_5 = df_final_5[df_final_5['rp'] > 0]
+			df_final_10 = pd.DataFrame(data=d10)
+			df_final_10 = df_final_10[df_final_10['rp'] > 0]
+			df_final_25 = pd.DataFrame(data=d25)
+			df_final_25 = df_final_25[df_final_25['rp'] > 0]
+			df_final_50 = pd.DataFrame(data=d50)
+			df_final_50 = df_final_50[df_final_50['rp'] > 0]
+			df_final_100 = pd.DataFrame(data=d100)
+			df_final_100 = df_final_100[df_final_100['rp'] > 0]
+
+			print(df_final_2)
+			print(df_final_5)
+			print(df_final_10)
+			print(df_final_25)
+			print(df_final_50)
+			print(df_final_100)
 
 			# res20 = requests.get(
 			# 	app.get_custom_setting(
