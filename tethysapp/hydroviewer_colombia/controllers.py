@@ -1041,8 +1041,6 @@ def forecastpercent(request):
 
 		table = geoglows.plots.probabilities_table(stats_df, ensemble_df, rperiods_df)
 
-		print (table)
-
 		return HttpResponse(table)
 
 	except Exception:
