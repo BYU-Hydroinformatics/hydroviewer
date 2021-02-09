@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
 from tethys_sdk.base import TethysAppBase
 from tethys_sdk.gizmos import PlotlyView
-
+from tethys_sdk.workspaces import app_workspace
 import os
 import requests
 from requests.auth import HTTPBasicAuth
@@ -33,7 +33,6 @@ from .app import Hydroviewer as app
 from .helpers import *
 
 base_name = __package__.split('.')[-1]
-
 
 def set_custom_setting(defaultModelName, defaultWSName):
 	from tethys_apps.models import TethysApp
@@ -327,37 +326,74 @@ def hiwat(request):
 
 	return render(request, '{0}/hiwat.html'.format(base_name), context)
 
-
-def get_warning_points(request):
+@app_workspace
+def get_warning_points(request,app_workspace):
 	get_data = request.GET
+	colombia_id_path = os.path.join(app_workspace.path,'colombia_reachids.csv')
+	reach_pds = pd.read_csv(colombia_id_path)
+	reach_ids_list = reach_pds['COMID'].tolist()
+	# print("REACH_PDS")
+	# print(reach_ids_list)
 	if get_data['model'] == 'ECMWF-RAPID':
 		try:
 			watershed = get_data['watershed']
 			subbasin = get_data['subbasin']
 
-			res20 = requests.get(
-				app.get_custom_setting(
-					'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-				watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-				headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+			res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv', verify = False).content
+			print(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv')
+			# print(res)
+			# https://geoglows.ecmwf.int/api/ForecastWarnings/?region=south_america-geoglows&return_format=csv
+			res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+			cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10', 'date_exceeds_return_period_50','date_exceeds_return_period_100']
+			res_df["rp_all"] = res_df[cols].apply(lambda x: ','.join(x.replace(np.nan,'0')), axis=1)
+			print(res_df)
+			test_list = res_df["rp_all"].tolist()
+			# print(test_list)
+			final_new_rp = []
+			for term in test_list:
+				new_rp =[]
+				terms = term.split(',')
+				for te in terms:
+					if te is not '0':
+						# print('yeah')
+						new_rp.append(1)
+					else:
+						new_rp.append(0)
+				final_new_rp.append(new_rp)
 
-			res10 = requests.get(
-				app.get_custom_setting(
-					'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-				watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-				headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+			res_df['rp_all2'] = final_new_rp
+			print("ANTES")
+			print(res_df.head())
+			res_df = res_df.reset_index()
+			res_df = res_df[res_df['comid'].isin(reach_ids_list)]
+			# res_df['rp_all'] = res_df['rp_all'].where(res_df['rp_all'] != '0', '1')
+			# res_df = pd.read_csv(io.StringIO(res), index_col=0)
+			print("DESPUES")
+			print(res_df.head())
 
-			res2 = requests.get(
-				app.get_custom_setting(
-					'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-				watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-				headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+			# res20 = requests.get(
+			# 	app.get_custom_setting(
+			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=20',
+			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+			#
+			# res10 = requests.get(
+			# 	app.get_custom_setting(
+			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=10',
+			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+			#
+			# res2 = requests.get(
+			# 	app.get_custom_setting(
+			# 		'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
+			# 	watershed + '&subbasin_name=' + subbasin + '&return_period=2',
+			# 	headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
 
 			return JsonResponse({
 				"success": "Data analysis complete!",
-				"warning20": json.loads(res20.content)["features"],
-				"warning10": json.loads(res10.content)["features"],
-				"warning2": json.loads(res2.content)["features"]
+				# "warning20": json.loads(res20.content)["features"],
+				# "warning10": json.loads(res10.content)["features"],
+				# "warning2": json.loads(res2.content)["features"]
 			})
 		except Exception as e:
 			print(str(e))

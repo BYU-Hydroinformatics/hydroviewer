@@ -747,7 +747,7 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
 
 function get_forecast_percent(watershed, subbasin, comid, startdate) {
     //$loading.removeClass('hidden');
-    $("#forecast-table").addClass('hidden');
+    // $("#forecast-table").addClass('hidden');
     $.ajax({
         type: 'GET',
         url: 'forecastpercent/',
@@ -762,8 +762,13 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         },
         success: function(resp) {
+          // console.log(resp)
+          $('#forecast-table').html(resp);
+
+          $("#forecast-table").removeClass('hidden');
+
             $("#forecast-table").show();
-            $('#table').html(resp);
+            // $('#table').html(resp);
         }
     });
 }
