@@ -31,42 +31,42 @@
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,246,0.4)" fill="rgba(128,0,246,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,246,1)" fill="rgba(128,0,246,0.4)" stroke-width="2"/>
               </svg>
               100-Year Warnings
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,106,0.4)" fill="rgba(128,0,106,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,106,1)" fill="rgba(128,0,106,0.4)" stroke-width="2"/>
               </svg>
               50-Year Warnings
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,0,0,0.4)" fill="rgba(255,0,0,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,0.4)" stroke-width="2"/>
               </svg>
               25-Year Warnings
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,56,5,0.4)" fill="rgba(255,56,5,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,56,5,1)" fill="rgba(255,56,5,0.4)" stroke-width="2"/>
               </svg>
               10-Year Warnings
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(253,154,1,0.4)" fill="rgba(253,154,1,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(253,154,1,1)" fill="rgba(253,154,1,0.4)" stroke-width="2"/>
               </svg>
               5-Year Warnings
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(254,240,1,0.4)" fill="rgba(254,240,1,0.4)" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(254,240,1,1)" fill="rgba(254,240,1,0.4)" stroke-width="2"/>
               </svg>
               2-Year Warnings
           </div>
@@ -229,8 +229,8 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active"><a id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-toggle="tab">Forecast</a></li>
-          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical</a></li>
-          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Flow-Duration</a></li>
+          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical Simulation</a></li>
+          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Historical Simulation Statistics</a></li>
           <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
         </ul>
 
@@ -260,6 +260,10 @@
             <div class="panel panel-default">
               <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
               <div id='fdc-chart' class="panel-body"></div>
+              <div class="flex-container-row"><img id="seasonal_d-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id='seasonal_d-chart' class="panel-body"></div>
+              <div class="flex-container-row"><img id="seasonal_m-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id='seasonal_m-chart' class="panel-body"></div>
             </div>
           </div><!-- /.tab-pane -->
           <div role="tabpanel" class="tab-pane" id="download">

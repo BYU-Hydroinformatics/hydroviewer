@@ -237,7 +237,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(254,240,1,0.4)' }),
+                fill: new ol.style.Fill({ color: 'rgba(254,240,1,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -250,7 +250,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(253,154,1,0.4)' }),
+                fill: new ol.style.Fill({ color: 'rgba(253,154,1,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -263,7 +263,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(255,56,5,0.4)' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,56,5,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -276,7 +276,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(255,0,0,0.4)' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,0,0,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -289,7 +289,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(128,0,106,0.4)' }),
+                fill: new ol.style.Fill({ color: 'rgba(128,0,106,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -370,7 +370,8 @@ function view_watershed() {
                 params: { 'LAYERS': layerName },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
-            })
+            }),
+            opacity: 0.4
         });
         feature_layer = wmsLayer;
 
@@ -383,7 +384,8 @@ function view_watershed() {
                 params: {'LAYERS':"FEWS_Stations_N"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
-            })
+            }),
+            opacity: 0.7
         });
         feature_layer2 = wmsLayer2;
 
@@ -572,9 +574,9 @@ function get_warning_points(model, watershed, subbasin) {
             map.getLayers().item(4).getSource().clear();
             map.getLayers().item(5).getSource().clear();
             map.getLayers().item(6).getSource().clear();
-            console.log(result)
+
             if (result.warning2 != 'undefined') {
-                console.log(result.warning2)
+
                 var warLen2 = result.warning2.length;
                 for (var i = 0; i < warLen2; ++i) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning2[i][1],
@@ -664,54 +666,6 @@ function get_warning_points(model, watershed, subbasin) {
                 }
                 map.getLayers().item(6).setVisible(true);
             }
-            // if (result.warning2 != 'undefined') {
-            //     var warLen2 = result.warning2.length;
-            //     for (var i = 0; i < warLen2; ++i) {
-            //         var geometry = new ol.geom.Point(ol.proj.transform([result.warning2[i].geometry.coordinates[0],
-            //                 result.warning2[i].geometry.coordinates[1]
-            //             ],
-            //             'EPSG:4326', 'EPSG:3857'));
-            //         var feature = new ol.Feature({
-            //             geometry: geometry,
-            //             point_size: result.warning2[i].properties.size
-            //         });
-            //         map.getLayers().item(1).getSource().addFeature(feature);
-            //     }
-            //     map.getLayers().item(1).setVisible(true);
-            // }
-
-            // if (result.warning10 != 'undefined') {
-            //     var warLen10 = result.warning10.length;
-            //     for (var j = 0; j < warLen10; ++j) {
-            //         var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[j].geometry.coordinates[0],
-            //                 result.warning10[j].geometry.coordinates[1]
-            //             ],
-            //             'EPSG:4326', 'EPSG:3857'));
-            //         var feature = new ol.Feature({
-            //             geometry: geometry,
-            //             point_size: result.warning10[j].properties.size
-            //         });
-            //         map.getLayers().item(2).getSource().addFeature(feature);
-            //     }
-            //     map.getLayers().item(2).setVisible(true);
-            // }
-            //
-            // if (result.warning20 != 'undefined') {
-            //     var warLen20 = result.warning20.length;
-            //     for (var k = 0; k < warLen20; ++k) {
-            //         var geometry = new ol.geom.Point(ol.proj.transform([result.warning20[k].geometry.coordinates[0],
-            //                 result.warning20[k].geometry.coordinates[1]
-            //             ],
-            //             'EPSG:4326', 'EPSG:3857'));
-            //         var feature = new ol.Feature({
-            //             geometry: geometry,
-            //             point_size: result.warning20[k].properties.size
-            //         });
-            //         map.getLayers().item(3).getSource().addFeature(feature);
-            //     }
-            //     map.getLayers().item(3).setVisible(true);
-            // }
-
         }
     });
 }
@@ -977,6 +931,71 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
     });
 };
 
+function get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate) {
+    $('#seasonal_d-view-file-loading').removeClass('hidden');
+    m_downloaded_flow_duration = true;
+    $.ajax({
+        type: 'GET',
+        url: 'get-daily-seasonal-streamflow',
+        data: {
+            'model': model,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'comid': comid,
+            'startdate': startdate
+        },
+        success: function(data) {
+            if (!data.error) {
+                $('#seasonal_d-view-file-loading').addClass('hidden');
+                $('#seasonal_d-chart').removeClass('hidden');
+                $('#seasonal_d-chart').html(data);
+            } else if (data.error) {
+                $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
+                $('#info').removeClass('hidden');
+
+                setTimeout(function() {
+                    $('#info').addClass('hidden')
+                }, 5000);
+            } else {
+                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            }
+        }
+    });
+};
+
+function get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate) {
+    $('#seasonal_m-view-file-loading').removeClass('hidden');
+    m_downloaded_flow_duration = true;
+    $.ajax({
+        type: 'GET',
+        url: 'get-monthly-seasonal-streamflow',
+        data: {
+            'model': model,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'comid': comid,
+            'startdate': startdate
+        },
+        success: function(data) {
+            if (!data.error) {
+                $('#seasonal_m-view-file-loading').addClass('hidden');
+                $('#seasonal_m-chart').removeClass('hidden');
+                $('#seasonal_m-chart').html(data);
+            } else if (data.error) {
+                $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
+                $('#info').removeClass('hidden');
+
+                setTimeout(function() {
+                    $('#info').addClass('hidden')
+                }, 5000);
+            } else {
+                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            }
+        }
+    });
+};
+
+
 function get_forecast_percent(watershed, subbasin, comid, startdate) {
     //$loading.removeClass('hidden');
     // $("#forecast-table").addClass('hidden');
@@ -1211,6 +1230,8 @@ function map_events() {
                     $("#forecast-table").addClass('hidden');
                     $('#historical-chart').addClass('hidden');
                     $('#fdc-chart').addClass('hidden');
+                    $('#seasonal_d-chart').addClass('hidden');
+                    $('#seasonal_m-chart').addClass('hidden');
                     $('#download_forecast').addClass('hidden');
                     $('#download_era_5').addClass('hidden');
 
@@ -1242,9 +1263,10 @@ function map_events() {
                             get_time_series(model, watershed, subbasin, comid, startdate);
                             get_historic_data(model, watershed, subbasin, comid, startdate);
                             get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+                            get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
+                            get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
                             if (model === 'ECMWF-RAPID') {
                                 get_forecast_percent(watershed, subbasin, comid, startdate);
-                                console.log(model)
                             };
 
                             var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
@@ -1429,6 +1451,8 @@ function resize_graphs() {
     $("#flow_duration_tab_link").click(function() {
         if (m_downloaded_flow_duration) {
             Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
+            Plotly.Plots.resize($("#seasonal_d-chart .js-plotly-plot")[0]);
+            Plotly.Plots.resize($("#seasonal_m-chart .js-plotly-plot")[0]);
         }
     });
     $("#observedQ_tab_link").click(function() {

@@ -341,13 +341,14 @@ def get_warning_points(request,app_workspace):
 			subbasin = get_data['subbasin']
 
 			res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv', verify = False).content
-			print(app.get_custom_setting('api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows'+ '&return_format=csv')
+
 			res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 			cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10','date_exceeds_return_period_25', 'date_exceeds_return_period_50','date_exceeds_return_period_100']
+
 			res_df["rp_all"] = res_df[cols].apply(lambda x: ','.join(x.replace(np.nan,'0')), axis=1)
-			print(res_df)
+
 			test_list = res_df["rp_all"].tolist()
-			# print(test_list)
+
 			final_new_rp = []
 			for term in test_list:
 				new_rp =[]
@@ -361,21 +362,13 @@ def get_warning_points(request,app_workspace):
 				final_new_rp.append(new_rp)
 
 			res_df['rp_all2'] = final_new_rp
-			print("ANTES")
-			print(res_df.head())
+
 			res_df = res_df.reset_index()
 			res_df = res_df[res_df['comid'].isin(reach_ids_list)]
-			# res_df['rp_all'] = res_df['rp_all'].where(res_df['rp_all'] != '0', '1')
-			# res_df = pd.read_csv(io.StringIO(res), index_col=0)
-			d_2 = []
-			d_5 = []
-			d_10 = []
-			d_50 = []
-			d_100 = []
 
 			d = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist()}
 			df_final = pd.DataFrame(data=d)
-			# 'rep':res_df['rp_all2'].tolist()
+
 			df_final[['rp_2','rp_5','rp_10','rp_25','rp_50','rp_100']] = pd.DataFrame(res_df.rp_all2.tolist(), index= df_final.index)
 			d2 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_2']}
 			d5 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_5']}
@@ -383,7 +376,7 @@ def get_warning_points(request,app_workspace):
 			d25 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_25']}
 			d50 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_50']}
 			d100 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(), 'lat':res_df['stream_lat'].tolist(),'lon':res_df['stream_lon'].tolist(),'rp':df_final['rp_100']}
-			print("DESPUES")
+
 			df_final_2 = pd.DataFrame(data=d2)
 			df_final_2 = df_final_2[df_final_2['rp'] > 0]
 			df_final_5 = pd.DataFrame(data=d5)
@@ -397,15 +390,6 @@ def get_warning_points(request,app_workspace):
 			df_final_100 = pd.DataFrame(data=d100)
 			df_final_100 = df_final_100[df_final_100['rp'] > 0]
 
-			print(df_final_2)
-			print(df_final_5)
-			print(df_final_10)
-			print(df_final_25)
-			print(df_final_50)
-			print(df_final_100)
-
-
-			# result.warning2[i].geometry.coordinates
 			return_obj['success'] = "Data analysis complete!"
 			return_obj['warning2'] = create_rp(df_final_2)
 			return_obj['warning5'] = create_rp(df_final_5)
@@ -413,7 +397,7 @@ def get_warning_points(request,app_workspace):
 			return_obj['warning25'] = create_rp(df_final_25)
 			return_obj['warning50'] = create_rp(df_final_50)
 			return_obj['warning100'] = create_rp(df_final_100)
-			print(return_obj)
+
 			return JsonResponse(return_obj)
 		except Exception as e:
 			print(str(e))
@@ -423,11 +407,11 @@ def get_warning_points(request,app_workspace):
 
 def create_rp(df_):
 	war = {}
-	# war['geometry']
+
 	list_coordinates = []
 	for lat, lon in zip(df_['lat'].tolist() , df_['lon'].tolist()):
 		list_coordinates.append([lat,lon])
-	# war['geometry']= list_coordinates
+
 	return list_coordinates
 
 
@@ -889,7 +873,7 @@ def shp_to_geojson(request):
 		return JsonResponse({'error': 'No shapefile found.'})
 
 
-def get_daily_seasonal_streamflow_chart(request):
+def get_daily_seasonal_streamflow(request):
 	 """
 	 Returns daily seasonal streamflow chart for unique river ID
 	 """
@@ -929,7 +913,7 @@ def get_daily_seasonal_streamflow_chart(request):
 		 return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
-def get_monthly_seasonal_streamflow_chart(request):
+def get_monthly_seasonal_streamflow(request):
 	 """
 	 Returns daily seasonal streamflow chart for unique river ID
 	 """
@@ -954,7 +938,7 @@ def get_monthly_seasonal_streamflow_chart(request):
 
 		 monavg_df = hydrostats.data.monthly_average(simulated_df)
 
-		 hydroviewer_figure = geoglows.plots.daily_averages(monavg_df, titles={'Reach ID': comid})
+		 hydroviewer_figure = geoglows.plots.monthly_averages(monavg_df, titles={'Reach ID': comid})
 
 		 chart_obj = PlotlyView(hydroviewer_figure)
 

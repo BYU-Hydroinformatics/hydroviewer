@@ -86,6 +86,14 @@ class Hydroviewer(TethysAppBase):
                 url='get-flow-duration-curve',
                 controller='{0}.controllers.get_flow_duration_curve'.format(base_name)),
             UrlMap(
+                name='get-daily-seasonal-streamflow',
+                url='get-daily-seasonal-streamflow',
+                controller='{0}.controllers.get_daily_seasonal_streamflow'.format(base_name)),
+            UrlMap(
+                name='get-monthly-seasonal-streamflow',
+                url='get-monthly-seasonal-streamflow',
+                controller='{0}.controllers.get_monthly_seasonal_streamflow'.format(base_name)),
+            UrlMap(
                 name='get_historic_data_csv',
                 url='get-historic-data-csv',
                 controller='{0}.controllers.get_historic_data_csv'.format(base_name)),
@@ -101,6 +109,14 @@ class Hydroviewer(TethysAppBase):
                 name='get-flow-duration-curve',
                 url='ecmwf-rapid/get-flow-duration-curve',
                 controller='{0}.controllers.get_flow_duration_curve'.format(base_name)),
+            UrlMap(
+                name='get-daily-seasonal-streamflow',
+                url='ecmwf-rapid/get-daily-seasonal-streamflow',
+                controller='{0}.controllers.get_daily_seasonal_streamflow'.format(base_name)),
+            UrlMap(
+                name='get-monthly-seasonal-streamflow',
+                url='ecmwf-rapid/get-monthly-seasonal-streamflow',
+                controller='{0}.controllers.get_monthly_seasonal_streamflow'.format(base_name)),
             UrlMap(
                 name='get_historic_data_csv',
                 url='ecmwf-rapid/get-historic-data-csv',
