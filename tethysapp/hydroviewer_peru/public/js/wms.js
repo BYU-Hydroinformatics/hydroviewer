@@ -381,7 +381,7 @@ function view_watershed() {
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                params: {'LAYERS':"SENAMHI_Stations"},
+                params: {'LAYERS':"SENAMHI_Stations_RT"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -462,7 +462,7 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"SENAMHI_Stations"},
+                		params: {'LAYERS':"SENAMHI_Stations_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -524,7 +524,7 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"SENAMHI_Stations"},
+                		params: {'LAYERS':"SENAMHI_Stations_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -940,6 +940,72 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 }
 
 
+function get_waterlevel_info (stationcode, stationname, olcode, stationtype, stationcat, stationstatus, stream) {
+    $('#observed-loading-WL').removeClass('hidden');
+    $.ajax({
+        url: 'get-waterlevel-data',
+        type: 'GET',
+        data: {
+        	'stationcode' : stationcode,
+        	'stationname' : stationname,
+        	'oldcode': oldcode,
+        	'stationtype' : stationtype,
+        	'stationcat': stationcat,
+        	'stationstatus': stationstatus,
+        	'stream' : stream
+        	},
+        error: function () {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function () {
+                $('#info').addClass('hidden')
+            }, 5000);
+        },
+        success: function (data) {
+            if (!data.error) {
+                $('#observed-loading-WL').addClass('hidden');
+                $('#dates').removeClass('hidden');
+//                $('#obsdates').removeClass('hidden');
+                $loading.addClass('hidden');
+                $('#observed-chart-WL').removeClass('hidden');
+                $('#observed-chart-WL').html(data);
+
+                //resize main graph
+                Plotly.Plots.resize($("#observed-chart-WL .js-plotly-plot")[0]);
+
+                var params = {
+                    stationcode: stationcode,
+                    stationname: stationname,
+                    oldcode: oldcode,
+                    stationtype: stationtype,
+                    stationcat: stationcat,
+                    stationstatus: stationstatus,
+                    stream: stream,
+                };
+
+                $('#submit-download-observed-waterlevel').attr({
+                    target: '_blank',
+                    href: 'get-observed-waterlevel-csv?' + jQuery.param(params)
+                });
+
+                $('#download_observed_waterlevel').removeClass('hidden');
+
+                } else if (data.error) {
+                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
+                	$('#info').removeClass('hidden');
+
+                	setTimeout(function() {
+                    	$('#info').addClass('hidden')
+                	}, 5000);
+            	} else {
+                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            	}
+        }
+    })
+}
+
+
 function map_events() {
     map.on('pointermove', function(evt) {
         if (evt.dragging) {
@@ -984,28 +1050,44 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (current_layer["H"]["source"]["i"]["LAYERS"] == "SENAMHI_Stations") {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "SENAMHI_Stations_RT") {
 
                         $("#obsgraph").modal('show');
-                        $("#station-info").empty()
-                        $("#pdf-url").empty()
+                        //$('#observed-chart-WL').addClass('hidden');
+                        $('#observed-chart-WL').empty();
+                        $("#station-info").empty();
+                        $("#pdf-url").empty();
+                        $('#download_observed_waterlevel').addClass('hidden');
 
                         $.ajax({
                             type: "GET",
                             url: wms_url,
                             dataType: 'json',
                             success: function (result) {
-                                stationcode = result["features"][0]["properties"]["CODIGO"];
-                                stationname = result["features"][0]["properties"]["NOMBRE"];
-                                stream = result["features"][0]["properties"]["CORRIENTE"];
-                                pdf_url = result["features"][0]["properties"]["PDF_URL"];
+                                stationcode = result["features"][0]["properties"]["code"];
+                                oldcode = result["features"][0]["properties"]["old_code"];
+                                stationname = result["features"][0]["properties"]["nombre"];
+                                stationtype = result["features"][0]["properties"]["icono"];
+                                stationcat = result["features"][0]["properties"]["categoria"];
+                                stationstatus = result["features"][0]["properties"]["estado"];
+                                stream = result["features"][0]["properties"]["Rio"];
+                                pdf_url = result["features"][0]["properties"]["pdf"];
                                 $('#obsdates').removeClass('hidden');
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
                                 $("#station-info").append('<h3 id="Station-Name-Tab">Current Station: '+ stationname
                         			+ '</h3><h5 id="Station-Code-Tab">Station Code: '
                         			+ stationcode + '</h5><h5>Stream: '+ stream);
+
+                        		https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/map_red_graf.php?cod=230603&estado=REAL&tipo_esta=H&cate=HLM&cod_old=230603
+                        		url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/map_red_graf.php?cod=' + stationcode + '&estado=' + stationstatus + '&tipo_esta=' + stationtype + '&cate=' + stationcat + '&cod_old=' + oldcode;
+                        		console.log(url)
+
+                        		$("#observed-chart-WL").load(url);
+                        		//$("#observed-chart-WL").<?php include ('includes/headings.php'); ?>
+
                         		$("#pdf-url").append('<iframe src="' + pdf_url + '" style="width:900px; height:750px;" frameborder="0"></iframe>');
+                        		//get_waterlevel_info (stationcode, stationname, olcode, stationtype, stationcat, stationstatus, stream);
                             }
                         });
 

@@ -1125,117 +1125,6 @@ def get_discharge_data(request):
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
-def get_observed_discharge_csv(request):
-    """
-    Get data from fews stations
-    """
-
-    get_data = request.GET
-
-    try:
-        codEstacion = get_data['stationcode']
-        nomEstacion = get_data['stationname']
-
-        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-        f = requests.get(url, verify=False)
-        data = f.json()
-
-        observedDischarge = (data.get('obs'))
-        observedDischarge = (observedDischarge.get('data'))
-
-        datesObservedDischarge = [row[0] for row in observedDischarge]
-        observedDischarge = [row[1] for row in observedDischarge]
-
-        dates = []
-        discharge = []
-
-        for i in range(0, len(datesObservedDischarge) - 1):
-            year = int(datesObservedDischarge[i][0:4])
-            month = int(datesObservedDischarge[i][5:7])
-            day = int(datesObservedDischarge[i][8:10])
-            hh = int(datesObservedDischarge[i][11:13])
-            mm = int(datesObservedDischarge[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            discharge.append(observedDischarge[i])
-
-        datesObservedDischarge = dates
-        observedDischarge = discharge
-
-        pairs = [list(a) for a in zip(datesObservedDischarge, observedDischarge)]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=observed_discharge_{0}_{1}.csv'.format(
-            codEstacion, nomEstacion)
-
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'flow (m3/s)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
-
-        return response
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
-
-
-def get_sensor_discharge_csv(request):
-    """
-      Get data from fews stations
-      """
-
-    get_data = request.GET
-
-    try:
-        codEstacion = get_data['stationcode']
-        nomEstacion = get_data['stationname']
-
-        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-        f = requests.get(url, verify=False)
-        data = f.json()
-
-        sensorDischarge = (data.get('sen'))
-        sensorDischarge = (sensorDischarge.get('data'))
-        datesSensorDischarge = [row[0] for row in sensorDischarge]
-        sensorDischarge = [row[1] for row in sensorDischarge]
-
-        dates = []
-        discharge = []
-
-        for i in range(0, len(datesSensorDischarge) - 1):
-            year = int(datesSensorDischarge[i][0:4])
-            month = int(datesSensorDischarge[i][5:7])
-            day = int(datesSensorDischarge[i][8:10])
-            hh = int(datesSensorDischarge[i][11:13])
-            mm = int(datesSensorDischarge[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            discharge.append(sensorDischarge[i])
-
-        datesSensorDischarge = dates
-        sensorDischarge = discharge
-
-        pairs = [list(a) for a in zip(datesSensorDischarge, sensorDischarge)]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=sensor_discharge_{0}_{1}.csv'.format(
-            codEstacion, nomEstacion)
-
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'flow (m3/s)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
-
-        return response
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
-
-
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
@@ -1245,6 +1134,15 @@ def get_waterlevel_data(request):
     try:
 
         codEstacion = get_data['stationcode']
+        nomEstacion = get_data['stationname']
+        oldCodEstacion = get_data['oldcode']
+        tipoEstacion = get_data['stationtype']
+        catEstacion = get_data['stationcat']
+        statusEstacion = get_data['stationstatus']
+        river = get_data['stream']
+
+        print('https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/map_red_graf.php?cod={0}&estado={1}&tipo_esta={2}&cate={3}&cod_old={4}'.format(codEstacion, statusEstacion, tipoEstacion, catEstacion, oldCodEstacion))
+
         # YYYY/MM/DD
 
         url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
@@ -1371,62 +1269,6 @@ def get_observed_waterlevel_csv(request):
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(
-            codEstacion, nomEstacion)
-
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'water level (m)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
-
-        return response
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
-
-
-def get_sensor_waterlevel_csv(request):
-    """
-      Get data from fews stations
-      """
-
-    get_data = request.GET
-
-    try:
-        codEstacion = get_data['stationcode']
-        nomEstacion = get_data['stationname']
-
-        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
-
-        f = requests.get(url, verify=False)
-        data = f.json()
-
-        sensorWaterLevel = (data.get('sen'))
-        sensorWaterLevel = (sensorWaterLevel.get('data'))
-
-        datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
-        sensorWaterLevel = [row[1] for row in sensorWaterLevel]
-
-        dates = []
-        waterLevel = []
-
-        for i in range(0, len(datesSensorWaterLevel) - 1):
-            year = int(datesSensorWaterLevel[i][0:4])
-            month = int(datesSensorWaterLevel[i][5:7])
-            day = int(datesSensorWaterLevel[i][8:10])
-            hh = int(datesSensorWaterLevel[i][11:13])
-            mm = int(datesSensorWaterLevel[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            waterLevel.append(sensorWaterLevel[i])
-
-        datesSensorWaterLevel = dates
-        sensorWaterLevel = waterLevel
-
-        pairs = [list(a) for a in zip(datesSensorWaterLevel, sensorWaterLevel)]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=sensor_water_level_{0}_{1}.csv'.format(
             codEstacion, nomEstacion)
 
         writer = csv_writer(response)
