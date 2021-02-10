@@ -704,91 +704,6 @@ function get_available_dates(model, watershed, subbasin, comid) {
     }
 }
 
-function get_return_periods(watershed, subbasin, comid) {
-    $.ajax({
-        type: 'GET',
-        url: 'get-return-periods/',
-        dataType: 'json',
-        data: {
-            'watershed': watershed,
-            'subbasin': subbasin,
-            'comid': comid
-        },
-        error: function() {
-            $('#info').html(
-                '<p class="alert alert-warning" style="text-align: center"><strong>Return Periods are not available for this dataset.</strong></p>'
-            );
-
-            $('#info').removeClass('hidden');
-
-            setTimeout(function() {
-                $('#info').addClass('hidden')
-            }, 5000);
-        },
-        success: function(data) {
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.hundred),
-                to: parseFloat(data.return_periods.max),
-                color: 'rgba(128,0,246,0.4)',
-                id: '100-yr',
-                label: {
-                    text: '100-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.fifty),
-                to: parseFloat(data.return_periods.hundred),
-                color: 'rgba(128,0,106,0.4)',
-                id: '50-yr',
-                label: {
-                    text: '50-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.twenty_five),
-                to: parseFloat(data.return_periods.fifty),
-                color: 'rgba(255,0,0,0.4)',
-                id: '25-yr',
-                label: {
-                    text: '25-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.ten),
-                to: parseFloat(data.return_periods.twenty_five),
-                color: 'rgba(255,56,5,0.4)',
-                id: '10-yr',
-                label: {
-                    text: '10-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.five),
-                to: parseFloat(data.return_periods.ten),
-                color: 'rgba(253,154,1,0.4)',
-                id: '5-yr',
-                label: {
-                    text: '5-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.two),
-                to: parseFloat(data.return_periods.five),
-                color: 'rgba(254,240,1,0.4)',
-                id: '2-yr',
-                label: {
-                    text: '2-yr',
-                    align: 'right'
-                }
-            });
-        }
-    });
-}
 
 function get_time_series(model, watershed, subbasin, comid, startdate) {
     $loading.removeClass('hidden');
@@ -1018,8 +933,8 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 
           $("#forecast-table").removeClass('hidden');
 
-            $("#forecast-table").show();
-            // $('#table').html(resp);
+          $("#forecast-table").show();
+          // $('#table').html(resp);
         }
     });
 }
