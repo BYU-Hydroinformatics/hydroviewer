@@ -13,8 +13,11 @@ var default_extent,
     forecastFolder,
     select_interaction,
     two_year_warning,
+    five_year_warning,
     ten_year_warning,
-    twenty_year_warning,
+    twenty_five_year_warning,
+    fifty_year_warning,
+    hundred_year_warning,
     map,
     wms_layers;
 
@@ -26,24 +29,68 @@ var m_downloaded_flow_duration = false;
 const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
 
 //create symbols for warnings
-var twenty_symbols = [new ol.style.RegularShape({
+var hundred_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(128,0,128,0.8)'
+        color: 'rgba(128,0,246,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(128,0,128,1)',
+        color: 'rgba(128,0,246,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(128,0,128,0.3)'
+        color: 'rgba(128,0,246,1)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(128,0,128,1)',
+        color: 'rgba(128,0,246,0.4)',
+        width: 1
+    })
+})];
+
+var fifty_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(128,0,106,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(128,0,106,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(128,0,106,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(128,0,106,0.4)',
+        width: 1
+    })
+})];
+
+var twenty_five_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255,0,0,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(255,0,0,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255,0,0,0.4)',
         width: 1
     })
 })];
@@ -53,20 +100,42 @@ var ten_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(255,0,0,0.7)'
+        color: 'rgba(255,56,5,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,0,0,1)',
+        color: 'rgba(255,56,5,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(255,0,0,0.3)'
+        color: 'rgba(255,56,5,1)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,0,0,1)',
+        color: 'rgba(255,56,5,0.4)',
+        width: 1
+    })
+})];
+
+var five_symbols = [new ol.style.RegularShape({
+    points: 3,
+    radius: 5,
+    fill: new ol.style.Fill({
+        color: 'rgba(253,154,1,0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(253,154,1,1)',
+        width: 1
+    })
+}), new ol.style.RegularShape({
+    points: 3,
+    radius: 9,
+    fill: new ol.style.Fill({
+        color: 'rgba(253,154,1,1)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(253,154,1,0.4)',
         width: 1
     })
 })];
@@ -76,20 +145,20 @@ var two_symbols = [new ol.style.RegularShape({
     points: 3,
     radius: 5,
     fill: new ol.style.Fill({
-        color: 'rgba(255,255,0,0.7)'
+        color: 'rgba(254,240,1,0.6)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,255,0,1)',
+        color: 'rgba(254,240,1,1)',
         width: 1
     })
 }), new ol.style.RegularShape({
     points: 3,
     radius: 9,
     fill: new ol.style.Fill({
-        color: 'rgba(255,255,0,0.3)'
+        color: 'rgba(254,240,1,0.4)'
     }),
     stroke: new ol.style.Stroke({
-        color: 'rgba(255,255,0,1)',
+        color: 'rgba(254,240,1,1)',
         width: 1
     })
 })];
@@ -168,7 +237,20 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'yellow' }),
+                fill: new ol.style.Fill({ color: 'rgba(254,240,1,1)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    five_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(253,154,1,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -181,7 +263,7 @@ function init_map() {
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'red' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,56,5,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -190,11 +272,37 @@ function init_map() {
         })
     });
 
-    twenty_year_warning = new ol.layer.Vector({
+    twenty_five_year_warning = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({ color: 'rgba(128,0,128,0.8)' }),
+                fill: new ol.style.Fill({ color: 'rgba(255,0,0,1)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    fifty_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(128,0,106,1)' }),
+                stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
+                points: 3,
+                radius: 10,
+                angle: 0
+            })
+        })
+    });
+
+    hundred_year_warning = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: 'rgba(128,0,246,1)' }),
                 stroke: new ol.style.Stroke({ color: 'black', width: 0.5 }),
                 points: 3,
                 radius: 10,
@@ -214,9 +322,9 @@ function init_map() {
             })
         });
 
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
+        layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
     } else {
-        layers = [base_layer, two_year_warning, ten_year_warning, twenty_year_warning].concat(wms_layers).concat([featureOverlay])
+        layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([featureOverlay])
     }
 
     var lon = Number(JSON.parse($('#zoom_info').val()).split(',')[0]);
@@ -262,7 +370,8 @@ function view_watershed() {
                 params: { 'LAYERS': layerName },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
-            })
+            }),
+            opacity: 0.4
         });
         feature_layer = wmsLayer;
 
@@ -275,7 +384,8 @@ function view_watershed() {
                 params: {'LAYERS':"SENAMHI_Stations"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
-            })
+            }),
+            opacity: 0.7
         });
         feature_layer2 = wmsLayer2;
 
@@ -461,55 +571,101 @@ function get_warning_points(model, watershed, subbasin) {
             map.getLayers().item(1).getSource().clear();
             map.getLayers().item(2).getSource().clear();
             map.getLayers().item(3).getSource().clear();
+            map.getLayers().item(4).getSource().clear();
+            map.getLayers().item(5).getSource().clear();
+            map.getLayers().item(6).getSource().clear();
 
             if (result.warning2 != 'undefined') {
+
                 var warLen2 = result.warning2.length;
                 for (var i = 0; i < warLen2; ++i) {
-                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning2[i].geometry.coordinates[0],
-                            result.warning2[i].geometry.coordinates[1]
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning2[i][1],
+                            result.warning2[i][0]
                         ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
-                        point_size: result.warning2[i].properties.size
+                        point_size: 40
                     });
                     map.getLayers().item(1).getSource().addFeature(feature);
                 }
                 map.getLayers().item(1).setVisible(true);
             }
-
-            if (result.warning10 != 'undefined') {
-                var warLen10 = result.warning10.length;
-                for (var j = 0; j < warLen10; ++j) {
-                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[j].geometry.coordinates[0],
-                            result.warning10[j].geometry.coordinates[1]
+            if (result.warning5 != 'undefined') {
+                var warLen5 = result.warning5.length;
+                for (var i = 0; i < warLen5; ++i) {
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning5[i][1],
+                            result.warning5[i][0]
                         ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
-                        point_size: result.warning10[j].properties.size
+                        point_size: 40
                     });
                     map.getLayers().item(2).getSource().addFeature(feature);
                 }
                 map.getLayers().item(2).setVisible(true);
             }
-
-            if (result.warning20 != 'undefined') {
-                var warLen20 = result.warning20.length;
-                for (var k = 0; k < warLen20; ++k) {
-                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning20[k].geometry.coordinates[0],
-                            result.warning20[k].geometry.coordinates[1]
+            if (result.warning10 != 'undefined') {
+                var warLen10 = result.warning10.length;
+                for (var i = 0; i < warLen5; ++i) {
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
+                            result.warning10[i][0]
                         ],
                         'EPSG:4326', 'EPSG:3857'));
                     var feature = new ol.Feature({
                         geometry: geometry,
-                        point_size: result.warning20[k].properties.size
+                        point_size: 40
                     });
                     map.getLayers().item(3).getSource().addFeature(feature);
                 }
                 map.getLayers().item(3).setVisible(true);
             }
-
+            if (result.warning25 != 'undefined') {
+                var warLen25 = result.warning25.length;
+                for (var i = 0; i < warLen25; ++i) {
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning25[i][1],
+                            result.warning25[i][0]
+                        ],
+                        'EPSG:4326', 'EPSG:3857'));
+                    var feature = new ol.Feature({
+                        geometry: geometry,
+                        point_size: 40
+                    });
+                    map.getLayers().item(4).getSource().addFeature(feature);
+                }
+                map.getLayers().item(4).setVisible(true);
+            }
+            if (result.warning50 != 'undefined') {
+                var warLen50 = result.warning50.length;
+                for (var i = 0; i < warLen50; ++i) {
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning50[i][1],
+                            result.warning50[i][0]
+                        ],
+                        'EPSG:4326', 'EPSG:3857'));
+                    var feature = new ol.Feature({
+                        geometry: geometry,
+                        point_size: 40
+                    });
+                    map.getLayers().item(5).getSource().addFeature(feature);
+                }
+                map.getLayers().item(5).setVisible(true);
+            }
+            if (result.warning100 != 'undefined') {
+                var warLen100 = result.warning100.length;
+                for (var i = 0; i < warLen100; ++i) {
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning100[i][1],
+                            result.warning100[i][0]
+                        ],
+                        'EPSG:4326', 'EPSG:3857'));
+                    var feature = new ol.Feature({
+                        geometry: geometry,
+                        point_size: 40
+                    });
+                    map.getLayers().item(6).getSource().addFeature(feature);
+                }
+                map.getLayers().item(6).setVisible(true);
+            }
         }
     });
 }
@@ -548,61 +704,6 @@ function get_available_dates(model, watershed, subbasin, comid) {
     }
 }
 
-function get_return_periods(watershed, subbasin, comid) {
-    $.ajax({
-        type: 'GET',
-        url: 'get-return-periods/',
-        dataType: 'json',
-        data: {
-            'watershed': watershed,
-            'subbasin': subbasin,
-            'comid': comid
-        },
-        error: function() {
-            $('#info').html(
-                '<p class="alert alert-warning" style="text-align: center"><strong>Return Periods are not available for this dataset.</strong></p>'
-            );
-
-            $('#info').removeClass('hidden');
-
-            setTimeout(function() {
-                $('#info').addClass('hidden')
-            }, 5000);
-        },
-        success: function(data) {
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.twenty),
-                to: parseFloat(data.return_periods.max),
-                color: 'rgba(128,0,128,0.4)',
-                id: '20-yr',
-                label: {
-                    text: '20-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.ten),
-                to: parseFloat(data.return_periods.twenty),
-                color: 'rgba(255,0,0,0.3)',
-                id: '10-yr',
-                label: {
-                    text: '10-yr',
-                    align: 'right'
-                }
-            });
-            $("#container").highcharts().yAxis[0].addPlotBand({
-                from: parseFloat(data.return_periods.two),
-                to: parseFloat(data.return_periods.ten),
-                color: 'rgba(255,255,0,0.3)',
-                id: '2-yr',
-                label: {
-                    text: '2-yr',
-                    align: 'right'
-                }
-            });
-        }
-    });
-}
 
 function get_time_series(model, watershed, subbasin, comid, startdate) {
     $loading.removeClass('hidden');
@@ -691,12 +792,12 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
                     daily: false
                 };
 
-                $('#submit-download-interim-csv').attr({
+                $('#submit-download-5-csv').attr({
                     target: '_blank',
                     href: 'get-historic-data-csv?' + jQuery.param(params)
                 });
 
-                $('#download_interim').removeClass('hidden');
+                $('#download_era_5').removeClass('hidden');
 
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
@@ -745,8 +846,74 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
     });
 };
 
+function get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate) {
+    $('#seasonal_d-view-file-loading').removeClass('hidden');
+    m_downloaded_flow_duration = true;
+    $.ajax({
+        type: 'GET',
+        url: 'get-daily-seasonal-streamflow',
+        data: {
+            'model': model,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'comid': comid,
+            'startdate': startdate
+        },
+        success: function(data) {
+            if (!data.error) {
+                $('#seasonal_d-view-file-loading').addClass('hidden');
+                $('#seasonal_d-chart').removeClass('hidden');
+                $('#seasonal_d-chart').html(data);
+            } else if (data.error) {
+                $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
+                $('#info').removeClass('hidden');
+
+                setTimeout(function() {
+                    $('#info').addClass('hidden')
+                }, 5000);
+            } else {
+                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            }
+        }
+    });
+};
+
+function get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate) {
+    $('#seasonal_m-view-file-loading').removeClass('hidden');
+    m_downloaded_flow_duration = true;
+    $.ajax({
+        type: 'GET',
+        url: 'get-monthly-seasonal-streamflow',
+        data: {
+            'model': model,
+            'watershed': watershed,
+            'subbasin': subbasin,
+            'comid': comid,
+            'startdate': startdate
+        },
+        success: function(data) {
+            if (!data.error) {
+                $('#seasonal_m-view-file-loading').addClass('hidden');
+                $('#seasonal_m-chart').removeClass('hidden');
+                $('#seasonal_m-chart').html(data);
+            } else if (data.error) {
+                $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
+                $('#info').removeClass('hidden');
+
+                setTimeout(function() {
+                    $('#info').addClass('hidden')
+                }, 5000);
+            } else {
+                $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+            }
+        }
+    });
+};
+
+
 function get_forecast_percent(watershed, subbasin, comid, startdate) {
-    $('#mytable').addClass('hidden');
+    //$loading.removeClass('hidden');
+    // $("#forecast-table").addClass('hidden');
     $.ajax({
         url: 'forecastpercent/',
         type: 'GET',
@@ -756,71 +923,20 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
             'subbasin': subbasin,
             'startdate': startdate
         },
-        error: function() {
-            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast table</strong></p>');
-            $('#info').removeClass('hidden');
-
-            setTimeout(function() {
-                $('#info').addClass('hidden')
-            }, 5000);
+        error: function(xhr, errmsg, err) {
+            $('#table').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+".</div>"); // add the error to the dom
+			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         },
-        success: function(data) {
-            $("#tbody").empty()
-            var tbody = document.getElementById('tbody');
+        success: function(resp) {
+        	// console.log(resp)
+        	$('#forecast-table').html(resp);
 
-            var columNames = {
-                'two': 'Percent Exceedance (2-yr)',
-                'ten': 'Percent Exceedance (10-yr)',
-                'twenty': 'Percent Exceedance (20-yr)',
-            };
+        	$("#forecast-table").removeClass('hidden');
 
-            for (var object1 in data) {
-                if (object1 == "dates") {
-                    cellcolor = ""
-                } else if (object1 == "two") {
-                    cellcolor = "yellow"
-                } else if (object1 == "ten") {
-                    cellcolor = "red"
-                } else if (object1 == "twenty") {
-                    cellcolor = "purple"
-                }
-                if (object1 == "percdates") {
-                    var tr = "<tr id=" + object1.toString() + "><th>Dates</th>";
-                    for (var value1 in data[object1]) {
-                        tr += "<th>" + data[object1][value1].toString() + "</th>"
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                } else {
-                    var tr = "<tr id=" + object1.toString() + "><td>" + columNames[object1.toString()] + "</td>";
-                    for (var value1 in data[object1]) {
-                        if (parseInt(data[object1][value1]) == 0) {
-                            tr += "<td class=" + cellcolor + "zero>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 20) {
-                            tr += "<td class=" + cellcolor + "twenty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 40) {
-                            tr += "<td class=" + cellcolor + "fourty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 60) {
-                            tr += "<td class=" + cellcolor + "sixty>" + data[object1][value1].toString() + "</td>"
-                        } else if (parseInt(data[object1][value1]) <= 80) {
-                            tr += "<td class=" + cellcolor + "eighty>" + data[object1][value1].toString() + "</td>"
-                        } else {
-                            tr += "<td class=" + cellcolor + "hundred>" + data[object1][value1].toString() + "</td>"
-                        }
-                    }
-                    tr += "</tr>";
-                    tbody.innerHTML += tr;
-                }
-            }
-
-            $("#twenty").prependTo("#mytable");
-            $("#ten").prependTo("#mytable");
-            $("#two").prependTo("#mytable");
-            $("#percdates").prependTo("#mytable");
-            $('#mytable').removeClass('hidden');
+            $("#forecast-table").show();
+            // $('#table').html(resp);
         }
-
-    })
+    });
 }
 
 
@@ -903,8 +1019,10 @@ function map_events() {
                     $('#long-term-chart').addClass('hidden');
                     $('#historical-chart').addClass('hidden');
                     $('#fdc-chart').addClass('hidden');
+                    $('#seasonal_d-chart').addClass('hidden');
+                    $('#seasonal_m-chart').addClass('hidden');
                     $('#download_forecast').addClass('hidden');
-                    $('#download_interim').addClass('hidden');
+                    $('#download_era_5').addClass('hidden');
 
                     $loading.removeClass('hidden');
                     //Retrieving the details for clicked point via the url
@@ -934,6 +1052,8 @@ function map_events() {
                             get_time_series(model, watershed, subbasin, comid, startdate);
                             get_historic_data(model, watershed, subbasin, comid, startdate);
                             get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+                            get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
+                            get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
                             if (model === 'ECMWF-RAPID') {
                                 get_forecast_percent(watershed, subbasin, comid, startdate);
                             };
@@ -1120,6 +1240,8 @@ function resize_graphs() {
     $("#flow_duration_tab_link").click(function() {
         if (m_downloaded_flow_duration) {
             Plotly.Plots.resize($("#fdc-chart .js-plotly-plot")[0]);
+            Plotly.Plots.resize($("#seasonal_d-chart .js-plotly-plot")[0]);
+            Plotly.Plots.resize($("#seasonal_m-chart .js-plotly-plot")[0]);
         }
     });
     $("#observedQ_tab_link").click(function() {
