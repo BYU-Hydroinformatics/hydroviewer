@@ -239,12 +239,6 @@ class Hydroviewer(TethysAppBase):
                 required=True
             ),
             CustomSetting(
-                name='spt_token',
-                type=CustomSetting.TYPE_STRING,
-                description='Unique token to access data from the Streamflow Prediction Tool',
-                required=True
-            ),
-            CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
