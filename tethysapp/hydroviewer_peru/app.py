@@ -14,7 +14,7 @@ class Hydroviewer(TethysAppBase):
     root_url = base_url
     color = '#00374b'
     description = 'This is the Hydroviewer App customized for Peru.'
-    tags = 'Hydrology'
+    tags = '"Hydrology", "GEOGloWS", "Hydroviewer"'
     enable_feedback = False
     feedback_emails = []
 
@@ -188,12 +188,6 @@ class Hydroviewer(TethysAppBase):
                 name='api_source',
                 type=CustomSetting.TYPE_STRING,
                 description='Tethys portal where Streamflow Prediction Tool is installed',
-                required=True
-            ),
-            CustomSetting(
-                name='spt_token',
-                type=CustomSetting.TYPE_STRING,
-                description='Unique token to access data from the Streamflow Prediction Tool',
                 required=True
             ),
             CustomSetting(
