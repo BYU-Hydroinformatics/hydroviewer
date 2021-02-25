@@ -9,7 +9,7 @@ requirements:
   conda:
     channels:
       - conda-forge
-    dependencies:
+    packages:
       - netCDF4
       - gdal
       - geoglows
