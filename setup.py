@@ -7,13 +7,7 @@ app_package = 'hydroviewer_peru'
 release_package = 'tethysapp-' + app_package
 
 # -- Python Dependencies -- #
-dependencies = [
-    'requests',
-    'netCDF4',
-    'numpy',
-    'scipy',
-    'gdal',
-]
+dependencies = []
 
 # -- Get Resource File -- #
 resource_files = find_resource_files('tethysapp/' + app_package + '/templates', 'tethysapp/' + app_package)
