@@ -14,7 +14,7 @@ class Hydroviewer(TethysAppBase):
     root_url = base_url
     color = '#00374b'
     description = 'This is the Hydroviewer App customized for Colombia.'
-    tags = '"Hydrology", "GEOGloWS", "Hydroviewer"'
+    tags = '"Hydrology", "GEOGloWS", "Hydroviewer", "Colombia"'
     enable_feedback = False
     feedback_emails = []
 
@@ -22,16 +22,14 @@ class Hydroviewer(TethysAppBase):
         """
         Spatial_dataset_service_settings method.
         """
-        sds_settings = (
+        return (
             SpatialDatasetServiceSetting(
                 name='main_geoserver',
-                description='spatial dataset service for app to use',
+                description='spatial dataset service for app to use (https://tethys2.byu.edu/geoserver/rest/)',
                 engine=SpatialDatasetServiceSetting.GEOSERVER,
                 required=True,
             ),
         )
-
-        return sds_settings
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
@@ -235,44 +233,51 @@ class Hydroviewer(TethysAppBase):
             CustomSetting(
                 name='api_source',
                 type=CustomSetting.TYPE_STRING,
-                description='Tethys portal where Streamflow Prediction Tool is installed',
-                required=True
+                description='Web site where the GESS REST API is available',
+                required=True,
+                default='https://geoglows.ecmwf.int',
             ),
             CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
-                required=True
+                required=True,
+                default='colombia_hydroviewer',
             ),
             CustomSetting(
                 name='region',
                 type=CustomSetting.TYPE_STRING,
-                description='Streamflow Prediction Tool Region',
-                required=True
+                description='GESS Region',
+                required=True,
+                default='south_america-geoglows',
             ),
             CustomSetting(
                 name='keywords',
                 type=CustomSetting.TYPE_STRING,
                 description='Keyword(s) for visualizing watersheds in HydroViewer',
-                required=True
+                required=True,
+                default='colombia, south_america',
             ),
             CustomSetting(
                 name='zoom_info',
                 type=CustomSetting.TYPE_STRING,
                 description='lon,lat,zoom_level',
-                required=True
+                required=True,
+                default='-74.08,4.5988,5',
             ),
             CustomSetting(
                 name='default_model_type',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID)',
-                required=False
+                required=False,
+                default='ECMWF-RAPID',
             ),
             CustomSetting(
                 name='default_watershed_name',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Watershed Name: (For ex: "South America (Brazil)") ',
-                required=False
+                required=False,
+                default='South America (Colombia)',
             ),
             CustomSetting(
                 name='show_dropdown',

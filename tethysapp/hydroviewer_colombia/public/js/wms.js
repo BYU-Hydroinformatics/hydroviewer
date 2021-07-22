@@ -589,7 +589,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(1).getSource().addFeature(feature);
                 }
-                map.getLayers().item(1).setVisible(true);
+                map.getLayers().item(1).setVisible(false);
             }
             if (result.warning5 != 'undefined') {
                 var warLen5 = result.warning5.length;
@@ -604,7 +604,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(2).getSource().addFeature(feature);
                 }
-                map.getLayers().item(2).setVisible(true);
+                map.getLayers().item(2).setVisible(false);
             }
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
@@ -619,7 +619,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(3).getSource().addFeature(feature);
                 }
-                map.getLayers().item(3).setVisible(true);
+                map.getLayers().item(3).setVisible(false);
             }
             if (result.warning25 != 'undefined') {
                 var warLen25 = result.warning25.length;
@@ -634,7 +634,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(4).getSource().addFeature(feature);
                 }
-                map.getLayers().item(4).setVisible(true);
+                map.getLayers().item(4).setVisible(false);
             }
             if (result.warning50 != 'undefined') {
                 var warLen50 = result.warning50.length;
@@ -649,7 +649,7 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(5).getSource().addFeature(feature);
                 }
-                map.getLayers().item(5).setVisible(true);
+                map.getLayers().item(5).setVisible(false);
             }
             if (result.warning100 != 'undefined') {
                 var warLen100 = result.warning100.length;
@@ -664,11 +664,12 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(6).getSource().addFeature(feature);
                 }
-                map.getLayers().item(6).setVisible(true);
+                map.getLayers().item(6).setVisible(false);
             }
         }
     });
 }
+
 
 function get_available_dates(model, watershed, subbasin, comid) {
     if (model === 'ECMWF-RAPID') {
@@ -1058,7 +1059,6 @@ function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs
     })
 }
 
-
 function map_events() {
     map.on('pointermove', function(evt) {
         if (evt.dragging) {
@@ -1160,7 +1160,7 @@ function map_events() {
                         dataType: 'json',
                         success: function(result) {
                             var model = $('#model option:selected').text();
-                            var comid = result["features"][0]["properties"]["COMID"];
+                            comid = result["features"][0]["properties"]["COMID"];
 
                             var startdate = '';
                             if ("derived_fr" in (result["features"][0]["properties"])) {
@@ -1198,28 +1198,6 @@ function map_events() {
 
 
 
-            } else if (model === 'LIS-RAPID') {
-                var comid = current_feature.get('COMID');
-                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
-                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
-
-                get_time_series(model, watershed, subbasin, comid);
-
-                $('#info').addClass('hidden');
-                var workspace = [watershed, subbasin];
-
-                add_feature(model, workspace, comid);
-            } else if (model === 'HIWAT-RAPID') {
-                var comid = current_feature.get('COMID');
-                var watershed = $('#watershedSelect option:selected').val().split('-')[0]
-                var subbasin = $('#watershedSelect option:selected').val().split('-')[1]
-
-                get_time_series(model, watershed, subbasin, comid);
-
-                $('#info').addClass('hidden');
-                var workspace = [watershed, subbasin];
-
-                add_feature(model, workspace, comid);
             }
         };
     });
@@ -1419,12 +1397,25 @@ $(function() {
 
 
     $('#datesSelect').change(function() { //when date is changed
-        var sel_val = ($('#datesSelect option:selected').val()).split(',');
-        var startdate = sel_val[0];
-        var watershed = sel_val[1];
-        var subbasin = sel_val[2];
-        var comid = sel_val[3];
+    	//console.log($("#datesSelect").val());
+
+        //var sel_val = ($('#datesSelect option:selected').val()).split(',');
+        sel_val = $("#datesSelect").val()
+
+        //var startdate = sel_val[0];
+        var startdate = sel_val;
+        startdate = startdate.replace("-","");
+        startdate = startdate.replace("-","");
+
+        //var watershed = sel_val[1];
+        var watershed = 'south_america';
+
+        //var subbasin = sel_val[2];
+        var subbasin = 'geoglows';
+
+        //var comid = sel_val[3];
         var model = 'ECMWF-RAPID';
+
         $loading.removeClass('hidden');
         get_time_series(model, watershed, subbasin, comid, startdate);
         get_forecast_percent(watershed, subbasin, comid, startdate);
@@ -1446,3 +1437,69 @@ $(function() {
         get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs);
     });
 });
+
+
+function getRegionGeoJsons() {
+
+    let geojsons = region_index[$("#regions").val()]['geojsons'];
+    for (let i in geojsons) {
+        var regionsSource = new ol.source.Vector({
+           url: staticGeoJSON + geojsons[i],
+           format: new ol.format.GeoJSON()
+        });
+
+        var regionStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 3
+            })
+        });
+
+        var regionsLayer = new ol.layer.Vector({
+            name: 'myRegion',
+            source: regionsSource,
+            style: regionStyle
+        });
+
+        map.getLayers().forEach(function(regionsLayer) {
+        if (regionsLayer.get('name')=='myRegion')
+            map.removeLayer(regionsLayer);
+        });
+        map.addLayer(regionsLayer)
+
+        setTimeout(function() {
+            var myExtent = regionsLayer.getSource().getExtent();
+            map.getView().fit(myExtent, map.getSize());
+        }, 500);
+    }
+}
+
+
+$('#stp-stream-toggle').on('change', function() {
+    wmsLayer.setVisible($('#stp-stream-toggle').prop('checked'))
+})
+$('#stp-stations-toggle').on('change', function() {
+    wmsLayer2.setVisible($('#stp-stations-toggle').prop('checked'))
+})
+$('#stp-100-toggle').on('change', function() {
+    hundred_year_warning.setVisible($('#stp-100-toggle').prop('checked'))
+})
+$('#stp-50-toggle').on('change', function() {
+    fifty_year_warning.setVisible($('#stp-50-toggle').prop('checked'))
+})
+$('#stp-25-toggle').on('change', function() {
+    twenty_five_year_warning.setVisible($('#stp-25-toggle').prop('checked'))
+})
+$('#stp-10-toggle').on('change', function() {
+    ten_year_warning.setVisible($('#stp-10-toggle').prop('checked'))
+})
+$('#stp-5-toggle').on('change', function() {
+    five_year_warning.setVisible($('#stp-5-toggle').prop('checked'))
+})
+$('#stp-2-toggle').on('change', function() {
+    two_year_warning.setVisible($('#stp-2-toggle').prop('checked'))
+})
+
+// Regions gizmo listener
+$('#regions').change(function() {getRegionGeoJsons()});
+

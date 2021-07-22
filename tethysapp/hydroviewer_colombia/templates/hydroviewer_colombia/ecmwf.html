@@ -26,49 +26,60 @@
                    xmlns="http://www.w3.org/2000/svg">
                   <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
               </svg>
-              Streams
+              Streams <input id="stp-stream-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="0 10, 0 0, 10 0, 10 10, 0 10" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,1)" stroke-width="2"/>
+              </svg>
+              Stations <input id="stp-stations-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,246,1)" fill="rgba(128,0,246,0.4)" stroke-width="2"/>
               </svg>
-              100-Year Warnings
+              100-Year Warnings <input id="stp-100-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,106,1)" fill="rgba(128,0,106,0.4)" stroke-width="2"/>
               </svg>
-              50-Year Warnings
+              50-Year Warnings <input id="stp-50-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,0.4)" stroke-width="2"/>
               </svg>
-              25-Year Warnings
+              25-Year Warnings <input id="stp-25-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,56,5,1)" fill="rgba(255,56,5,0.4)" stroke-width="2"/>
               </svg>
-              10-Year Warnings
+              10-Year Warnings <input id="stp-10-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(253,154,1,1)" fill="rgba(253,154,1,0.4)" stroke-width="2"/>
               </svg>
-              5-Year Warnings
+              5-Year Warnings <input id="stp-5-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(254,240,1,1)" fill="rgba(254,240,1,0.4)" stroke-width="2"/>
               </svg>
-              2-Year Warnings
+              2-Year Warnings <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+          </div>
+          <div>
+              <br>
+              {% gizmo select_input regions %}
           </div>
       </div>
   </div>
@@ -240,7 +251,8 @@
             <div class="panel panel-default">
               <div class="panel-body">
                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
-                  <select id="datesSelect" class="form-control"></select>
+                  <!-- <select id="datesSelect" class="form-control"></select> -->
+                  {% gizmo date_picker %}
                 </div>
                 <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                 <div id="long-term-chart"></div>
