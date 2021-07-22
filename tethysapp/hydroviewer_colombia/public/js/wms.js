@@ -323,6 +323,7 @@ function init_map() {
         });
 
         layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([wmsLayer, featureOverlay])
+        // layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers)
     } else {
         layers = [base_layer, two_year_warning, five_year_warning, ten_year_warning, twenty_five_year_warning, fifty_year_warning, hundred_year_warning].concat(wms_layers).concat([featureOverlay])
     }
@@ -608,6 +609,7 @@ function get_warning_points(model, watershed, subbasin) {
             }
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
+                map.getLayers().item(3).setVisible(false);
                 for (var i = 0; i < warLen5; ++i) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
                             result.warning10[i][0]
@@ -619,7 +621,6 @@ function get_warning_points(model, watershed, subbasin) {
                     });
                     map.getLayers().item(3).getSource().addFeature(feature);
                 }
-                map.getLayers().item(3).setVisible(false);
             }
             if (result.warning25 != 'undefined') {
                 var warLen25 = result.warning25.length;
@@ -1502,4 +1503,3 @@ $('#stp-2-toggle').on('change', function() {
 
 // Regions gizmo listener
 $('#regions').change(function() {getRegionGeoJsons()});
-
