@@ -609,8 +609,8 @@ function get_warning_points(model, watershed, subbasin) {
             }
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
-                map.getLayers().item(3).setVisible(false);
-                for (var i = 0; i < warLen5; ++i) {
+                for (var i = 0; i < warLen10; ++i) {
+                  try{
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
                             result.warning10[i][0]
                         ],
@@ -620,7 +620,13 @@ function get_warning_points(model, watershed, subbasin) {
                         point_size: 40
                     });
                     map.getLayers().item(3).getSource().addFeature(feature);
+                  }
+                  catch(e){
+                    console.log(e);
+                  }
                 }
+                map.getLayers().item(3).setVisible(false);
+
             }
             if (result.warning25 != 'undefined') {
                 var warLen25 = result.warning25.length;
