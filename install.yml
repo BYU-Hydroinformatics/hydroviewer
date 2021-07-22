@@ -1,18 +1,21 @@
-version: 1.0
+version: 1.1
 name: hydroviewer_central_america
 
 requirements:
   skip: false
   conda:
-    channels:
+    channel
       - conda-forge
     packages:
-      - geoglows>=0.18
+      - netCDF4
+      - gdal
+      - geoglows
+      - hydrostats
       - pandas
       - requests
-      - scipy
       - plotly
-
+      - numpy
+      - scipy
   pip:
 
 post:

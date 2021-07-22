@@ -31,23 +31,44 @@
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="purple" fill="purple" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,246,1)" fill="rgba(128,0,246,0.4)" stroke-width="2"/>
               </svg>
-              20-Year Return Period <input id="stp-20-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              100-Year Warnings <input id="stp-100-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="red" fill="red" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,106,1)" fill="rgba(128,0,106,0.4)" stroke-width="2"/>
               </svg>
-              10-Year Return Period <input id="stp-10-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              50-Year Warnings <input id="stp-50-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="0 20, 10 0, 20 20" stroke="yellow" fill="yellow" stroke-width="2"/>
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,0.4)" stroke-width="2"/>
               </svg>
-              2-Year Return Period <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              25-Year Warnings <input id="stp-25-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,56,5,1)" fill="rgba(255,56,5,0.4)" stroke-width="2"/>
+              </svg>
+              10-Year Warnings <input id="stp-10-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(253,154,1,1)" fill="rgba(253,154,1,0.4)" stroke-width="2"/>
+              </svg>
+              5-Year Warnings <input id="stp-5-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+          </div>
+          <div>
+              <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
+                   xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="0 20, 10 0, 20 20" stroke="rgba(254,240,1,1)" fill="rgba(254,240,1,0.4)" stroke-width="2"/>
+              </svg>
+              2-Year Warnings <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
               <br>
@@ -121,8 +142,8 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active"><a id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-toggle="tab">Forecast</a></li>
-          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical</a></li>
-          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Flow-Duration</a></li>
+          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical Simulation</a></li>
+          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Historical Simulation Statistics</a></li>
           <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
         </ul>
 
@@ -132,14 +153,14 @@
             <div class="panel panel-default">
               <div class="panel-body">
                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
-                  <select id="datesSelect" class="form-control"></select>
+                  <!-- <select id="datesSelect" class="form-control"></select> -->
+                  {% gizmo date_picker %}
                 </div>
                 <div class="flex-container-row"><img id="view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                 <div id="long-term-chart"></div>
-                <table id="mytable">
-                  <tbody id="tbody">
-                  </tbody>
-                </table>
+                <div class="forecast-table" id="forecast-table" style="display:none">
+                    <div id="table">{# The table of forecast go here #}</div>
+                </div>
               </div>
             </div>
           </div> <!-- /.tab-pane -->
@@ -153,6 +174,10 @@
             <div class="panel panel-default">
               <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
               <div id='fdc-chart' class="panel-body"></div>
+              <div class="flex-container-row"><img id="seasonal_d-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id='seasonal_d-chart' class="panel-body"></div>
+              <div class="flex-container-row"><img id="seasonal_m-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+              <div id='seasonal_m-chart' class="panel-body"></div>
             </div>
           </div><!-- /.tab-pane -->
           <div role="tabpanel" class="tab-pane" id="download">
@@ -164,10 +189,10 @@
                     <span class="glyphicon glyphicon-play"></span> Download Forecast
                   </a>
                 </div>
-                <h6>Download ERA Interim Data</h6>
-                <div id="download_interim" class="btn-group hidden" role="group">
-                  <a class="btn btn-info" role="button" id="submit-download-interim-csv">
-                    <span class="glyphicon glyphicon-play"></span> Download Interim Data
+                <h6>Download ERA 5 Data</h6>
+                <div id="download_era_5" class="btn-group hidden" role="group">
+                  <a class="btn btn-info" role="button" id="submit-download-5-csv">
+                    <span class="glyphicon glyphicon-play"></span> Download ERA 5 Data
                   </a>
                 </div>
               </div>

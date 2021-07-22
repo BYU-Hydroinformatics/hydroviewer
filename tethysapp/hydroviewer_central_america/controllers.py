@@ -1,22 +1,29 @@
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from tethys_sdk.gizmos import *
+from django.http import HttpResponse, JsonResponse
+from requests.auth import HTTPBasicAuth
+from tethys_sdk.gizmos import PlotlyView
+from tethys_sdk.permissions import has_permission
+from tethys_sdk.workspaces import app_workspace
+
+from osgeo import ogr
+from osgeo import osr
+
 import ast
 import datetime as dt
 import json
 import os
+import io
 from csv import writer as csv_writer
-
 import netCDF4 as nc
 import numpy as np
 import plotly.graph_objs as go
 import requests
 import scipy.stats as sp
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
-from osgeo import ogr
-from osgeo import osr
-from requests.auth import HTTPBasicAuth
-from tethys_sdk.gizmos import *
-from tethys_sdk.permissions import has_permission
 import geoglows
+import hydrostats
+import pandas as pd
 
 from .app import Hydroviewer as app
 from .helpers import *
@@ -207,6 +214,65 @@ def ecmwf(request):
                                    name='geoserver_endpoint',
                                    disabled=True)
 
+    today = dt.datetime.now()
+    year = str(today.year)
+    month = str(today.strftime("%m"))
+    day = str(today.strftime("%d"))
+    date = day + '/' + month + '/' + year
+    lastyear = int(year) - 1
+    date2 = day + '/' + month + '/' + str(lastyear)
+
+    startdateobs = DatePicker(name='startdateobs',
+                              display_text='Start Date',
+                              autoclose=True,
+                              format='dd/mm/yyyy',
+                              start_date='01/01/1950',
+                              start_view='month',
+                              today_button=True,
+                              initial=date2,
+                              classes='datepicker')
+
+    enddateobs = DatePicker(name='enddateobs',
+                            display_text='End Date',
+                            autoclose=True,
+                            format='dd/mm/yyyy',
+                            start_date='01/01/1950',
+                            start_view='month',
+                            today_button=True,
+                            initial=date,
+                            classes='datepicker')
+
+    res = requests.get('https://geoglows.ecmwf.int/api/AvailableDates/?region=central_america-geoglows', verify=False)
+    data = res.json()
+    dates_array = (data.get('available_dates'))
+
+    dates = []
+
+    for date in dates_array:
+        if len(date) == 10:
+            date_mod = date + '000'
+            date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
+        else:
+            date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d')
+            date = date[:-3]
+        dates.append([date_f, date])
+        dates = sorted(dates)
+
+    dates.append(['Select Date', dates[-1][1]])
+    # print(dates)
+    dates.reverse()
+
+    # Date Picker Options
+    date_picker = DatePicker(name='datesSelect',
+                             display_text='Date',
+                             autoclose=True,
+                             format='yyyy-mm-dd',
+                             start_date=dates[-1][0],
+                             end_date=dates[1][0],
+                             start_view='month',
+                             today_button=True,
+                             initial='')
+
     region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
     regions = SelectInput(
         display_text='Zoom to a Region:',
@@ -223,7 +289,10 @@ def ecmwf(request):
         "zoom_info": zoom_info,
         "geoserver_endpoint": geoserver_endpoint,
         "defaultUpdateButton": defaultUpdateButton,
-        "regions": regions
+        "startdateobs": startdateobs,
+        "enddateobs": enddateobs,
+        "regions": regions,
+        "date_picker": date_picker
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -419,54 +488,234 @@ def hiwat(request):
     return render(request, '{0}/hiwat.html'.format(base_name), context)
 
 
-def get_warning_points(request):
+@app_workspace
+def get_warning_points(request, app_workspace):
     get_data = request.GET
+    get_data = request.GET
+    central_america_id_path = os.path.join(app_workspace.path, 'central_america_hydroviewer-drainage_line.csv')
+    reach_pds = pd.read_csv(central_america_id_path)
+    reach_ids_list = reach_pds['COMID'].tolist()
+    return_obj = {}
     if get_data['model'] == 'ECMWF-RAPID':
         try:
             watershed = get_data['watershed']
             subbasin = get_data['subbasin']
 
-            res20 = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&return_period=20',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+            res = requests.get(app.get_custom_setting(
+                'api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows' + '&return_format=csv',
+                               verify=False).content
 
-            res10 = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&return_period=10',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+            res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+            cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10',
+                    'date_exceeds_return_period_25', 'date_exceeds_return_period_50', 'date_exceeds_return_period_100']
 
-            res2 = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/apps/streamflow-prediction-tool/api/GetWarningPoints/?watershed_name=' +
-                watershed + '&subbasin_name=' + subbasin + '&return_period=2',
-                headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+            res_df["rp_all"] = res_df[cols].apply(lambda x: ','.join(x.replace(np.nan, '0')), axis=1)
 
-            return JsonResponse({
-                "success": "Data analysis complete!",
-                "warning20": json.loads(res20.content)["features"],
-                "warning10": json.loads(res10.content)["features"],
-                "warning2": json.loads(res2.content)["features"]
-            })
+            test_list = res_df["rp_all"].tolist()
+
+            final_new_rp = []
+            for term in test_list:
+                new_rp = []
+                terms = term.split(',')
+                for te in terms:
+                    if te is not '0':
+                        # print('yeah')
+                        new_rp.append(1)
+                    else:
+                        new_rp.append(0)
+                final_new_rp.append(new_rp)
+
+            res_df['rp_all2'] = final_new_rp
+
+            res_df = res_df.reset_index()
+            res_df = res_df[res_df['comid'].isin(reach_ids_list)]
+
+            d = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                 'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist()}
+            df_final = pd.DataFrame(data=d)
+
+            df_final[['rp_2', 'rp_5', 'rp_10', 'rp_25', 'rp_50', 'rp_100']] = pd.DataFrame(res_df.rp_all2.tolist(),
+                                                                                           index=df_final.index)
+            d2 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                  'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(), 'rp': df_final['rp_2']}
+            d5 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                  'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(), 'rp': df_final['rp_5']}
+            d10 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                   'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(), 'rp': df_final['rp_10']}
+            d25 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                   'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(), 'rp': df_final['rp_25']}
+            d50 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                   'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(), 'rp': df_final['rp_50']}
+            d100 = {'comid': res_df['comid'].tolist(), 'stream_order': res_df['stream_order'].tolist(),
+                    'lat': res_df['stream_lat'].tolist(), 'lon': res_df['stream_lon'].tolist(),
+                    'rp': df_final['rp_100']}
+
+            df_final_2 = pd.DataFrame(data=d2)
+            df_final_2 = df_final_2[df_final_2['rp'] > 0]
+            df_final_5 = pd.DataFrame(data=d5)
+            df_final_5 = df_final_5[df_final_5['rp'] > 0]
+            df_final_10 = pd.DataFrame(data=d10)
+            df_final_10 = df_final_10[df_final_10['rp'] > 0]
+            df_final_25 = pd.DataFrame(data=d25)
+            df_final_25 = df_final_25[df_final_25['rp'] > 0]
+            df_final_50 = pd.DataFrame(data=d50)
+            df_final_50 = df_final_50[df_final_50['rp'] > 0]
+            df_final_100 = pd.DataFrame(data=d100)
+            df_final_100 = df_final_100[df_final_100['rp'] > 0]
+
+            return_obj['success'] = "Data analysis complete!"
+            return_obj['warning2'] = create_rp(df_final_2)
+            return_obj['warning5'] = create_rp(df_final_5)
+            return_obj['warning10'] = create_rp(df_final_10)
+            return_obj['warning25'] = create_rp(df_final_25)
+            return_obj['warning50'] = create_rp(df_final_50)
+            return_obj['warning100'] = create_rp(df_final_100)
+
+            return JsonResponse(return_obj)
         except Exception as e:
             print(str(e))
             return JsonResponse({'error': 'No data found for the selected reach.'})
     else:
         pass
 
+def create_rp(df_):
+    war = {}
+
+    list_coordinates = []
+    for lat, lon in zip(df_['lat'].tolist(), df_['lon'].tolist()):
+        list_coordinates.append([lat, lon])
+
+    return list_coordinates
+
 
 def ecmwf_get_time_series(request):
     get_data = request.GET
     try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
         comid = get_data['comid']
+        units = 'metric'
+        tot_drain_area = get_data['tot_drain_area']
 
-        stats = geoglows.streamflow.forecast_stats(comid)
-        rperiods = geoglows.streamflow.return_periods(comid)
-        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
-        return JsonResponse({'plot': geoglows.plots.forecast_stats(
-            stats, rperiods, titles=title, outformat='plotly_html')})
+        '''Getting Forecast Stats'''
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+            res = requests.get(
+                app.get_custom_setting(
+                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
+                verify=False).content
+
+        else:
+            res = requests.get(
+                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
+                verify=False).content
+
+        stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        stats_df.index = pd.to_datetime(stats_df.index)
+        stats_df[stats_df < 0] = 0
+        stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
+        stats_df.index = pd.to_datetime(stats_df.index)
+
+        hydroviewer_figure = geoglows.plots.forecast_stats(stats=stats_df, titles={'Reach ID': comid, 'Upstream Drainage Area': str(tot_drain_area) + 'km<sup>2</sup>'})
+
+        x_vals = (stats_df.index[0], stats_df.index[len(stats_df.index) - 1], stats_df.index[len(stats_df.index) - 1],
+                  stats_df.index[0])
+        max_visible = max(stats_df.max())
+
+        '''Getting Forecast Records'''
+        res = requests.get(
+            app.get_custom_setting('api_source') + '/api/ForecastRecords/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+
+        records_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        records_df.index = pd.to_datetime(records_df.index)
+        records_df[records_df < 0] = 0
+        records_df.index = records_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
+        records_df.index = pd.to_datetime(records_df.index)
+
+        records_df = records_df.loc[records_df.index >= pd.to_datetime(stats_df.index[0] - dt.timedelta(days=8))]
+        records_df = records_df.loc[records_df.index <= pd.to_datetime(stats_df.index[0] + dt.timedelta(days=2))]
+
+        if len(records_df.index) > 0:
+            hydroviewer_figure.add_trace(go.Scatter(
+                name='1st days forecasts',
+                x=records_df.index,
+                y=records_df.iloc[:, 0].values,
+                line=dict(
+                    color='#FFA15A',
+                )
+            ))
+
+            x_vals = (
+            records_df.index[0], stats_df.index[len(stats_df.index) - 1], stats_df.index[len(stats_df.index) - 1],
+            records_df.index[0])
+            max_visible = max(max(records_df.max()), max_visible)
+
+        '''Getting Return Periods'''
+        res = requests.get(
+            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+        rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+
+        r2 = int(rperiods_df.iloc[0]['return_period_2'])
+
+        colors = {
+            '2 Year': 'rgba(254, 240, 1, .4)',
+            '5 Year': 'rgba(253, 154, 1, .4)',
+            '10 Year': 'rgba(255, 56, 5, .4)',
+            '20 Year': 'rgba(128, 0, 246, .4)',
+            '25 Year': 'rgba(255, 0, 0, .4)',
+            '50 Year': 'rgba(128, 0, 106, .4)',
+            '100 Year': 'rgba(128, 0, 246, .4)',
+        }
+
+        if max_visible > r2:
+            visible = True
+            hydroviewer_figure.for_each_trace(
+                lambda trace: trace.update(visible=True) if trace.name == "Maximum & Minimum Flow" else (), )
+        else:
+            visible = 'legendonly'
+            hydroviewer_figure.for_each_trace(
+                lambda trace: trace.update(visible=True) if trace.name == "Maximum & Minimum Flow" else (), )
+
+        def template(name, y, color, fill='toself'):
+            return go.Scatter(
+                name=name,
+                x=x_vals,
+                y=y,
+                legendgroup='returnperiods',
+                fill=fill,
+                visible=visible,
+                line=dict(color=color, width=0))
+
+        r5 = int(rperiods_df.iloc[0]['return_period_5'])
+        r10 = int(rperiods_df.iloc[0]['return_period_10'])
+        r25 = int(rperiods_df.iloc[0]['return_period_25'])
+        r50 = int(rperiods_df.iloc[0]['return_period_50'])
+        r100 = int(rperiods_df.iloc[0]['return_period_100'])
+
+        hydroviewer_figure.add_trace(
+            template('Return Periods', (r100 * 0.05, r100 * 0.05, r100 * 0.05, r100 * 0.05), 'rgba(0,0,0,0)',
+                     fill='none'))
+        hydroviewer_figure.add_trace(template(f'2 Year: {r2}', (r2, r2, r5, r5), colors['2 Year']))
+        hydroviewer_figure.add_trace(template(f'5 Year: {r5}', (r5, r5, r10, r10), colors['5 Year']))
+        hydroviewer_figure.add_trace(template(f'10 Year: {r10}', (r10, r10, r25, r25), colors['10 Year']))
+        hydroviewer_figure.add_trace(template(f'25 Year: {r25}', (r25, r25, r50, r50), colors['25 Year']))
+        hydroviewer_figure.add_trace(template(f'50 Year: {r50}', (r50, r50, r100, r100), colors['50 Year']))
+        hydroviewer_figure.add_trace(template(f'100 Year: {r100}', (
+        r100, r100, max(r100 + r100 * 0.05, max_visible), max(r100 + r100 * 0.05, max_visible)), colors['100 Year']))
+
+        hydroviewer_figure['layout']['xaxis'].update(autorange=True)
+
+        chart_obj = PlotlyView(hydroviewer_figure)
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+
     except Exception as e:
         print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
@@ -612,22 +861,31 @@ def get_available_dates(request):
     comid = get_data['comid']
 
     res = requests.get(
-        app.get_custom_setting(
-            'api_source') + '/apps/streamflow-prediction-tool/api/GetAvailableDates/?watershed_name=' +
-        watershed + '&subbasin_name=' + subbasin, verify=False,
-        headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
+        app.get_custom_setting('api_source') + '/api/AvailableDates/?region=' + watershed + '-' + subbasin,
+        verify=False)
+
+    data = res.json()
+
+    dates_array = (data.get('available_dates'))
+
+    # print(dates_array)
 
     dates = []
-    for date in eval(res.content):
+
+    for date in dates_array:
         if len(date) == 10:
             date_mod = date + '000'
             date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
         else:
-            date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
+            date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d')
+            date = date[:-3]
         dates.append([date_f, date, watershed, subbasin, comid])
+        dates = sorted(dates)
 
     dates.append(['Select Date', dates[-1][1]])
+    # print(dates)
     dates.reverse()
+    # print(dates)
 
     return JsonResponse({
         "success": "Data analysis complete!",
@@ -651,18 +909,44 @@ def get_return_periods(request):
 
 def get_historic_data(request):
     """
-    Returns ERA Interim hydrograph
+    Returns ERA 5 hydrograph
     """
 
     get_data = request.GET
 
     try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        hist = geoglows.streamflow.historic_simulation(comid)
-        rperiods = geoglows.streamflow.return_periods(comid)
-        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
-        return JsonResponse({'plot': geoglows.plots.historic_simulation(
-            hist, rperiods, titles=title, outformat='plotly_html')})
+        units = 'metric'
+        tot_drain_area = get_data['tot_drain_area']
+
+        era_res = requests.get(
+            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+
+        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
+        simulated_df[simulated_df < 0] = 0
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+
+        '''Getting Return Periods'''
+        res = requests.get(
+            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+        rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+
+        hydroviewer_figure = geoglows.plots.historic_simulation(simulated_df, rperiods_df, titles={'Reach ID': comid, 'Upstream Drainage Area': str(tot_drain_area) + 'km<sup>2</sup>'})
+
+        chart_obj = PlotlyView(hydroviewer_figure)
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print(str(e))
@@ -673,118 +957,40 @@ def get_flow_duration_curve(request):
     get_data = request.GET
 
     try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
         comid = get_data['comid']
+        units = 'metric'
 
-        hist = geoglows.streamflow.historic_simulation(comid)
-        title = {'Upstream Drainage Area': get_data['tot_drain_area']}
-        return JsonResponse({'plot': geoglows.plots.flow_duration_curve(hist, titles=title, outformat='plotly_html')})
+        era_res = requests.get(
+            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+
+        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
+        simulated_df[simulated_df < 0] = 0
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+
+        hydroviewer_figure = geoglows.plots.flow_duration_curve(simulated_df, titles={'Reach ID': comid, 'Upstream Drainage Area': get_data['tot_drain_area']})
+
+        chart_obj = PlotlyView(hydroviewer_figure)
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
     except Exception as e:
         print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
-def get_return_period_ploty_info(request, datetime_start, datetime_end,
-                                 band_alt_max=-9999):
-    """
-    Get shapes and annotations for plotly plot
-    """
-
-    # Return Period Section
-    return_period_data = get_return_periods(request)
-    return_max = float(return_period_data["max"])
-    return_20 = float(return_period_data["twenty"])
-    return_10 = float(return_period_data["ten"])
-    return_2 = float(return_period_data["two"])
-
-    # plotly info section
-    shapes = [
-        # return 20 band
-        dict(
-            type='rect',
-            xref='x',
-            yref='y',
-            x0=datetime_start,
-            y0=return_20,
-            x1=datetime_end,
-            y1=max(return_max, band_alt_max),
-            line=dict(width=0),
-            fillcolor='rgba(128, 0, 128, 0.4)',
-        ),
-        # return 10 band
-        dict(
-            type='rect',
-            xref='x',
-            yref='y',
-            x0=datetime_start,
-            y0=return_10,
-            x1=datetime_end,
-            y1=return_20,
-            line=dict(width=0),
-            fillcolor='rgba(255, 0, 0, 0.4)',
-        ),
-        # return 2 band
-        dict(
-            type='rect',
-            xref='x',
-            yref='y',
-            x0=datetime_start,
-            y0=return_2,
-            x1=datetime_end,
-            y1=return_10,
-            line=dict(width=0),
-            fillcolor='rgba(255, 255, 0, 0.4)',
-        ),
-    ]
-    annotations = [
-        # return max
-        dict(
-            x=datetime_end,
-            y=return_max,
-            xref='x',
-            yref='y',
-            text='Max. ({:.1f})'.format(return_max),
-            showarrow=False,
-            xanchor='left',
-        ),
-        # return 20 band
-        dict(
-            x=datetime_end,
-            y=return_20,
-            xref='x',
-            yref='y',
-            text='20-yr ({:.1f})'.format(return_20),
-            showarrow=False,
-            xanchor='left',
-        ),
-        # return 10 band
-        dict(
-            x=datetime_end,
-            y=return_10,
-            xref='x',
-            yref='y',
-            text='10-yr ({:.1f})'.format(return_10),
-            showarrow=False,
-            xanchor='left',
-        ),
-        # return 2 band
-        dict(
-            x=datetime_end,
-            y=return_2,
-            xref='x',
-            yref='y',
-            text='2-yr ({:.1f})'.format(return_2),
-            showarrow=False,
-            xanchor='left',
-        ),
-    ]
-
-    return shapes, annotations
-
-
 def get_historic_data_csv(request):
     """
-    Returns ERA Interim data as csv
+    Returns ERA 5 data as csv
     """
 
     get_data = request.GET
@@ -796,25 +1002,21 @@ def get_historic_data_csv(request):
         comid = get_data['reach_id']
 
         era_res = requests.get(
-            app.get_custom_setting(
-                'api_source') + '/apps/streamflow-prediction-tool/api/GetHistoricData/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
 
-        qout_data = era_res.content.decode('utf-8').splitlines()
-        qout_data.pop(0)
+        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
+        simulated_df[simulated_df < 0] = 0
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
+        simulated_df.index = pd.to_datetime(simulated_df.index)
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=historic_streamflow_{0}_{1}_{2}.csv'.format(watershed,
                                                                                                             subbasin,
                                                                                                             comid)
 
-        writer = csv_writer(response)
-
-        writer.writerow(['datetime', 'streamflow (m3/s)'])
-
-        for row_data in qout_data:
-            writer.writerow(row_data.split(','))
+        simulated_df.to_csv(encoding='utf-8', header=True, path_or_buf=response)
 
         return response
 
@@ -840,142 +1042,30 @@ def get_forecast_data_csv(request):
         else:
             startdate = 'most_recent'
 
-        res = requests.get(
-            app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetForecast/?watershed_name=' +
-            watershed + '&subbasin_name=' + subbasin + '&reach_id=' + comid + '&forecast_folder=' +
-            startdate + '&return_format=csv',
-            headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')}, verify=False)
+        '''Getting Forecast Stats'''
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+            res = requests.get(
+                app.get_custom_setting(
+                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
+                verify=False).content
+        else:
+            res = requests.get(
+                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
+                verify=False).content
 
-        qout_data = res.content.decode('utf-8').splitlines()
-        qout_data.pop(0)
+        stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        stats_df.index = pd.to_datetime(stats_df.index)
+        stats_df[stats_df < 0] = 0
+        stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
+        stats_df.index = pd.to_datetime(stats_df.index)
 
-        init_time = qout_data[0].split(',')[0].split(' ')[0]
+        init_time = stats_df.index[0]
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_{0}_{1}_{2}_{3}.csv'.format(
-            watershed,
-            subbasin,
-            comid,
-            init_time)
+            watershed, subbasin, comid, init_time)
 
-        writer = csv_writer(response)
-        writer.writerow(
-            ['datetime', 'high_res (m3/s)', 'max (m3/s)', 'mean (m3/s)', 'min (m3/s)', 'std_dev_range_lower (m3/s)',
-             'std_dev_range_upper (m3/s)'])
-
-        for row_data in qout_data:
-            writer.writerow(row_data.split(','))
-
-        return response
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'No forecast data found.'})
-
-
-def get_lis_data_csv(request):
-    """
-    Returns LIS data as csv
-    """
-
-    get_data = request.GET
-
-    try:
-        # model = get_data['model']
-        watershed = get_data['watershed_name']
-        subbasin = get_data['subbasin_name']
-        comid = get_data['reach_id']
-        if get_data['startdate'] != '':
-            startdate = get_data['startdate']
-        else:
-            startdate = 'most_recent'
-
-        path = os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]))
-        filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(os.path.join(app.get_custom_setting('lis_path'), '-'.join([watershed, subbasin]), filename[0]),
-                         'r')
-
-        dates_raw = res.variables['time'][:]
-        dates = []
-        for d in dates_raw:
-            dates.append(dt.datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
-
-        comid_list = res.variables['rivid'][:]
-        comid_index = int(np.where(comid_list == int(comid))[0])
-
-        values = []
-        for l in list(res.variables['Qout'][:]):
-            values.append(float(l[comid_index]))
-
-        pairs = [list(a) for a in zip(dates, values)]
-
-        init_time = pairs[0][0].split(' ')[0]
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=lis_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
-                                                                                                           subbasin,
-                                                                                                           comid,
-                                                                                                           init_time)
-
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'flow (m3/s)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
-
-        return response
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'No forecast data found.'})
-
-
-def get_hiwat_data_csv(request):
-    """
-    Returns HIWAT data as csv
-    """
-
-    get_data = request.GET
-
-    try:
-        # model = get_data['model']
-        watershed = get_data['watershed_name']
-        subbasin = get_data['subbasin_name']
-        comid = get_data['reach_id']
-        if get_data['startdate'] != '':
-            startdate = get_data['startdate']
-        else:
-            startdate = 'most_recent'
-
-        path = os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]))
-        filename = [f for f in os.listdir(path) if 'Qout' in f]
-        res = nc.Dataset(
-            os.path.join(app.get_custom_setting('hiwat_path'), '-'.join([watershed, subbasin]), filename[0]), 'r')
-
-        dates_raw = res.variables['time'][:]
-        dates = []
-        for d in dates_raw:
-            dates.append(dt.datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
-
-        comid_list = res.variables['rivid'][:]
-        comid_index = int(np.where(comid_list == int(comid))[0])
-
-        values = []
-        for l in list(res.variables['Qout'][:]):
-            values.append(float(l[comid_index]))
-
-        pairs = [list(a) for a in zip(dates, values)]
-
-        init_time = pairs[0][0].split(' ')[0]
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=hiwat_streamflow_{0}_{1}_{2}_{3}.csv'.format(watershed,
-                                                                                                             subbasin,
-                                                                                                             comid,
-                                                                                                             init_time)
-
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'flow (m3/s)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
+        stats_df.to_csv(encoding='utf-8', header=True, path_or_buf=response)
 
         return response
 
@@ -1122,6 +1212,86 @@ def shp_to_geojson(request):
         return JsonResponse({'error': 'No shapefile found.'})
 
 
+def get_daily_seasonal_streamflow(request):
+    """
+     Returns daily seasonal streamflow chart for unique river ID
+     """
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+        comid = get_data['comid']
+        units = 'metric'
+
+        era_res = requests.get(
+            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+
+        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
+        simulated_df[simulated_df < 0] = 0
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+
+        dayavg_df = hydrostats.data.daily_average(simulated_df, rolling=True)
+
+        hydroviewer_figure = geoglows.plots.daily_averages(dayavg_df, titles={'Reach ID': comid})
+
+        chart_obj = PlotlyView(hydroviewer_figure)
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'No historic data found for calculating daily seasonality.'})
+
+
+def get_monthly_seasonal_streamflow(request):
+    """
+     Returns daily seasonal streamflow chart for unique river ID
+     """
+    get_data = request.GET
+
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+        comid = get_data['comid']
+        units = 'metric'
+
+        era_res = requests.get(
+            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+
+        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
+        simulated_df[simulated_df < 0] = 0
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+
+        monavg_df = hydrostats.data.monthly_average(simulated_df)
+
+        hydroviewer_figure = geoglows.plots.monthly_averages(monavg_df, titles={'Reach ID': comid})
+
+        chart_obj = PlotlyView(hydroviewer_figure)
+
+        context = {
+            'gizmo_object': chart_obj,
+        }
+
+        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'No historic data found for calculating monthly seasonality.'})
+
+
 def setDefault(request):
     get_data = request.GET
     set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
@@ -1139,8 +1309,58 @@ def get_units_title(unit_type):
 
 
 def forecastpercent(request):
-    # Check if its an ajax post request
-    if request.is_ajax() and request.method == 'GET':
+    get_data = request.GET
+    try:
+        # model = get_data['model']
+        watershed = get_data['watershed']
+        subbasin = get_data['subbasin']
+        comid = get_data['comid']
+        units = 'metric'
 
-        comid = request.GET.get('comid')
-        return
+        '''Getting Forecast Stats'''
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+            res = requests.get(
+                app.get_custom_setting(
+                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
+                verify=False).content
+
+            ens = requests.get(
+                app.get_custom_setting(
+                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&date=' + startdate + '&ensemble=all&return_format=csv',
+                verify=False).content
+
+        else:
+            res = requests.get(
+                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
+                verify=False).content
+
+            ens = requests.get(
+                app.get_custom_setting(
+                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&ensemble=all&return_format=csv',
+                verify=False).content
+
+        stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        stats_df.index = pd.to_datetime(stats_df.index)
+        stats_df[stats_df < 0] = 0
+        stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
+        stats_df.index = pd.to_datetime(stats_df.index)
+
+        ensemble_df = pd.read_csv(io.StringIO(ens.decode('utf-8')), index_col=0)
+        ensemble_df.index = pd.to_datetime(ensemble_df.index)
+        ensemble_df[ensemble_df < 0] = 0
+        ensemble_df.index = ensemble_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
+        ensemble_df.index = pd.to_datetime(ensemble_df.index)
+
+        '''Getting Return Periods'''
+        res = requests.get(
+            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
+            verify=False).content
+        rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+
+        table = geoglows.plots.probabilities_table(stats_df, ensemble_df, rperiods_df)
+
+        return HttpResponse(table)
+
+    except Exception:
+        return JsonResponse({'error': 'No data found for the selected station.'})
