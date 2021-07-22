@@ -18,10 +18,10 @@ fix_tethys_init_files.fix_tethys_init_files(3)
 
 setup(
     name=release_package,
-    version='1.0',
+    version='1.1',
     description='',
     long_description='',
-    keywords='"Hydrology", "GEOGloWS", "Hydroviewer"',
+    keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Colombia"',
     author='Jorge Luis Sanchez-Lozano',
     author_email='jorgessanchez7@gmail.com',
     url='',
