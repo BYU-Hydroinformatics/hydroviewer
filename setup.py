@@ -3,7 +3,7 @@ from tethys_apps.app_installation import find_resource_files
 import fix_tethys_init_files
 
 # -- Apps Definition -- #
-app_package = 'hydroviewer_colombia'
+app_package = 'hydroviewer_ecuador'
 release_package = 'tethysapp-' + app_package
 
 # -- Python Dependencies -- #
@@ -18,10 +18,10 @@ fix_tethys_init_files.fix_tethys_init_files(3)
 
 setup(
     name=release_package,
-    version='1.0',
+    version='1.1',
     description='',
     long_description='',
-    keywords='"Hydrology", "GEOGloWS", "Hydroviewer"',
+    keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Ecuador"',
     author='Jorge Luis Sanchez-Lozano',
     author_email='jorgessanchez7@gmail.com',
     url='',

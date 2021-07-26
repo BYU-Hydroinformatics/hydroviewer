@@ -28,6 +28,7 @@ import io
 import pandas as pd
 import geoglows
 import hydrostats.data
+from bs4 import BeautifulSoup
 
 from .app import Hydroviewer as app
 from .helpers import *
@@ -212,6 +213,46 @@ def ecmwf(request):
 	                        initial=date,
 	                        classes='datepicker')
 
+	res = requests.get('https://geoglows.ecmwf.int/api/AvailableDates/?region=central_america-geoglows', verify=False)
+	data = res.json()
+	dates_array = (data.get('available_dates'))
+
+	dates = []
+
+	for date in dates_array:
+		if len(date) == 10:
+			date_mod = date + '000'
+			date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
+		else:
+			date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d')
+			date = date[:-3]
+		dates.append([date_f, date])
+		dates = sorted(dates)
+
+	dates.append(['Select Date', dates[-1][1]])
+	# print(dates)
+	dates.reverse()
+
+	# Date Picker Options
+	date_picker = DatePicker(name='datesSelect',
+	                         display_text='Date',
+	                         autoclose=True,
+	                         format='yyyy-mm-dd',
+	                         start_date=dates[-1][0],
+	                         end_date=dates[1][0],
+	                         start_view='month',
+	                         today_button=True,
+	                         initial='')
+
+	region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
+	regions = SelectInput(
+		display_text='Zoom to a Region:',
+		name='regions',
+		multiple=False,
+		original=True,
+		options=[(region_index[opt]['name'], opt) for opt in region_index]
+	)
+
 	context = {
 		"base_name": base_name,
 		"model_input": model_input,
@@ -220,7 +261,9 @@ def ecmwf(request):
 		"geoserver_endpoint": geoserver_endpoint,
 		"defaultUpdateButton": defaultUpdateButton,
 		"startdateobs": startdateobs,
-		"enddateobs": enddateobs
+		"enddateobs": enddateobs,
+		"date_picker": date_picker,
+		"regions": regions
 	}
 
 	return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -331,7 +374,7 @@ def hiwat(request):
 @app_workspace
 def get_warning_points(request, app_workspace):
 	get_data = request.GET
-	colombia_id_path = os.path.join(app_workspace.path, 'colombia_reachids.csv')
+	colombia_id_path = os.path.join(app_workspace.path, 'ecuador_reachids.csv')
 	reach_pds = pd.read_csv(colombia_id_path)
 	reach_ids_list = reach_pds['COMID'].tolist()
 	return_obj = {}
@@ -1057,211 +1100,6 @@ def forecastpercent(request):
 		return JsonResponse({'error': 'No data found for the selected station.'})
 
 
-def get_discharge_data(request):
-	"""
-	Get data from fews stations
-	"""
-	get_data = request.GET
-
-	try:
-
-		codEstacion = get_data['stationcode']
-		# YYYY/MM/DD
-
-		url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-		f = requests.get(url, verify=False)
-		data = f.json()
-
-		observedDischarge = (data.get('obs'))
-		sensorDischarge = (data.get('sen'))
-
-		observedDischarge = (observedDischarge.get('data'))
-		sensorDischarge = (sensorDischarge.get('data'))
-
-		datesObservedDischarge = [row[0] for row in observedDischarge]
-		observedDischarge = [row[1] for row in observedDischarge]
-
-		datesSensorDischarge = [row[0] for row in sensorDischarge]
-		sensorDischarge = [row[1] for row in sensorDischarge]
-
-		dates = []
-		discharge = []
-
-		for i in range(0, len(datesObservedDischarge) - 1):
-			year = int(datesObservedDischarge[i][0:4])
-			month = int(datesObservedDischarge[i][5:7])
-			day = int(datesObservedDischarge[i][8:10])
-			hh = int(datesObservedDischarge[i][11:13])
-			mm = int(datesObservedDischarge[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			discharge.append(observedDischarge[i])
-
-		datesObservedDischarge = dates
-		observedDischarge = discharge
-
-		dates = []
-		discharge = []
-
-		for i in range(0, len(datesSensorDischarge) - 1):
-			year = int(datesSensorDischarge[i][0:4])
-			month = int(datesSensorDischarge[i][5:7])
-			day = int(datesSensorDischarge[i][8:10])
-			hh = int(datesSensorDischarge[i][11:13])
-			mm = int(datesSensorDischarge[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			discharge.append(sensorDischarge[i])
-
-		datesSensorDischarge = dates
-		sensorDischarge = discharge
-
-		observed_Q = go.Scatter(
-			x=datesObservedDischarge,
-			y=observedDischarge,
-			name='Observed'
-		)
-
-		sensor_Q = go.Scatter(
-			x=datesSensorDischarge,
-			y=sensorDischarge,
-			name='Sensor'
-		)
-
-		layout = go.Layout(title='Observed Discharge',
-		                   xaxis=dict(
-			                   title='Dates', ),
-		                   yaxis=dict(
-			                   title='Discharge (m<sup>3</sup>/s)',
-			                   autorange=True),
-		                   showlegend=True)
-
-		chart_obj = PlotlyView(
-			go.Figure(data=[observed_Q, sensor_Q],
-			          layout=layout)
-		)
-
-		context = {
-			'gizmo_object': chart_obj,
-		}
-
-		return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
-
-	except Exception as e:
-		print(str(e))
-		return JsonResponse({'error': 'No  data found for the station.'})
-
-
-def get_observed_discharge_csv(request):
-	"""
-	Get data from fews stations
-	"""
-
-	get_data = request.GET
-
-	try:
-		codEstacion = get_data['stationcode']
-		nomEstacion = get_data['stationname']
-
-		url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-		f = requests.get(url, verify=False)
-		data = f.json()
-
-		observedDischarge = (data.get('obs'))
-		observedDischarge = (observedDischarge.get('data'))
-
-		datesObservedDischarge = [row[0] for row in observedDischarge]
-		observedDischarge = [row[1] for row in observedDischarge]
-
-		dates = []
-		discharge = []
-
-		for i in range(0, len(datesObservedDischarge) - 1):
-			year = int(datesObservedDischarge[i][0:4])
-			month = int(datesObservedDischarge[i][5:7])
-			day = int(datesObservedDischarge[i][8:10])
-			hh = int(datesObservedDischarge[i][11:13])
-			mm = int(datesObservedDischarge[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			discharge.append(observedDischarge[i])
-
-		datesObservedDischarge = dates
-		observedDischarge = discharge
-
-		pairs = [list(a) for a in zip(datesObservedDischarge, observedDischarge)]
-
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=observed_discharge_{0}_{1}.csv'.format(
-			codEstacion, nomEstacion)
-
-		writer = csv_writer(response)
-		writer.writerow(['datetime', 'flow (m3/s)'])
-
-		for row_data in pairs:
-			writer.writerow(row_data)
-
-		return response
-
-	except Exception as e:
-		print(str(e))
-		return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
-
-
-def get_sensor_discharge_csv(request):
-	"""
-	  Get data from fews stations
-	  """
-
-	get_data = request.GET
-
-	try:
-		codEstacion = get_data['stationcode']
-		nomEstacion = get_data['stationname']
-
-		url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-		f = requests.get(url, verify=False)
-		data = f.json()
-
-		sensorDischarge = (data.get('sen'))
-		sensorDischarge = (sensorDischarge.get('data'))
-		datesSensorDischarge = [row[0] for row in sensorDischarge]
-		sensorDischarge = [row[1] for row in sensorDischarge]
-
-		dates = []
-		discharge = []
-
-		for i in range(0, len(datesSensorDischarge) - 1):
-			year = int(datesSensorDischarge[i][0:4])
-			month = int(datesSensorDischarge[i][5:7])
-			day = int(datesSensorDischarge[i][8:10])
-			hh = int(datesSensorDischarge[i][11:13])
-			mm = int(datesSensorDischarge[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			discharge.append(sensorDischarge[i])
-
-		datesSensorDischarge = dates
-		sensorDischarge = discharge
-
-		pairs = [list(a) for a in zip(datesSensorDischarge, sensorDischarge)]
-
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=sensor_discharge_{0}_{1}.csv'.format(
-			codEstacion, nomEstacion)
-
-		writer = csv_writer(response)
-		writer.writerow(['datetime', 'flow (m3/s)'])
-
-		for row_data in pairs:
-			writer.writerow(row_data)
-
-		return response
-
-	except Exception as e:
-		print(str(e))
-		return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
-
-
 def get_waterlevel_data(request):
 	"""
 	Get data from telemetric stations
@@ -1271,83 +1109,115 @@ def get_waterlevel_data(request):
 	try:
 
 		codEstacion = get_data['stationcode']
+		nomEstacion = get_data['stationname']
+		idEstacion = get_data['stationid']
+		catEstacion = get_data['stationcat']
+
 		# YYYY/MM/DD
 
-		url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+		url = 'http://186.42.174.236/InamhiEmas/datos.php?esta__id={0}&estanomb={1}&tipo={2}'.format(idEstacion, nomEstacion, catEstacion)
 
-		f = requests.get(url, verify=False)
-		data = f.json()
-
-		observedWaterLevel = (data.get('obs'))
-		sensorWaterLevel = (data.get('sen'))
-
-		observedWaterLevel = (observedWaterLevel.get('data'))
-		sensorWaterLevel = (sensorWaterLevel.get('data'))
-
-		datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
-		observedWaterLevel = [row[1] for row in observedWaterLevel]
-
-		datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
-		sensorWaterLevel = [row[1] for row in sensorWaterLevel]
+		page = requests.get(url)
+		soup = BeautifulSoup(page.content, 'html.parser')
+		results = soup.find(id='miyazaki')
+		df_stations = pd.read_html(str(results))[0]
 
 		dates = []
 		waterLevel = []
 
-		for i in range(0, len(datesObservedWaterLevel) - 1):
-			year = int(datesObservedWaterLevel[i][0:4])
-			month = int(datesObservedWaterLevel[i][5:7])
-			day = int(datesObservedWaterLevel[i][8:10])
-			hh = int(datesObservedWaterLevel[i][11:13])
-			mm = int(datesObservedWaterLevel[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			waterLevel.append(observedWaterLevel[i])
+		columns = len(df_stations.columns)
 
-		datesObservedWaterLevel = dates
-		observedWaterLevel = waterLevel
+		try:
+			df_stations.iloc[:, 0] = pd.to_datetime(df_stations.iloc[:, 0])
+			dates = df_stations.iloc[:, 0].values
 
-		dates = []
-		waterLevel = []
+			if columns == 2:
+				nivel_prom = df_stations.iloc[:, 1].values
+				pairs = [list(a) for a in zip(dates, nivel_prom)]
+				waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
+				waterLevel_df.set_index('Datetime', inplace=True)
+				waterLevel_df.index = pd.to_datetime(waterLevel_df.index)
 
-		for i in range(0, len(datesSensorWaterLevel) - 1):
-			year = int(datesSensorWaterLevel[i][0:4])
-			month = int(datesSensorWaterLevel[i][5:7])
-			day = int(datesSensorWaterLevel[i][8:10])
-			hh = int(datesSensorWaterLevel[i][11:13])
-			mm = int(datesSensorWaterLevel[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			waterLevel.append(sensorWaterLevel[i])
+				observed_WL = go.Scatter(
+					x=waterLevel_df.index,
+					y=waterLevel_df.iloc[:, 0].values,
+					name='Observed'
+				)
 
-		datesSensorWaterLevel = dates
-		sensorWaterLevel = waterLevel
+				layout = go.Layout(title='Observed Water Level',
+				                   xaxis=dict(title='Dates', ), yaxis=dict(title='Water Level (m)', autorange=True),
+				                   showlegend=True)
 
-		observed_WL = go.Scatter(
-			x=datesObservedWaterLevel,
-			y=observedWaterLevel,
-			name='Observed'
-		)
+				chart_obj = PlotlyView(
+					go.Figure(data=[observed_WL],
+					          layout=layout)
+				)
 
-		sensor_WL = go.Scatter(
-			x=datesSensorWaterLevel,
-			y=sensorWaterLevel,
-			name='Sensor'
-		)
+			else:
 
-		layout = go.Layout(title='Observed Water Level',
-		                   xaxis=dict(
-			                   title='Dates', ),
-		                   yaxis=dict(
-			                   title='Water Level (m)',
-			                   autorange=True),
-		                   showlegend=True)
+				nivel_inst = df_stations.iloc[:, 1].values
+				pairs = [list(a) for a in zip(dates, nivel_inst)]
+				ins_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Instantaneous Water Level (m)'])
+				ins_waterLevel_df.set_index('Datetime', inplace=True)
+				ins_waterLevel_df.index = pd.to_datetime(ins_waterLevel_df.index)
 
-		chart_obj = PlotlyView(
-			go.Figure(data=[observed_WL, sensor_WL],
-			          layout=layout)
-		)
+				observed_ins_WL = go.Scatter(
+					x=ins_waterLevel_df.index,
+					y=ins_waterLevel_df.iloc[:, 0].values,
+					name='Instantaneous'
+				)
 
-		context = {
-			'gizmo_object': chart_obj,
-		}
+				nivel_max = df_stations.iloc[:, 2].values
+				pairs = [list(a) for a in zip(dates, nivel_max)]
+				max_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Maximum Water Level (m)'])
+				max_waterLevel_df.set_index('Datetime', inplace=True)
+				max_waterLevel_df.index = pd.to_datetime(max_waterLevel_df.index)
+
+				observed_max_WL = go.Scatter(
+					x=max_waterLevel_df.index,
+					y=max_waterLevel_df.iloc[:, 0].values,
+					name='Maximum'
+				)
+
+				nivel_min = df_stations.iloc[:, 3].values
+				pairs = [list(a) for a in zip(dates, nivel_min)]
+				min_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Minimum Water Level (m)'])
+				min_waterLevel_df.set_index('Datetime', inplace=True)
+				min_waterLevel_df.index = pd.to_datetime(min_waterLevel_df.index)
+
+				observed_min_WL = go.Scatter(
+					x=min_waterLevel_df.index,
+					y=min_waterLevel_df.iloc[:, 0].values,
+					name='Minimum'
+				)
+
+				nivel_prom = df_stations.iloc[:, 4].values
+				pairs = [list(a) for a in zip(dates, nivel_prom)]
+				waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
+				waterLevel_df.set_index('Datetime', inplace=True)
+				waterLevel_df.index = pd.to_datetime(waterLevel_df.index)
+
+				observed_WL = go.Scatter(
+					x=waterLevel_df.index,
+					y=waterLevel_df.iloc[:, 0].values,
+					name='Average'
+				)
+
+				layout = go.Layout(title='Observed Water Level at <br> {0} - {1}'.format(codEstacion, nomEstacion),
+				                   xaxis=dict(title='Dates', ), yaxis=dict(title='Water Level (m)', autorange=True),
+				                   showlegend=True)
+
+				chart_obj = PlotlyView(go.Figure(data=[observed_WL, observed_ins_WL, observed_max_WL, observed_min_WL], layout=layout))
+
+		except Exception:
+			print('No existen datos para esta estación por el momento...')
+
+		if 'chart_obj' in locals():
+			context = {
+				'gizmo_object': chart_obj,
+			}
+		else:
+			context = {}
 
 		return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
 
@@ -1366,103 +1236,67 @@ def get_observed_waterlevel_csv(request):
 	try:
 		codEstacion = get_data['stationcode']
 		nomEstacion = get_data['stationname']
+		idEstacion = get_data['stationid']
+		catEstacion = get_data['stationcat']
 
-		url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+		# YYYY/MM/DD
 
-		f = requests.get(url, verify=False)
-		data = f.json()
+		url = 'http://186.42.174.236/InamhiEmas/datos.php?esta__id={0}&estanomb={1}&tipo={2}'.format(idEstacion, nomEstacion, catEstacion)
 
-		observedWaterLevel = (data.get('obs'))
-		observedWaterLevel = (observedWaterLevel.get('data'))
-
-		datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
-		observedWaterLevel = [row[1] for row in observedWaterLevel]
+		page = requests.get(url)
+		soup = BeautifulSoup(page.content, 'html.parser')
+		results = soup.find(id='miyazaki')
+		df_stations = pd.read_html(str(results))[0]
 
 		dates = []
 		waterLevel = []
 
-		for i in range(0, len(datesObservedWaterLevel) - 1):
-			year = int(datesObservedWaterLevel[i][0:4])
-			month = int(datesObservedWaterLevel[i][5:7])
-			day = int(datesObservedWaterLevel[i][8:10])
-			hh = int(datesObservedWaterLevel[i][11:13])
-			mm = int(datesObservedWaterLevel[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			waterLevel.append(observedWaterLevel[i])
+		columns = len(df_stations.columns)
 
-		datesObservedWaterLevel = dates
-		observedWaterLevel = waterLevel
+		try:
+			df_stations.iloc[:, 0] = pd.to_datetime(df_stations.iloc[:, 0])
+			dates = df_stations.iloc[:, 0].values
 
-		pairs = [list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
+			if columns == 2:
+				nivel_prom = df_stations.iloc[:, 1].values
+				pairs = [list(a) for a in zip(dates, nivel_prom)]
 
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(
-			codEstacion, nomEstacion)
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(
+					codEstacion, nomEstacion)
 
-		writer = csv_writer(response)
-		writer.writerow(['datetime', 'water level (m)'])
+				writer = csv_writer(response)
+				writer.writerow(['datetime', 'water level (m)'])
 
-		for row_data in pairs:
-			writer.writerow(row_data)
+				for row_data in pairs:
+					writer.writerow(row_data)
 
-		return response
+				return response
+
+			else:
+
+				nivel_inst = df_stations.iloc[:, 1].values
+				nivel_max = df_stations.iloc[:, 2].values
+				nivel_min = df_stations.iloc[:, 3].values
+				nivel_prom = df_stations.iloc[:, 4].values
+
+				pairs = [list(a) for a in zip(dates, nivel_inst, nivel_max, nivel_min, nivel_prom)]
+
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(codEstacion, nomEstacion)
+
+				writer = csv_writer(response)
+				writer.writerow(['datetime', 'water level (m)'])
+
+				for row_data in pairs:
+					writer.writerow(row_data)
+
+				return response
+
+		except Exception:
+			print('No existen datos para esta estación por el momento...')
 
 	except Exception as e:
 		print(str(e))
 		return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
-
-def get_sensor_waterlevel_csv(request):
-	"""
-	  Get data from fews stations
-	  """
-
-	get_data = request.GET
-
-	try:
-		codEstacion = get_data['stationcode']
-		nomEstacion = get_data['stationname']
-
-		url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
-
-		f = requests.get(url, verify=False)
-		data = f.json()
-
-		sensorWaterLevel = (data.get('sen'))
-		sensorWaterLevel = (sensorWaterLevel.get('data'))
-
-		datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
-		sensorWaterLevel = [row[1] for row in sensorWaterLevel]
-
-		dates = []
-		waterLevel = []
-
-		for i in range(0, len(datesSensorWaterLevel) - 1):
-			year = int(datesSensorWaterLevel[i][0:4])
-			month = int(datesSensorWaterLevel[i][5:7])
-			day = int(datesSensorWaterLevel[i][8:10])
-			hh = int(datesSensorWaterLevel[i][11:13])
-			mm = int(datesSensorWaterLevel[i][14:16])
-			dates.append(dt.datetime(year, month, day, hh, mm))
-			waterLevel.append(sensorWaterLevel[i])
-
-		datesSensorWaterLevel = dates
-		sensorWaterLevel = waterLevel
-
-		pairs = [list(a) for a in zip(datesSensorWaterLevel, sensorWaterLevel)]
-
-		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=sensor_water_level_{0}_{1}.csv'.format(
-			codEstacion, nomEstacion)
-
-		writer = csv_writer(response)
-		writer.writerow(['datetime', 'water level (m)'])
-
-		for row_data in pairs:
-			writer.writerow(row_data)
-
-		return response
-
-	except Exception as e:
-		print(str(e))
-		return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})

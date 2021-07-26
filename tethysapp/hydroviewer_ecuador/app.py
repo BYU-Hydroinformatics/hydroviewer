@@ -7,14 +7,14 @@ base_url = base_name.replace('_', '-')
 
 class Hydroviewer(TethysAppBase):
 
-    name = 'HydroViewer Colombia'
+    name = 'HydroViewer Ecuador'
     index = '{0}:home'.format(base_name)
-    icon = '{0}/images/colombia-icon.jpg'.format(base_name)
+    icon = '{0}/images/ecuador-icon.png'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
-    color = '#00374b'
-    description = 'This is the Hydroviewer App customized for Colombia.'
-    tags = '"Hydrology", "GEOGloWS", "Hydroviewer"'
+    color = '#333'
+    description = 'This is the Hydroviewer App customized for Ecuador.'
+    tags = '"Hydrology", "GEOGloWS", "Hydroviewer", "Ecuador"'
     enable_feedback = False
     feedback_emails = []
 
@@ -22,16 +22,14 @@ class Hydroviewer(TethysAppBase):
         """
         Spatial_dataset_service_settings method.
         """
-        sds_settings = (
+        return (
             SpatialDatasetServiceSetting(
                 name='main_geoserver',
-                description='spatial dataset service for app to use',
+                description='spatial dataset service for app to use (https://tethys2.byu.edu/geoserver/rest/)',
                 engine=SpatialDatasetServiceSetting.GEOSERVER,
                 required=True,
             ),
         )
-
-        return sds_settings
 
     def url_maps(self):
         UrlMap = url_map_maker(self.root_url)
@@ -162,30 +160,6 @@ class Hydroviewer(TethysAppBase):
                 url='forecastpercent',
                 controller='{0}.controllers.forecastpercent'.format(base_name)),
 			UrlMap(
-				name='get_discharge_data',
-				url='get-discharge-data',
-				controller='{0}.controllers.get_discharge_data'.format(base_name)),
-            UrlMap(
-                name='get_discharge_data',
-                url='ecmwf-rapid/get-discharge-data',
-                controller='{0}.controllers.get_discharge_data'.format(base_name)),
-			UrlMap(
-				name='get_observed_discharge_csv',
-				url='get-observed-discharge-csv',
-				controller='{0}.controllers.get_observed_discharge_csv'.format(base_name)),
-            UrlMap(
-                name='get_observed_discharge_csv',
-                url='ecmwf-rapid/get-observed-discharge-csv',
-                controller='{0}.controllers.get_observed_discharge_csv'.format(base_name)),
-			UrlMap(
-				name='get_sensor_discharge_csv',
-				url='get-sensor-discharge-csv',
-				controller='{0}.controllers.get_sensor_discharge_csv'.format(base_name)),
-            UrlMap(
-                name='get_sensor_discharge_csv',
-                url='ecmwf-rapid/get-sensor-discharge-csv',
-                controller='{0}.controllers.get_sensor_discharge_csv'.format(base_name)),
-			UrlMap(
 				name='get_waterlevel_data',
 				url='get-waterlevel-data',
 				controller='{0}.controllers.get_waterlevel_data'.format(base_name)),
@@ -201,14 +175,6 @@ class Hydroviewer(TethysAppBase):
                 name='get_observed_waterlevel_csv',
                 url='ecmwf-rapid/get-observed-waterlevel-csv',
                 controller='{0}.controllers.get_observed_waterlevel_csv'.format(base_name)),
-			UrlMap(
-				name='get_sensor_waterlevel_csv',
-				url='get-sensor-waterlevel-csv',
-				controller='{0}.controllers.get_sensor_waterlevel_csv'.format(base_name)),
-            UrlMap(
-                name='get_sensor_waterlevel_csv',
-                url='ecmwf-rapid/get-sensor-waterlevel-csv',
-                controller='{0}.controllers.get_sensor_waterlevel_csv'.format(base_name)),
         )
 
         return url_maps
@@ -235,44 +201,51 @@ class Hydroviewer(TethysAppBase):
             CustomSetting(
                 name='api_source',
                 type=CustomSetting.TYPE_STRING,
-                description='Tethys portal where Streamflow Prediction Tool is installed',
-                required=True
+                description='Web site where the GESS REST API is available',
+                required=True,
+                default='https://geoglows.ecmwf.int',
             ),
             CustomSetting(
                 name='workspace',
                 type=CustomSetting.TYPE_STRING,
                 description='Workspace within Geoserver where web service is',
-                required=True
+                required=True,
+                default='ecuador_hydroviewer',
             ),
             CustomSetting(
                 name='region',
                 type=CustomSetting.TYPE_STRING,
-                description='Streamflow Prediction Tool Region',
-                required=True
+                description='GESS Region',
+                required=True,
+                default='south_america-geoglows',
             ),
             CustomSetting(
                 name='keywords',
                 type=CustomSetting.TYPE_STRING,
                 description='Keyword(s) for visualizing watersheds in HydroViewer',
-                required=True
+                required=True,
+                default='ecuador, south_america',
             ),
             CustomSetting(
                 name='zoom_info',
                 type=CustomSetting.TYPE_STRING,
                 description='lon,lat,zoom_level',
-                required=True
+                required=True,
+                default='-77.510,-1.510,7',
             ),
             CustomSetting(
                 name='default_model_type',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Model Type : (Options : ECMWF-RAPID, LIS-RAPID)',
-                required=False
+                required=False,
+                default='ECMWF-RAPID',
             ),
             CustomSetting(
                 name='default_watershed_name',
                 type=CustomSetting.TYPE_STRING,
                 description='Default Watershed Name: (For ex: "South America (Brazil)") ',
-                required=False
+                required=False,
+                default='South America (Ecuador)',
             ),
             CustomSetting(
                 name='show_dropdown',

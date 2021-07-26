@@ -3,7 +3,7 @@ from tethys_apps.app_installation import find_resource_files
 import fix_tethys_init_files
 
 # -- Apps Definition -- #
-app_package = 'hydroviewer_colombia'
+app_package = 'hydroviewer_ecuador'
 release_package = 'tethysapp-' + app_package
 
 # -- Python Dependencies -- #
