@@ -574,7 +574,7 @@ function get_warning_points(model, watershed, subbasin) {
             }
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
-                for (var i = 0; i < warLen5; ++i) {
+                for (var i = 0; i < warLen10; ++i) {
                     var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
                             result.warning10[i][0]
                         ],
