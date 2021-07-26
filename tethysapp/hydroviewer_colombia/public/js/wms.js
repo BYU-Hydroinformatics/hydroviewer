@@ -610,20 +610,15 @@ function get_warning_points(model, watershed, subbasin) {
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
                 for (var i = 0; i < warLen10; ++i) {
-                  try{
-                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
-                            result.warning10[i][0]
-                        ],
-                        'EPSG:4326', 'EPSG:3857'));
-                    var feature = new ol.Feature({
-                        geometry: geometry,
-                        point_size: 40
-                    });
-                    map.getLayers().item(3).getSource().addFeature(feature);
-                  }
-                  catch(e){
-                    console.log(e);
-                  }
+					var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
+							result.warning10[i][0]
+						],
+						'EPSG:4326', 'EPSG:3857'));
+					var feature = new ol.Feature({
+						geometry: geometry,
+						point_size: 40
+				});
+				map.getLayers().item(3).getSource().addFeature(feature);
                 }
                 map.getLayers().item(3).setVisible(false);
 
