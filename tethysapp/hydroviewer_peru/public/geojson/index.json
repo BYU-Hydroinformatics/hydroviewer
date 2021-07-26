@@ -1,0 +1,106 @@
+{
+  "peru": {
+    "name": "Peru",
+    "geojsons": ["Peru.json"]
+  },
+  "amazonas": {
+    "name": "Amazonas",
+    "geojsons": ["AMAZONAS.json"]
+  },
+  "ancash": {
+    "name": "Ancash",
+    "geojsons": ["ANCASH.json"]
+  },
+  "apurimac": {
+    "name": "Apurimac",
+    "geojsons": ["APURIMAC.json"]
+  },
+  "arequipa": {
+    "name": "Arequipa",
+    "geojsons": ["AREQUIPA.json"]
+  },
+  "ayacucho": {
+    "name": "Ayacucho",
+    "geojsons": ["AYACUCHO.json"]
+  },
+  "cajamarca": {
+    "name": "Cajamarca",
+    "geojsons": ["CAJAMARCA.json"]
+  },
+  "CALLAO": {
+    "name": "Callao",
+    "geojsons": ["CALLAO.json"]
+  },
+  "cusco": {
+    "name": "Cusco",
+    "geojsons": ["CUSCO.json"]
+  },
+  "huancavelica": {
+    "name": "Huancavelica",
+    "geojsons": ["HUANCAVELICA.json"]
+  },
+  "huanuco": {
+    "name": "Huanuco",
+    "geojsons": ["HUANUCO.json"]
+  },
+  "ica": {
+    "name": "Ica",
+    "geojsons": ["ICA.json"]
+  },
+  "junin": {
+    "name": "Junin",
+    "geojsons": ["JUNIN.json"]
+  },
+  "la_libertad": {
+    "name": "La Libertad",
+    "geojsons": ["LA_LIBERTAD.json"]
+  },
+  "lambayeque": {
+    "name": "Lambayeque",
+    "geojsons": ["LAMBAYEQUE.json"]
+  },
+  "lima": {
+    "name": "Lima",
+    "geojsons": ["LIMA.json"]
+  },
+  "loreto": {
+    "name": "Loreto",
+    "geojsons": ["LORETO.json"]
+  },
+  "madre_de_dios": {
+    "name": "Madre de Dios",
+    "geojsons": ["MADRE_DE_DIOS.json"]
+  },
+  "moquegua": {
+    "name": "Moquegua",
+    "geojsons": ["MOQUEGUA.json"]
+  },
+  "pasco": {
+    "name": "Pasco",
+    "geojsons": ["PASCO.json"]
+  },
+  "piura": {
+    "name": "Piura",
+    "geojsons": ["PIURA.json"]
+  },
+  "puno": {
+    "name": "Puno",
+    "geojsons": ["PUNO.json"]
+  },
+  "san_martin": {
+    "name": "San Martin",
+    "geojsons": ["SAN_MARTIN.json"]
+  },
+  "tacna": {
+    "name": "Tacna",
+    "geojsons": ["TACNA.json"]
+  },
+  "tumbes": {
+    "name": "Tumbes",
+    "geojsons": ["TUMBES.json"]
+  },
+  "ucayali": {
+    "name": "Ucayali",
+    "geojsons": ["UCAYALI.json"]
+  }
+}

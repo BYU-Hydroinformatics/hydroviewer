@@ -9,6 +9,7 @@ from tethys_sdk.workspaces import app_workspace
 
 
 import os
+import pytz
 import requests
 from requests.auth import HTTPBasicAuth
 import json
@@ -31,6 +32,8 @@ import datetime as dt
 import ast
 import plotly.graph_objs as go
 
+from dateutil.relativedelta import relativedelta
+from bs4 import BeautifulSoup
 from .app import Hydroviewer as app
 from .helpers import *
 base_name = __package__.split('.')[-1]
@@ -214,6 +217,46 @@ def ecmwf(request):
                             initial=date,
                             classes='datepicker')
 
+    res = requests.get('https://geoglows.ecmwf.int/api/AvailableDates/?region=central_america-geoglows', verify=False)
+    data = res.json()
+    dates_array = (data.get('available_dates'))
+
+    dates = []
+
+    for date in dates_array:
+        if len(date) == 10:
+            date_mod = date + '000'
+            date_f = dt.datetime.strptime(date_mod, '%Y%m%d.%H%M').strftime('%Y-%m-%d %H:%M')
+        else:
+            date_f = dt.datetime.strptime(date, '%Y%m%d.%H%M').strftime('%Y-%m-%d')
+            date = date[:-3]
+        dates.append([date_f, date])
+        dates = sorted(dates)
+
+    dates.append(['Select Date', dates[-1][1]])
+    # print(dates)
+    dates.reverse()
+
+    # Date Picker Options
+    date_picker = DatePicker(name='datesSelect',
+                             display_text='Date',
+                             autoclose=True,
+                             format='yyyy-mm-dd',
+                             start_date=dates[-1][0],
+                             end_date=dates[1][0],
+                             start_view='month',
+                             today_button=True,
+                             initial='')
+
+    region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
+    regions = SelectInput(
+        display_text='Zoom to a Region:',
+        name='regions',
+        multiple=False,
+        original=True,
+        options=[(region_index[opt]['name'], opt) for opt in region_index]
+    )
+
     context = {
         "base_name": base_name,
         "model_input": model_input,
@@ -222,7 +265,9 @@ def ecmwf(request):
         "geoserver_endpoint": geoserver_endpoint,
         "defaultUpdateButton": defaultUpdateButton,
         "startdateobs": startdateobs,
-        "enddateobs": enddateobs
+        "enddateobs": enddateobs,
+        "date_picker": date_picker,
+        "regions": regions
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -1031,100 +1076,6 @@ def forecastpercent(request):
         return JsonResponse({'error': 'No data found for the selected station.'})
 
 
-def get_discharge_data(request):
-    """
-    Get data from fews stations
-    """
-    get_data = request.GET
-
-    try:
-
-        codEstacion = get_data['stationcode']
-        # YYYY/MM/DD
-
-        url = 'http://fews.ideam.gov.co/colombia/jsonQ/00' + codEstacion + 'Qobs.json'
-
-        f = requests.get(url, verify=False)
-        data = f.json()
-
-        observedDischarge = (data.get('obs'))
-        sensorDischarge = (data.get('sen'))
-
-        observedDischarge = (observedDischarge.get('data'))
-        sensorDischarge = (sensorDischarge.get('data'))
-
-        datesObservedDischarge = [row[0] for row in observedDischarge]
-        observedDischarge = [row[1] for row in observedDischarge]
-
-        datesSensorDischarge = [row[0] for row in sensorDischarge]
-        sensorDischarge = [row[1] for row in sensorDischarge]
-
-        dates = []
-        discharge = []
-
-        for i in range(0, len(datesObservedDischarge) - 1):
-            year = int(datesObservedDischarge[i][0:4])
-            month = int(datesObservedDischarge[i][5:7])
-            day = int(datesObservedDischarge[i][8:10])
-            hh = int(datesObservedDischarge[i][11:13])
-            mm = int(datesObservedDischarge[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            discharge.append(observedDischarge[i])
-
-        datesObservedDischarge = dates
-        observedDischarge = discharge
-
-        dates = []
-        discharge = []
-
-        for i in range(0, len(datesSensorDischarge) - 1):
-            year = int(datesSensorDischarge[i][0:4])
-            month = int(datesSensorDischarge[i][5:7])
-            day = int(datesSensorDischarge[i][8:10])
-            hh = int(datesSensorDischarge[i][11:13])
-            mm = int(datesSensorDischarge[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            discharge.append(sensorDischarge[i])
-
-        datesSensorDischarge = dates
-        sensorDischarge = discharge
-
-        observed_Q = go.Scatter(
-            x=datesObservedDischarge,
-            y=observedDischarge,
-            name='Observed'
-        )
-
-        sensor_Q = go.Scatter(
-            x=datesSensorDischarge,
-            y=sensorDischarge,
-            name='Sensor'
-        )
-
-        layout = go.Layout(title='Observed Discharge',
-                           xaxis=dict(
-                               title='Dates',),
-                           yaxis=dict(
-                               title='Discharge (m<sup>3</sup>/s)',
-                               autorange=True),
-                           showlegend=True)
-
-        chart_obj = PlotlyView(
-            go.Figure(data=[observed_Q, sensor_Q],
-                      layout=layout)
-        )
-
-        context = {
-            'gizmo_object': chart_obj,
-        }
-
-        return render(request, '{0}/gizmo_ajax.html'.format(base_name), context)
-
-    except Exception as e:
-        print(str(e))
-        return JsonResponse({'error': 'No  data found for the station.'})
-
-
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
@@ -1132,7 +1083,6 @@ def get_waterlevel_data(request):
     get_data = request.GET
 
     try:
-
         codEstacion = get_data['stationcode']
         nomEstacion = get_data['stationname']
         oldCodEstacion = get_data['oldcode']
@@ -1141,67 +1091,210 @@ def get_waterlevel_data(request):
         statusEstacion = get_data['stationstatus']
         river = get_data['stream']
 
-        print('https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/map_red_graf.php?cod={0}&estado={1}&tipo_esta={2}&cate={3}&cod_old={4}'.format(codEstacion, statusEstacion, tipoEstacion, catEstacion, oldCodEstacion))
+        tz = pytz.timezone('America/Bogota')
+        hoy = dt.datetime.now(tz)
 
-        # YYYY/MM/DD
+        end_date = dt.datetime(int(hoy.year),int(hoy.month),1)
+        ini_date = end_date - relativedelta(months=7)
 
-        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        time_array = []
 
-        f = requests.get(url, verify=False)
-        data = f.json()
+        while ini_date <= end_date:
+            time_array.append(ini_date)
+            ini_date += relativedelta(months=1)
 
-        observedWaterLevel = (data.get('obs'))
-        sensorWaterLevel = (data.get('sen'))
+        if statusEstacion == "DIFERIDO":
 
-        observedWaterLevel = (observedWaterLevel.get('data'))
-        sensorWaterLevel = (sensorWaterLevel.get('data'))
+            fechas = []
+            values = []
 
-        datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
-        observedWaterLevel = [row[1] for row in observedWaterLevel]
+            for t in time_array:
 
-        datesSensorWaterLevel = [row[0] for row in sensorWaterLevel]
-        sensorWaterLevel = [row[1] for row in sensorWaterLevel]
+                anyo = t.year
+                mes = t.month
 
-        dates = []
-        waterLevel = []
+                if mes < 10:
+                    MM = '0' + str(mes)
+                else:
+                    MM = str(mes)
 
-        for i in range(0, len(datesObservedWaterLevel) - 1):
-            year = int(datesObservedWaterLevel[i][0:4])
-            month = int(datesObservedWaterLevel[i][5:7])
-            day = int(datesObservedWaterLevel[i][8:10])
-            hh = int(datesObservedWaterLevel[i][11:13])
-            mm = int(datesObservedWaterLevel[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            waterLevel.append(observedWaterLevel[i])
+                YYYY = str(anyo)
 
-        datesObservedWaterLevel = dates
-        observedWaterLevel = waterLevel
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=263'.format(codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
 
-        dates = []
-        waterLevel = []
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
 
-        for i in range(0, len(datesSensorWaterLevel) - 1):
-            year = int(datesSensorWaterLevel[i][0:4])
-            month = int(datesSensorWaterLevel[i][5:7])
-            day = int(datesSensorWaterLevel[i][8:10])
-            hh = int(datesSensorWaterLevel[i][11:13])
-            mm = int(datesSensorWaterLevel[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            waterLevel.append(sensorWaterLevel[i])
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 2]
 
-        datesSensorWaterLevel = dates
-        sensorWaterLevel = waterLevel
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    values_06hrs = df_stations.iloc[:, 1].values
+                    values_10hrs = df_stations.iloc[:, 2].values
+                    values_14hrs = df_stations.iloc[:, 3].values
+                    values_18hrs = df_stations.iloc[:, 4].values
+
+                    for i in range(0, len(dates)):
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 6, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 10, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 14, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 18, 0, 0))
+                        if values_06hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_06hrs[i]) >= 200:
+                            values.append(float(values_06hrs[i])/200)
+                        else:
+                            values.append(float(values_06hrs[i]))
+                        if values_10hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_10hrs[i]) >= 200:
+                            values.append(float(values_10hrs[i])/200)
+                        else:
+                            values.append(float(values_10hrs[i]))
+                        if values_14hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_14hrs[i]) >= 200:
+                            values.append(float(values_14hrs[i])/200)
+                        else:
+                            values.append(float(values_14hrs[i]))
+                        if values_18hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_18hrs[i]) >= 200:
+                            values.append(float(values_18hrs[i])/200)
+                        else:
+                            values.append(float(values_18hrs[i]))
+
+        elif statusEstacion == "REAL":
+
+            fechas = []
+            values = []
+
+            for t in time_array:
+
+                anyo = t.year
+                mes = t.month
+
+                if mes < 10:
+                    MM = '0' + str(mes)
+
+                else:
+                    MM = str(mes)
+
+                YYYY = str(anyo)
+
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=101'.format(codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 2]
+
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    values_06hrs = df_stations.iloc[:, 1].values
+                    values_10hrs = df_stations.iloc[:, 2].values
+                    values_14hrs = df_stations.iloc[:, 3].values
+                    values_18hrs = df_stations.iloc[:, 4].values
+
+                    for i in range(0, len(dates)):
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 6, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 10, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 14, 0, 0))
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 18, 0, 0))
+                        if values_06hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_06hrs[i]) >= 200:
+                            values.append(float(values_06hrs[i])/200)
+                        else:
+                            values.append(float(values_06hrs[i]))
+                        if values_10hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_10hrs[i]) >= 200:
+                            values.append(float(values_10hrs[i])/200)
+                        else:
+                            values.append(float(values_10hrs[i]))
+                        if values_14hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_14hrs[i]) >= 200:
+                            values.append(float(values_14hrs[i])/200)
+                        else:
+                            values.append(float(values_14hrs[i]))
+                        if values_18hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_18hrs[i]) >= 200:
+                            values.append(float(values_18hrs[i])/200)
+                        else:
+                            values.append(float(values_18hrs[i]))
+
+        elif statusEstacion == "AUTOMATICA":
+
+            fechas = []
+            values = []
+            lluvia = []
+
+            for t in time_array:
+
+                anyo = t.year
+                mes = t.month
+
+                if mes < 10:
+                    MM = '0' + str(mes)
+                else:
+                    MM = str(mes)
+
+                YYYY = str(anyo)
+
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=280'.format(codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 1]
+
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    horas = df_stations.iloc[:, 1].values
+                    niveles = df_stations.iloc[:, 2].values
+                    try:
+                        precipitacion = df_stations.iloc[:, 3].values
+                    except IndexError:
+                        print('No hay datos de lluvia en esta estación')
+
+                    for i in range(0, len(dates)):
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), int(horas[i][0:2]),
+                                        int(horas[i][3:5])))
+                        if niveles[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(niveles[i]) >= 100:
+                            values.append(float(niveles[i])/100)
+                        else:
+                            values.append(float(niveles[i]))
+                        try:
+                            if precipitacion[i] == 'S/D':
+                                lluvia.append(np.nan)
+                            else:
+                                lluvia.append(float(precipitacion[i]))
+                        except IndexError:
+                            print('No hay datos de lluvia en esta estación')
+
+        datesObservedWaterLevel = fechas
+        observedWaterLevel = values
+
+        pairs = [list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
+        water_level_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
+
+        water_level_df.set_index('Datetime', inplace=True)
+        water_level_df.dropna(inplace=True)
 
         observed_WL = go.Scatter(
-            x=datesObservedWaterLevel,
-            y=observedWaterLevel,
+            x=water_level_df.index,
+            y=water_level_df.iloc[:, 0].values,
             name='Observed'
-        )
-
-        sensor_WL = go.Scatter(
-            x=datesSensorWaterLevel,
-            y=sensorWaterLevel,
-            name='Sensor'
         )
 
         layout = go.Layout(title='Observed Water Level',
@@ -1213,7 +1306,7 @@ def get_waterlevel_data(request):
                            showlegend=True)
 
         chart_obj = PlotlyView(
-            go.Figure(data=[observed_WL, sensor_WL],
+            go.Figure(data=[observed_WL],
                       layout=layout)
         )
 
@@ -1238,44 +1331,226 @@ def get_observed_waterlevel_csv(request):
     try:
         codEstacion = get_data['stationcode']
         nomEstacion = get_data['stationname']
+        oldCodEstacion = get_data['oldcode']
+        tipoEstacion = get_data['stationtype']
+        catEstacion = get_data['stationcat']
+        statusEstacion = get_data['stationstatus']
+        river = get_data['stream']
 
-        url = 'http://fews.ideam.gov.co/colombia/jsonH/00' + codEstacion + 'Hobs.json'
+        tz = pytz.timezone('America/Bogota')
+        hoy = dt.datetime.now(tz)
 
-        f = requests.get(url, verify=False)
-        data = f.json()
+        end_date = dt.datetime(int(hoy.year), int(hoy.month), 1)
+        ini_date = end_date - relativedelta(months=7)
 
-        observedWaterLevel = (data.get('obs'))
-        observedWaterLevel = (observedWaterLevel.get('data'))
+        time_array = []
 
-        datesObservedWaterLevel = [row[0] for row in observedWaterLevel]
-        observedWaterLevel = [row[1] for row in observedWaterLevel]
+        while ini_date <= end_date:
+            time_array.append(ini_date)
+            ini_date += relativedelta(months=1)
 
-        dates = []
-        waterLevel = []
+        if statusEstacion == "DIFERIDO":
 
-        for i in range(0, len(datesObservedWaterLevel) - 1):
-            year = int(datesObservedWaterLevel[i][0:4])
-            month = int(datesObservedWaterLevel[i][5:7])
-            day = int(datesObservedWaterLevel[i][8:10])
-            hh = int(datesObservedWaterLevel[i][11:13])
-            mm = int(datesObservedWaterLevel[i][14:16])
-            dates.append(dt.datetime(year, month, day, hh, mm))
-            waterLevel.append(observedWaterLevel[i])
+            fechas = []
+            values = []
 
-        datesObservedWaterLevel = dates
-        observedWaterLevel = waterLevel
+            for t in time_array:
+
+                anyo = t.year
+                mes = t.month
+
+                if mes < 10:
+                    MM = '0' + str(mes)
+                else:
+                    MM = str(mes)
+
+                YYYY = str(anyo)
+
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=263'.format(
+                    codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
+
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 2]
+
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    values_06hrs = df_stations.iloc[:, 1].values
+                    values_10hrs = df_stations.iloc[:, 2].values
+                    values_14hrs = df_stations.iloc[:, 3].values
+                    values_18hrs = df_stations.iloc[:, 4].values
+
+                    for i in range(0, len(dates)):
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 6, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 10, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 14, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 18, 0, 0))
+                        if values_06hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_06hrs[i]) >= 200:
+                            values.append(float(values_06hrs[i]) / 200)
+                        else:
+                            values.append(float(values_06hrs[i]))
+                        if values_10hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_10hrs[i]) >= 200:
+                            values.append(float(values_10hrs[i]) / 200)
+                        else:
+                            values.append(float(values_10hrs[i]))
+                        if values_14hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_14hrs[i]) >= 200:
+                            values.append(float(values_14hrs[i]) / 200)
+                        else:
+                            values.append(float(values_14hrs[i]))
+                        if values_18hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_18hrs[i]) >= 200:
+                            values.append(float(values_18hrs[i]) / 200)
+                        else:
+                            values.append(float(values_18hrs[i]))
+
+        elif statusEstacion == "REAL":
+
+            fechas = []
+            values = []
+
+            for t in time_array:
+
+                anyo = t.year
+                mes = t.month
+
+                if mes < 10:
+                    MM = '0' + str(mes)
+
+                else:
+                    MM = str(mes)
+
+                YYYY = str(anyo)
+
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=101'.format(
+                    codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 2]
+
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    values_06hrs = df_stations.iloc[:, 1].values
+                    values_10hrs = df_stations.iloc[:, 2].values
+                    values_14hrs = df_stations.iloc[:, 3].values
+                    values_18hrs = df_stations.iloc[:, 4].values
+
+                    for i in range(0, len(dates)):
+                        fechas.append(dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 6, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 10, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 14, 0, 0))
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), 18, 0, 0))
+                        if values_06hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_06hrs[i]) >= 200:
+                            values.append(float(values_06hrs[i]) / 200)
+                        else:
+                            values.append(float(values_06hrs[i]))
+                        if values_10hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_10hrs[i]) >= 200:
+                            values.append(float(values_10hrs[i]) / 200)
+                        else:
+                            values.append(float(values_10hrs[i]))
+                        if values_14hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_14hrs[i]) >= 200:
+                            values.append(float(values_14hrs[i]) / 200)
+                        else:
+                            values.append(float(values_14hrs[i]))
+                        if values_18hrs[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(values_18hrs[i]) >= 200:
+                            values.append(float(values_18hrs[i]) / 200)
+                        else:
+                            values.append(float(values_18hrs[i]))
+
+        elif statusEstacion == "AUTOMATICA":
+
+            fechas = []
+            values = []
+            lluvia = []
+
+            for t in time_array:
+
+                anyo = t.year
+                mes = t.month
+
+                if mes < 10:
+                    MM = '0' + str(mes)
+                else:
+                    MM = str(mes)
+
+                YYYY = str(anyo)
+
+                url = 'https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/_dato_esta_tipo02.php?estaciones={0}&CBOFiltro={1}{2}&t_e=H&estado={3}&cod_old={4}&cate_esta={5}&alt=280'.format(
+                    codEstacion, YYYY, MM, statusEstacion, oldCodEstacion, catEstacion)
+                page = requests.get(url)
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+                results = soup.find(id='dataTable')
+                df_stations = pd.read_html(str(results))[0]
+                df_stations = df_stations.loc[df_stations.index >= 1]
+
+                if len(df_stations.iloc[:, 0].values) > 0:
+                    dates = df_stations.iloc[:, 0].values
+                    horas = df_stations.iloc[:, 1].values
+                    niveles = df_stations.iloc[:, 2].values
+                    try:
+                        precipitacion = df_stations.iloc[:, 3].values
+                    except IndexError:
+                        print('No hay datos de lluvia en esta estación')
+
+                    for i in range(0, len(dates)):
+                        fechas.append(
+                            dt.datetime(int(dates[i][0:4]), int(dates[i][5:7]), int(dates[i][8:10]), int(horas[i][0:2]),
+                                        int(horas[i][3:5])))
+                        if niveles[i] == 'S/D':
+                            values.append(np.nan)
+                        elif float(niveles[i]) >= 100:
+                            values.append(float(niveles[i]) / 100)
+                        else:
+                            values.append(float(niveles[i]))
+                        try:
+                            if precipitacion[i] == 'S/D':
+                                lluvia.append(np.nan)
+                            else:
+                                lluvia.append(float(precipitacion[i]))
+                        except IndexError:
+                            print('No hay datos de lluvia en esta estación')
+
+        datesObservedWaterLevel = fechas
+        observedWaterLevel = values
 
         pairs = [list(a) for a in zip(datesObservedWaterLevel, observedWaterLevel)]
+        water_level_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
+
+        water_level_df.set_index('Datetime', inplace=True)
+        water_level_df.dropna(inplace=True)
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=observed_water_level_{0}_{1}.csv'.format(
             codEstacion, nomEstacion)
 
-        writer = csv_writer(response)
-        writer.writerow(['datetime', 'water level (m)'])
-
-        for row_data in pairs:
-            writer.writerow(row_data)
+        water_level_df.to_csv(encoding='utf-8', header=True, path_or_buf=response)
 
         return response
 
