@@ -1,6 +1,5 @@
 from setuptools import setup, find_namespace_packages
 from tethys_apps.app_installation import find_resource_files
-import fix_tethys_init_files
 
 # -- Apps Definition -- #
 app_package = 'hydroviewer_peru'
@@ -14,11 +13,9 @@ resource_files = find_resource_files('tethysapp/' + app_package + '/templates', 
 resource_files += find_resource_files('tethysapp/' + app_package + '/public', 'tethysapp/' + app_package)
 resource_files += find_resource_files('tethysapp/' + app_package + '/workspaces', 'tethysapp/' + app_package)
 
-fix_tethys_init_files.fix_tethys_init_files(3)
-
 setup(
     name=release_package,
-    version='1.2',
+    version='1.3',
     description='',
     long_description='',
     keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Peru"',
