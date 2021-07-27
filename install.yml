@@ -7,7 +7,7 @@ requirements:
   # Putting in a skip true param will skip the entire section. Ignoring the option will assume it be set to False
   skip: false
   conda:
-    channel
+    channels:
       - conda-forge
     packages:
       - netCDF4
