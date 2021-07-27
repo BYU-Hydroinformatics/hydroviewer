@@ -4,7 +4,7 @@ name: hydroviewer_central_america
 requirements:
   skip: false
   conda:
-    channel
+    channels:
       - conda-forge
     packages:
       - netCDF4
