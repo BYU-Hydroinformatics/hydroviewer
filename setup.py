@@ -18,7 +18,7 @@ fix_tethys_init_files.fix_tethys_init_files(3)
 
 setup(
     name=release_package,
-    version='1.1',
+    version='1.2',
     description='',
     long_description='',
     keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Peru"',
