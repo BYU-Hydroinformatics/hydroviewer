@@ -1125,7 +1125,7 @@ function map_events() {
                             dataType: 'json',
                             success: function (result) {
                                 stationcode = result["features"][0]["properties"]["CodEstacao"];
-                                stationname = result["features"][0]["properties"]["NomeEstacao"];
+                                stationname = result["features"][0]["properties"]["NomeEstaca"];
                                 $('#obsdates').removeClass('hidden');
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
