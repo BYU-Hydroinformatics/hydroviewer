@@ -1116,6 +1116,7 @@ def get_waterlevel_data(request):
 		# YYYY/MM/DD
 
 		url = 'http://186.42.174.236/InamhiEmas/datos.php?esta__id={0}&estanomb={1}&tipo={2}'.format(idEstacion, nomEstacion, catEstacion)
+		print(url)
 
 		page = requests.get(url)
 		soup = BeautifulSoup(page.content, 'html.parser')

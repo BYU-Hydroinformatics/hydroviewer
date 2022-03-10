@@ -20,6 +20,7 @@ requirements:
       - numpy
       - scipy
       - bs4
+      - html5lib
   pip:
 
 post:
