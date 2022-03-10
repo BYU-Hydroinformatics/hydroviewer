@@ -366,8 +366,10 @@ function view_watershed() {
         var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                params: { 'LAYERS': layerName },
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-77951ba9bcf04ac5bc68ae3be2acfd90/wms',
+                //params: { 'LAYERS': layerName },
+                params: { 'LAYERS': 'south_america-ecuador-geoglows-drainage_line' },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -380,7 +382,8 @@ function view_watershed() {
 
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-77951ba9bcf04ac5bc68ae3be2acfd90/wms',
                 params: {'LAYERS':"Ecuador_Stations_RT"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
