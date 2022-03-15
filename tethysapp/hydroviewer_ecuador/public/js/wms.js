@@ -725,7 +725,8 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
         error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
             $('#info').removeClass('hidden');
-
+            $loading.addClass('hidden');
+            
             setTimeout(function() {
                 $('#info').addClass('hidden')
             }, 5000);
@@ -805,6 +806,7 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#his-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -838,6 +840,7 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#fdc-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -870,6 +873,7 @@ function get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startd
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#seasonal_d-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -902,6 +906,7 @@ function get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, star
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#seasonal_m-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -929,6 +934,7 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
         error: function(xhr, errmsg, err) {
             $('#table').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+".</div>"); // add the error to the dom
 			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+			$("#forecast-table").addClass('hidden');
         },
         success: function(resp) {
           // console.log(resp)
@@ -959,6 +965,7 @@ function get_waterlevel_info (stationcode, stationname, stationid, stationcat, s
         error: function () {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
             $('#info').removeClass('hidden');
+            $('#observed-loading-WL').addClass('hidden');
 
             setTimeout(function () {
                 $('#info').addClass('hidden')

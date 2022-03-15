@@ -1116,102 +1116,43 @@ def get_waterlevel_data(request):
 		# YYYY/MM/DD
 
 		url = 'http://186.42.174.236/InamhiEmas/datos.php?esta__id={0}&estanomb={1}&tipo={2}'.format(idEstacion, nomEstacion, catEstacion)
+		url = url.replace(' ', '%20')
 		print(url)
 
-		page = requests.get(url)
-		soup = BeautifulSoup(page.content, 'html.parser')
-		results = soup.find(id='miyazaki')
-		df_stations = pd.read_html(str(results))[0]
-
-		dates = []
-		waterLevel = []
-
-		columns = len(df_stations.columns)
-
 		try:
-			df_stations.iloc[:, 0] = pd.to_datetime(df_stations.iloc[:, 0])
-			dates = df_stations.iloc[:, 0].values
+			page = requests.get(url)
+			page = urllib.request.urlopen(url)
+			html = page.read()
+			html1 = html.decode('UTF-8')
+			head, sep, tail = html1.partition("$('#nivel').highcharts({")
+			head, sep, tail = tail.partition('categories: ')
+			dates, sep, tail = tail.partition(',\n                                    dateTimeLabelFormats')
+			dates = ast.literal_eval(dates)
+			dates = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in dates]
+			head, sep, tail = tail.partition("name: '")
+			variable, sep, tail = tail.partition("',")
+			head, sep, tail = tail.partition("data: ")
+			values, sep, tail = tail.partition("                                    }")
+			values = ast.literal_eval(values)
 
-			if columns == 2:
-				nivel_prom = df_stations.iloc[:, 1].values
-				pairs = [list(a) for a in zip(dates, nivel_prom)]
-				waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
-				waterLevel_df.set_index('Datetime', inplace=True)
-				waterLevel_df.index = pd.to_datetime(waterLevel_df.index)
+			pairs = [list(a) for a in zip(dates, values)]
+			waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
+			waterLevel_df.set_index('Datetime', inplace=True)
+			waterLevel_df.index = pd.to_datetime(waterLevel_df.index)
 
-				observed_WL = go.Scatter(
-					x=waterLevel_df.index,
-					y=waterLevel_df.iloc[:, 0].values,
-					name='Observed'
-				)
+			observed_WL = go.Scatter(
+				x=waterLevel_df.index,
+				y=waterLevel_df.iloc[:, 0].values,
+				name='Observed'
+			)
 
-				layout = go.Layout(title='Observed Water Level',
-				                   xaxis=dict(title='Dates', ), yaxis=dict(title='Water Level (m)', autorange=True),
-				                   showlegend=True)
+			layout = go.Layout(title='Observed Water Level', xaxis=dict(title='Dates', ), yaxis=dict(title='Water Level (m)', autorange=True), showlegend=True)
 
-				chart_obj = PlotlyView(
-					go.Figure(data=[observed_WL],
-					          layout=layout)
-				)
+			chart_obj = PlotlyView(go.Figure(data=[observed_WL], layout=layout))
 
-			else:
-
-				nivel_inst = df_stations.iloc[:, 1].values
-				pairs = [list(a) for a in zip(dates, nivel_inst)]
-				ins_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Instantaneous Water Level (m)'])
-				ins_waterLevel_df.set_index('Datetime', inplace=True)
-				ins_waterLevel_df.index = pd.to_datetime(ins_waterLevel_df.index)
-
-				observed_ins_WL = go.Scatter(
-					x=ins_waterLevel_df.index,
-					y=ins_waterLevel_df.iloc[:, 0].values,
-					name='Instantaneous'
-				)
-
-				nivel_max = df_stations.iloc[:, 2].values
-				pairs = [list(a) for a in zip(dates, nivel_max)]
-				max_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Maximum Water Level (m)'])
-				max_waterLevel_df.set_index('Datetime', inplace=True)
-				max_waterLevel_df.index = pd.to_datetime(max_waterLevel_df.index)
-
-				observed_max_WL = go.Scatter(
-					x=max_waterLevel_df.index,
-					y=max_waterLevel_df.iloc[:, 0].values,
-					name='Maximum'
-				)
-
-				nivel_min = df_stations.iloc[:, 3].values
-				pairs = [list(a) for a in zip(dates, nivel_min)]
-				min_waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Minimum Water Level (m)'])
-				min_waterLevel_df.set_index('Datetime', inplace=True)
-				min_waterLevel_df.index = pd.to_datetime(min_waterLevel_df.index)
-
-				observed_min_WL = go.Scatter(
-					x=min_waterLevel_df.index,
-					y=min_waterLevel_df.iloc[:, 0].values,
-					name='Minimum'
-				)
-
-				nivel_prom = df_stations.iloc[:, 4].values
-				pairs = [list(a) for a in zip(dates, nivel_prom)]
-				waterLevel_df = pd.DataFrame(pairs, columns=['Datetime', 'Water Level (m)'])
-				waterLevel_df.set_index('Datetime', inplace=True)
-				waterLevel_df.index = pd.to_datetime(waterLevel_df.index)
-
-				observed_WL = go.Scatter(
-					x=waterLevel_df.index,
-					y=waterLevel_df.iloc[:, 0].values,
-					name='Average'
-				)
-
-				layout = go.Layout(title='Observed Water Level at <br> {0} - {1}'.format(codEstacion, nomEstacion),
-				                   xaxis=dict(title='Dates', ), yaxis=dict(title='Water Level (m)', autorange=True),
-				                   showlegend=True)
-
-				chart_obj = PlotlyView(go.Figure(data=[observed_WL, observed_ins_WL, observed_max_WL, observed_min_WL], layout=layout))
-
-		except Exception:
+		except Exception as e:
 			print('No existen datos para esta estación por el momento...')
+			print(e)
 
 		if 'chart_obj' in locals():
 			context = {
