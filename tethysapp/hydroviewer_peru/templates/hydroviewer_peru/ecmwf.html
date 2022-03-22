@@ -148,7 +148,6 @@
             <div class="modal-body">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a id="observedWL_tab_link" href="#observedWL" aria-controls="observedWL" role="tab" data-toggle="tab">Observed Water Level</a></li>
-                    <li role="presentation"><a id="pdf_tab_link" href="#pdf" aria-controls="pdf" role="tab" data-toggle="tab">Observed Values</a></li>
                     <li role="presentation"><a href="#download_data" aria-controls="download_data" role="tab" data-toggle="tab">Download</a></li>
                 </ul>
                 <!-- Tab panes -->
@@ -158,11 +157,6 @@
                             <div class="flex-container-row"><img id="observed-loading-WL" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                             <div id="observed-chart-WL"></div>
                             <!-- <iframe id="observed-chart-WL" src=""></iframe> -->
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="pdf">
-                        <div class="panel panel-default">
-                            <div id="pdf-url" class="col-md-8"></div>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="download_data">

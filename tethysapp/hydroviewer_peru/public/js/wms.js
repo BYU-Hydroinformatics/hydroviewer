@@ -363,10 +363,11 @@ function view_watershed() {
         var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
+        var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 params: { 'LAYERS': layerName },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -380,8 +381,9 @@ function view_watershed() {
 
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                params: {'LAYERS':"SENAMHI_Stations_RT"},
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -393,7 +395,8 @@ function view_watershed() {
         map.addLayer(wmsLayer2);
 
         $loading.addClass('hidden');
-        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -406,7 +409,8 @@ function view_watershed() {
             success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
-                    .split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    //.split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    .split('HS-9b6a7f2197ec403895bacebdca4d0074:south_america-peru-geoglows-drainage_line')[1]
                     .split('LatLongBoundingBox ')[1]
                     .split('/></FeatureType>')[0];
 
@@ -461,8 +465,9 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"SENAMHI_Stations_RT"},
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -523,8 +528,9 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"SENAMHI_Stations_RT"},
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -722,6 +728,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
         error: function() {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
             $('#info').removeClass('hidden');
+            $loading.addClass('hidden');
 
             setTimeout(function() {
                 $('#info').addClass('hidden')
@@ -802,6 +809,7 @@ function get_historic_data(model, watershed, subbasin, comid, startdate) {
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#his-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -835,6 +843,7 @@ function get_flow_duration_curve(model, watershed, subbasin, comid, startdate) {
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#fdc-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -867,6 +876,7 @@ function get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startd
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#seasonal_d-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -899,6 +909,7 @@ function get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, star
             } else if (data.error) {
                 $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the historic data</strong></p>');
                 $('#info').removeClass('hidden');
+                $('#seasonal_m-view-file-loading').addClass('hidden');
 
                 setTimeout(function() {
                     $('#info').addClass('hidden')
@@ -926,6 +937,7 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
         error: function(xhr, errmsg, err) {
             $('#table').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+".</div>"); // add the error to the dom
 			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+			$("#forecast-table").addClass('hidden');
         },
         success: function(resp) {
         	// console.log(resp)
@@ -957,6 +969,7 @@ function get_waterlevel_info (stationcode, stationname, oldcode, stationtype, st
         error: function () {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Water Level Data</strong></p>');
             $('#info').removeClass('hidden');
+            $('#observed-loading-WL').addClass('hidden');
 
             setTimeout(function () {
                 $('#info').addClass('hidden')
@@ -1050,7 +1063,7 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (current_layer["H"]["source"]["i"]["LAYERS"] == "SENAMHI_Stations_RT") {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "SENAMHI_Stations_RT_v3") {
 
                         $("#obsgraph").modal('show');
                         $('#observed-chart-WL').addClass('hidden');
@@ -1071,7 +1084,6 @@ function map_events() {
                                 stationcat = result["features"][0]["properties"]["categoria"];
                                 stationstatus = result["features"][0]["properties"]["estado"];
                                 stream = result["features"][0]["properties"]["Rio"];
-                                pdf_url = result["features"][0]["properties"]["pdf"];
                                 $('#obsdates').removeClass('hidden');
                                 var startdateobs = $('#startdateobs').val();
                                 var enddateobs = $('#enddateobs').val();
@@ -1085,8 +1097,6 @@ function map_events() {
                         		console.log(url)
 
                         		get_waterlevel_info (stationcode, stationname, oldcode, stationtype, stationcat, stationstatus, stream)
-
-                        		$("#pdf-url").append('<iframe src="' + pdf_url + '" style="width:900px; height:750px;" frameborder="0"></iframe>');
 
                             }
                         });
