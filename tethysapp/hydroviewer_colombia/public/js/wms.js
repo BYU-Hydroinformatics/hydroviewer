@@ -367,8 +367,10 @@ function view_watershed() {
         var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                params: { 'LAYERS': layerName },
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
+                //params: { 'LAYERS': layerName },
+                params: {'LAYERS': 'south_america-colombia-geoglows-drainage_line' },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -381,7 +383,8 @@ function view_watershed() {
 
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
                 params: {'LAYERS':"FEWS_Stations_N"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -394,7 +397,8 @@ function view_watershed() {
         map.addLayer(wmsLayer2);
 
         $loading.addClass('hidden');
-        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -407,7 +411,8 @@ function view_watershed() {
             success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
-                    .split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    //.split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    .split('HS-dd069299816c4f1b82cd1fb2d59ec0ab:south_america-colombia-geoglows-drainage_line')[1]
                     .split('LatLongBoundingBox ')[1]
                     .split('/></FeatureType>')[0];
 
@@ -462,7 +467,8 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
                 		params: {'LAYERS':"FEWS_Stations_N"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
@@ -524,7 +530,8 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
                 		params: {'LAYERS':"FEWS_Stations_N"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
