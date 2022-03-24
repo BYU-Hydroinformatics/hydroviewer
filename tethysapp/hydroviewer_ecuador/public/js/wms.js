@@ -396,7 +396,8 @@ function view_watershed() {
         map.addLayer(wmsLayer2);
 
         $loading.addClass('hidden');
-        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -409,7 +410,8 @@ function view_watershed() {
             success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
-                    .split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    //.split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    .split('HS-77951ba9bcf04ac5bc68ae3be2acfd90:south_america-ecuador-geoglows-drainage_line')[1]
                     .split('LatLongBoundingBox ')[1]
                     .split('/></FeatureType>')[0];
 
@@ -464,7 +466,8 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-77951ba9bcf04ac5bc68ae3be2acfd90/wms',
                 		params: {'LAYERS':"Ecuador_Stations_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
@@ -526,8 +529,9 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		params: {'LAYERS':"Ecuador_Stations_RT"},
+                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-77951ba9bcf04ac5bc68ae3be2acfd90/wms',
+                        params: {'LAYERS':"Ecuador_Stations_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -726,7 +730,7 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
             $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast</strong></p>');
             $('#info').removeClass('hidden');
             $loading.addClass('hidden');
-            
+
             setTimeout(function() {
                 $('#info').addClass('hidden')
             }, 5000);
