@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 from tethys_apps.app_installation import find_resource_files
 
 # -- Apps Definition -- #
-app_package = 'hydroviewer_colombia'
+app_package = 'hydroviewer_canada'
 release_package = 'tethysapp-' + app_package
 
 # -- Python Dependencies -- #
@@ -18,7 +18,7 @@ setup(
     version='1.1',
     description='',
     long_description='',
-    keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Colombia"',
+    keywords='"Hydrology", "GEOGloWS", "Hydroviewer", "Canada"',
     author='Jorge Luis Sanchez-Lozano',
     author_email='jorgessanchez7@gmail.com',
     url='',

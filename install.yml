@@ -1,7 +1,7 @@
 # This file may be committed to your app code.
 version: 1.1
 # This should match the app - package name in your setup3.py
-name: hydroviewer_colombia
+name: hydroviewer_canada
 
 requirements:
   # Putting in a skip true param will skip the entire section. Ignoring the option will assume it be set to False
