@@ -468,8 +468,8 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-a83f47af1439444396749535ddf15dc1/wms',
+                		params: {'LAYERS':"Stations_Canada_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -531,8 +531,8 @@ function view_watershed() {
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
                 		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
+                		url: 'https://geoserver.hydroshare.org/geoserver/HS-a83f47af1439444396749535ddf15dc1/wms',
+                		params: {'LAYERS':"Stations_Canada_RT"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
                 	})
@@ -989,13 +989,6 @@ function get_discharge_info (stationcode, stationname, startdateobs, enddateobs,
 
                 $('#download_observed_discharge').removeClass('hidden');
 
-                $('#submit-download-sensor-discharge').attr({
-                    target: '_blank',
-                    href: 'get-sensor-discharge-csv?' + jQuery.param(params)
-                });
-
-                $('#download_sensor_discharge').removeClass('hidden');
-
                 } else if (data.error) {
                 	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
                 	$('#info').removeClass('hidden');
@@ -1039,6 +1032,7 @@ function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs
                 var params = {
                     stationcode: stationcode,
                     stationname: stationname,
+                    province: province,
                 };
 
                 $('#submit-download-observed-waterlevel').attr({
@@ -1047,13 +1041,6 @@ function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs
                 });
 
                 $('#download_observed_waterlevel').removeClass('hidden');
-
-                $('#submit-download-sensor-waterlevel').attr({
-                    target: '_blank',
-                    href: 'get-sensor-waterlevel-csv?' + jQuery.param(params)
-                });
-
-                $('#download_sensor_waterlevel').removeClass('hidden');
 
                 } else if (data.error) {
                 	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
@@ -1113,7 +1100,7 @@ function map_events() {
             if (model === 'ECMWF-RAPID') {
                 var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' }); //Get the wms url for the clicked point
 
-                if (current_layer["H"]["source"]["i"]["LAYERS"] == "FEWS_Stations_N") {
+                if (current_layer["H"]["source"]["i"]["LAYERS"] == "Stations_Canada_RT") {
 
                         $("#obsgraph").modal('show');
                         $('#observed-chart-Q').addClass('hidden');

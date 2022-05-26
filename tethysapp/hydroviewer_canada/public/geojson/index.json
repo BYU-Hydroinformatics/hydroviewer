@@ -1,57 +1,57 @@
 {
-  "ecuador": {
+  "canada": {
     "name": "Canada",
     "geojsons": ["Canada.json"]
   },
-  "azuay": {
+  "alberta": {
     "name": "Alberta",
     "geojsons": ["Alberta.json"]
   },
-  "bolivar": {
+  "british_columbia": {
     "name": "British Columbia",
     "geojsons": ["British_Columbia.json"]
   },
-  "canar": {
+  "manitoba": {
     "name": "Manitoba",
     "geojsons": ["Manitoba.json"]
   },
-  "carchi": {
+  "new_brunswick": {
     "name": "New Brunswick",
     "geojsons": ["New_Brunswick.json"]
   },
-  "chimborazo": {
+  "newfoundland_and_labrador": {
     "name": "Newfoundland and Labrador",
     "geojsons": ["Newfoundland_and_Labrador.json"]
   },
-  "cotopaxi": {
+  "northwest_territories": {
     "name": "Northwest Territories",
     "geojsons": ["Northwest_Territories.json"]
   },
-  "el_oro": {
+  "nova_scotia": {
     "name": "Nova Scotia",
     "geojsons": ["Nova_Scotia.json"]
   },
-  "esmeraldas": {
+  "nunavut": {
     "name": "Nunavut",
     "geojsons": ["Nunavut.json"]
   },
-  "galapagos": {
+  "ontario": {
     "name": "Ontario",
     "geojsons": ["Ontario.json"]
   },
-  "guayas": {
+  "prince_edward_island": {
     "name": "Prince Edward Island",
     "geojsons": ["Prince_Edward_Island.json"]
   },
-  "imbabura": {
+  "quebec": {
     "name": "Quebec",
     "geojsons": ["Quebec.json"]
   },
-  "loja": {
+  "saskatchewan": {
     "name": "Saskatchewan",
     "geojsons": ["Saskatchewan.json"]
   },
-  "los_rios": {
+  "yukon": {
     "name": "Yukon",
     "geojsons": ["Yukon.json"]
   }
