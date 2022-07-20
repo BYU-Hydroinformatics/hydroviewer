@@ -82,7 +82,7 @@
 }
 
 .modal-dialog {
-  max-width: 800px;
+  max-width: none;
 }
 
 .logo-image img {
