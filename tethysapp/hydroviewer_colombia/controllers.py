@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
 from tethys_sdk.base import TethysAppBase
 from tethys_sdk.gizmos import PlotlyView
+from tethys_sdk.routing import controller
 from tethys_sdk.workspaces import app_workspace
 import os
 import requests
@@ -48,7 +49,10 @@ def set_custom_setting(defaultModelName, defaultWSName):
     db_setting.value = defaultWSName
     db_setting.save()
 
-
+@controller(
+    name='home',
+    # url=base_url,
+)
 def home(request):
     # Check if we have a default model. If we do, then redirect the user to the default model's page
     default_model = app.get_custom_setting('default_model_type')
@@ -83,19 +87,22 @@ def home_standard(request):
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
-
+@controller(
+    name='ecmwf',
+    url='ecmwf-rapid',
+)
 def ecmwf(request):
     # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
-
+    
     if (can_update_default):
         defaultUpdateButton = Button(
             display_text='Save',
             name='update_button',
             style='success',
             attributes={
-                'data-toggle': 'tooltip',
-                'data-placement': 'bottom',
+                'data-bs-toggle': 'tooltip',
+                'data-bs-placement': 'bottom',
                 'title': 'Save as Default Options for WS'
             })
     else:
@@ -267,7 +274,10 @@ def ecmwf(request):
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
 
-
+@controller(
+    name='lis',
+    url='lis-rapid',
+)
 def lis(request):
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -318,7 +328,10 @@ def lis(request):
 
     return render(request, '{0}/lis.html'.format(base_name), context)
 
-
+@controller(
+    name='hiwat',
+    url='hiwat-rapid',
+)
 def hiwat(request):
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -370,7 +383,11 @@ def hiwat(request):
     return render(request, '{0}/hiwat.html'.format(base_name), context)
 
 
-@app_workspace
+@controller(
+    name='get-warning-points',
+    url='get-warning-points',
+    app_workspace=True,
+)
 def get_warning_points(request, app_workspace):
     get_data = request.GET
     colombia_id_path = os.path.join(app_workspace.path, 'colombia_reachids.csv')
@@ -471,7 +488,10 @@ def create_rp(df_):
 
     return list_coordinates
 
-
+@controller(
+    name='get-time-series',
+    url='get-time-series',
+)
 def ecmwf_get_time_series(request):
     get_data = request.GET
     try:
@@ -605,6 +625,11 @@ def ecmwf_get_time_series(request):
 def get_time_series(request):
     return ecmwf_get_time_series(request)
 
+
+@controller(
+    name='get-available-dates',
+    url='get-available-dates',
+)
 def get_available_dates(request):
     get_data = request.GET
 
@@ -643,6 +668,10 @@ def get_available_dates(request):
     })
 
 
+@controller(
+    name='get-historic-data',
+    url='get-historic-data',
+)
 def get_historic_data(request):
     """""
     Returns ERA 5 hydrograph
@@ -688,6 +717,10 @@ def get_historic_data(request):
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
+@controller(
+    name='get-flow-duration-curve',
+    url='get-flow-duration-curve',
+)
 def get_flow_duration_curve(request):
     get_data = request.GET
 
@@ -723,6 +756,10 @@ def get_flow_duration_curve(request):
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
+@controller(
+    name='get_historic_data_csv',
+    url='get-historic-data-csv',
+)
 def get_historic_data_csv(request):
     """""
     Returns ERA 5 data as csv
@@ -760,6 +797,10 @@ def get_historic_data_csv(request):
         return JsonResponse({'error': 'No historic data found.'})
 
 
+@controller(
+    name='get_forecast_data_csv',
+    url='get-forecast-data-csv',
+)
 def get_forecast_data_csv(request):
     """""
     Returns Forecast data as csv
@@ -809,6 +850,10 @@ def get_forecast_data_csv(request):
         return JsonResponse({'error': 'No forecast data found.'})
 
 
+@controller(
+    name='get_lis_shp',
+    url='get-lis-shp',
+)
 def shp_to_geojson(request):
     get_data = request.GET
 
@@ -947,6 +992,10 @@ def shp_to_geojson(request):
         return JsonResponse({'error': 'No shapefile found.'})
 
 
+@controller(
+    name='get-daily-seasonal-streamflow',
+    url='get-daily-seasonal-streamflow',
+)
 def get_daily_seasonal_streamflow(request):
     """
      Returns daily seasonal streamflow chart for unique river ID
@@ -987,6 +1036,10 @@ def get_daily_seasonal_streamflow(request):
         return JsonResponse({'error': 'No historic data found for calculating daily seasonality.'})
 
 
+@controller(
+    name='get-monthly-seasonal-streamflow',
+    url='get-monthly-seasonal-streamflow',
+)
 def get_monthly_seasonal_streamflow(request):
     """
      Returns daily seasonal streamflow chart for unique river ID
@@ -1027,6 +1080,10 @@ def get_monthly_seasonal_streamflow(request):
         return JsonResponse({'error': 'No historic data found for calculating monthly seasonality.'})
 
 
+@controller(
+    name='set_def_ws',
+    url='admin/setdefault',
+)
 def setDefault(request):
     get_data = request.GET
     set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
@@ -1043,6 +1100,10 @@ def get_units_title(unit_type):
     return units_title
 
 
+@controller(
+    name='forecastpercent',
+    url='ecmwf-rapid/forecastpercent',
+)
 def forecastpercent(request):
     get_data = request.GET
     try:
@@ -1101,6 +1162,10 @@ def forecastpercent(request):
         return JsonResponse({'error': 'No data found for the selected station.'})
 
 
+@controller(
+    name='get_discharge_data',
+	url='get-discharge-data',
+)
 def get_discharge_data(request):
     """
     Get data from fews stations
@@ -1195,6 +1260,10 @@ def get_discharge_data(request):
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
+@controller(
+    name='get_observed_discharge_csv',
+	url='get-observed-discharge-csv',
+)
 def get_observed_discharge_csv(request):
     """
     Get data from fews stations
@@ -1251,6 +1320,10 @@ def get_observed_discharge_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
+@controller(
+    name='get_sensor_discharge_csv',
+	url='get-sensor-discharge-csv',
+)
 def get_sensor_discharge_csv(request):
     """
       Get data from fews stations
@@ -1306,6 +1379,10 @@ def get_sensor_discharge_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
+@controller(
+    name='get_waterlevel_data',
+	url='get-waterlevel-data',
+)
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
@@ -1400,6 +1477,10 @@ def get_waterlevel_data(request):
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
+@controller(
+    name='get_observed_waterlevel_csv',
+	url='get-observed-waterlevel-csv',
+)
 def get_observed_waterlevel_csv(request):
     """
     Get data from fews stations
@@ -1456,6 +1537,10 @@ def get_observed_waterlevel_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
 
+@controller(
+    name='get_sensor_waterlevel_csv',
+	url='get-sensor-waterlevel-csv',
+)
 def get_sensor_waterlevel_csv(request):
     """
       Get data from fews stations

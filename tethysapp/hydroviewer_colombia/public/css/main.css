@@ -81,11 +81,15 @@
   padding: 0 2px;
 }
 
+.modal-dialog {
+  max-width: 800px;
+}
+
 .logo-image img {
   max-width: 100%;
 }
 #about .modal-dialog {
-  width: 75%;
+  width: 85%;
   height: 75%;
   padding: 0;
 }
@@ -94,7 +98,7 @@
   border-radius: 0;
 }
 #graph .modal-dialog {
-  width: 75%;
+  width: 85%;
   height: 75%;
   padding: 0;
 }
