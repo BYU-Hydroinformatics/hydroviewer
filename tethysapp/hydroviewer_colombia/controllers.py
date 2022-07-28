@@ -51,7 +51,6 @@ def set_custom_setting(defaultModelName, defaultWSName):
 
 @controller(
     name='home',
-    # url=base_url,
 )
 def home(request):
     # Check if we have a default model. If we do, then redirect the user to the default model's page
@@ -94,7 +93,7 @@ def home_standard(request):
 def ecmwf(request):
     # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
-    
+
     if (can_update_default):
         defaultUpdateButton = Button(
             display_text='Save',
@@ -1164,7 +1163,7 @@ def forecastpercent(request):
 
 @controller(
     name='get_discharge_data',
-	url='get-discharge-data',
+    url='get-discharge-data',
 )
 def get_discharge_data(request):
     """
@@ -1262,7 +1261,7 @@ def get_discharge_data(request):
 
 @controller(
     name='get_observed_discharge_csv',
-	url='get-observed-discharge-csv',
+    url='get-observed-discharge-csv',
 )
 def get_observed_discharge_csv(request):
     """
@@ -1322,7 +1321,7 @@ def get_observed_discharge_csv(request):
 
 @controller(
     name='get_sensor_discharge_csv',
-	url='get-sensor-discharge-csv',
+    url='get-sensor-discharge-csv',
 )
 def get_sensor_discharge_csv(request):
     """
@@ -1381,7 +1380,7 @@ def get_sensor_discharge_csv(request):
 
 @controller(
     name='get_waterlevel_data',
-	url='get-waterlevel-data',
+    url='get-waterlevel-data',
 )
 def get_waterlevel_data(request):
     """
@@ -1479,7 +1478,7 @@ def get_waterlevel_data(request):
 
 @controller(
     name='get_observed_waterlevel_csv',
-	url='get-observed-waterlevel-csv',
+    url='get-observed-waterlevel-csv',
 )
 def get_observed_waterlevel_csv(request):
     """
@@ -1539,7 +1538,7 @@ def get_observed_waterlevel_csv(request):
 
 @controller(
     name='get_sensor_waterlevel_csv',
-	url='get-sensor-waterlevel-csv',
+    url='get-sensor-waterlevel-csv',
 )
 def get_sensor_waterlevel_csv(request):
     """
