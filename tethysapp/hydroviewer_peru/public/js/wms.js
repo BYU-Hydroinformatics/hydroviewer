@@ -364,11 +364,63 @@ function view_watershed() {
         $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
 
         var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
+        var properties = [
+            {
+                'names': 'region',
+                'val': 'Amazon_River',
+                'stroke_color': '#009933',
+                'stroke_width': '2'
+            },
+            {
+                'names': 'region',
+                'val': 'Northwest_Coast',
+                'stroke_color': '#0055CC',
+                'stroke_width': '2'
+            },
+            {
+                'names': 'region',
+                'val': 'Dulce_River_Altiplano',
+                'stroke_color': '#FF0000',
+                'stroke_width': '2'
+            }
+            // {
+            //     'names': 'order_',
+            //     'val': '4',
+            //     'stroke_color': '#4E09E2',
+            //     'stroke_width': '2'
+            // },
+            // {
+            //     'names': 'order_',
+            //     'val': '5',
+            //     'stroke_color': '#CF0FF1',
+            //     'stroke_width': '2'
+            // },
+            // {
+            //     'names': 'order_',
+            //     'val': '6',
+            //     'stroke_color': '#05E3F9',
+            //     'stroke_width': '2'
+            // },
+            // {
+            //     'names': 'order_',
+            //     'val': '7',
+            //     'stroke_color': '#DFF905',
+            //     'stroke_width': '2'
+            // },
+            
+        ]
+        
+        var sld_string = create_style(layerName,properties);
+        console.log(sld_string)
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
                 //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                url: 'https://tethys2.byu.edu/geoserver/peru_hydroviewer/wms'+ '?service=WMS&version=1.1.1&request=GetCapabilities&',
+                
+                // url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms'+ '?service=WMS&version=1.1.1&request=GetCapabilities&',
                 params: { 'LAYERS': layerName },
+                // params: { 'LAYERS': layerName, 'SLD_BODY': sld_string },
+
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -393,7 +445,7 @@ function view_watershed() {
 
         map.addLayer(wmsLayer);
         map.addLayer(wmsLayer2);
-
+        // wmsLayer.getSource().updateParams({'STYLES': undefined, 'SLD_BODY': sld_string});
         $loading.addClass('hidden');
         //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
         var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
