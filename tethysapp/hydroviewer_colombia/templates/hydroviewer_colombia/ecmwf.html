@@ -1,5 +1,5 @@
 {% extends base_name|add:"/base.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load tethys_gizmos %}
 
 {% block import_gizmos %}
@@ -26,56 +26,56 @@
                    xmlns="http://www.w3.org/2000/svg">
                   <polyline points="19 1, 1 6, 19 14, 1 19" stroke="#0000FF" fill="transparent" stroke-width="2"/>
               </svg>
-              Streams <input id="stp-stream-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+              Streams <input id="stp-stream-toggle" class="toggle-layer" type="checkbox" checked data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polyline points="0 10, 0 0, 10 0, 10 10, 0 10" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,1)" stroke-width="2"/>
               </svg>
-              Stations <input id="stp-stations-toggle" class="toggle-layer" type="checkbox" checked data-toggle="toggle" data-size="mini">
+              Stations <input id="stp-stations-toggle" class="toggle-layer" type="checkbox" checked data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,246,1)" fill="rgba(128,0,246,0.4)" stroke-width="2"/>
               </svg>
-              100-Year Warnings <input id="stp-100-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              100-Year Warnings <input id="stp-100-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(128,0,106,1)" fill="rgba(128,0,106,0.4)" stroke-width="2"/>
               </svg>
-              50-Year Warnings <input id="stp-50-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              50-Year Warnings <input id="stp-50-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,0,0,1)" fill="rgba(255,0,0,0.4)" stroke-width="2"/>
               </svg>
-              25-Year Warnings <input id="stp-25-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              25-Year Warnings <input id="stp-25-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(255,56,5,1)" fill="rgba(255,56,5,0.4)" stroke-width="2"/>
               </svg>
-              10-Year Warnings <input id="stp-10-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              10-Year Warnings <input id="stp-10-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(253,154,1,1)" fill="rgba(253,154,1,0.4)" stroke-width="2"/>
               </svg>
-              5-Year Warnings <input id="stp-5-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              5-Year Warnings <input id="stp-5-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0 20, 10 0, 20 20" stroke="rgba(254,240,1,1)" fill="rgba(254,240,1,0.4)" stroke-width="2"/>
               </svg>
-              2-Year Warnings <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
+              2-Year Warnings <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-bs-toggle="toggle" data-size="mini">
           </div>
           <div>
               <br>
@@ -113,35 +113,41 @@
     {% gizmo defaultUpdateButton %}
   </div>
   {% endif %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
-    <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
+  <div class="header-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View Graph">
+    <a data-bs-toggle="modal" data-bs-target="#graph">
+      <i class="bi bi-globe"></i>
+    </a>
   </div>
 
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
-    <a data-toggle="modal" data-target="#toc_modal"><span class="glyphicon glyphicon-list-alt"></span></a>
+  <div class="header-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View Table of Contents">
+    <a data-bs-toggle="modal" data-bs-target="#toc_modal">
+      <i class="bi bi-list-task"></i>
+    </a>
   </div>
 
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
-    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
+  <div class="header-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="About">
+    <a data-bs-toggle="modal" data-bs-target="#about">
+      <i class="bi bi-info-circle-fill"></i>
+    </a>
   </div>
 {% endblock %}
 
 {% block after_app_content %}
-<!----Observed Data ----->
+<!-- Observed Data -->
 <div class="modal fade" id="obsgraph" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <div class="row">
-                    <div id="station-info" class="col-md-8"></div>
-                    <div class="col-md-4">
-                        <div align="right">
-                          <img class="obslogos" src="{% static base_name|add:'/images/byu_logo.png' %}">
-                          <img class="obslogos" src="{% static base_name|add:'/images/my-icon.png' %}">
-                          <img class="obslogos" src="{% static base_name|add:'/images/Servir_logo.jpeg' %}">
-                        </div>
-                    </div>
+              <div class="row">
+                <div id="station-info" class="col-md-8"></div>
+                <div class="col-md-4">
+                  <div align="right">
+                    <img class="obslogos" src="{% static base_name|add:'/images/byu_logo.png' %}">
+                    <img class="obslogos" src="{% static base_name|add:'/images/my-icon.png' %}">
+                    <img class="obslogos" src="{% static base_name|add:'/images/Servir_logo.jpeg' %}">
+                    <button align="right" style="vertical-align: top;" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                </div>
                 </div>
                 <div id="obsdates">
                     <div id="startdatepicker">
@@ -156,54 +162,58 @@
             <div class="modal-body">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                  <li role="presentation" class="active"><a id="observedQ_tab_link" href="#observedQ" aria-controls="observedQ" role="tab" data-toggle="tab">Observed Discharge</a></li>
-                  <li role="presentation"><a id="observedWL_tab_link" href="#observedWL" aria-controls="observedWL" role="tab" data-toggle="tab">Observed Water Level</a></li>
-                  <li role="presentation"><a href="#download_data" aria-controls="download_data" role="tab" data-toggle="tab">Download</a></li>
+                  <li role="presentation" class="nav-item"><a class="nav-link active" id="observedQ_tab_link" href="#observedQ" aria-controls="observedQ" role="tab" data-bs-toggle="tab">Observed Discharge</a></li>
+                  <li role="presentation" class="nav-item"><a class="nav-link" id="observedWL_tab_link" href="#observedWL" aria-controls="observedWL" role="tab" data-bs-toggle="tab">Observed Water Level</a></li>
+                  <li role="presentation" class="nav-item"><a class="nav-link" href="#download_data" aria-controls="download_data" role="tab" data-bs-toggle="tab">Download</a></li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="observedQ">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                    <div role="tabpanel" class="accordion tab-pane active" id="observedQ">
+                        <div class="accordion-item panel-default">
+                            <div class="accordion-body">
                                 <div class="flex-container-row"><img id="observed-loading-Q" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                                 <div id="observed-chart-Q"></div>
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="observedWL"> <!-- /.tab-pane -->
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                    <div role="tabpanel" class="accordion tab-pane" id="observedWL"> <!-- /.tab-pane -->
+                        <div class="accordion-item panel-default">
+                            <div class="accordion-body">
                                 <div class="flex-container-row"><img id="observed-loading-WL" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
                                 <div id="observed-chart-WL"></div>
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="download_data">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                    <div role="tabpanel" class="accordion tab-pane" id="download_data">
+                        <div class="accordion-item panel-default">
+                            <div class="accordion-body">
                                 <h6>Download Observed Discharge Data</h6>
                                 <div id="download_observed_discharge" class="btn-group hidden long-term-select" role="group">
                                     <a class="btn btn-success" role="button" id="submit-download-observed-discharge">
-                                        <span class="glyphicon glyphicon-play"></span> Download Observed Discharge
+                                        <i class="bi bi-play-fill"></i>
+                                        Download Observed Discharge
                                     </a>
                                 </div>
                                 <h6>Download Sensor Discharge Data</h6>
                                 <div id="download_sensor_discharge" class="btn-group hidden" role="group">
                                     <a class="btn btn-info" role="button" id="submit-download-sensor-discharge">
-                                        <span class="glyphicon glyphicon-play"></span> Download Sensor Discharge
+                                        <i class="bi bi-play-fill"></i>
+                                        Download Sensor Discharge
                                     </a>
                                 </div>
                                 <h6>Download Observed Water Level Data</h6>
                                 <div id="download_observed_waterlevel" class="btn-group hidden long-term-select" role="group">
                                     <a class="btn btn-success" role="button" id="submit-download-observed-waterlevel">
-                                        <span class="glyphicon glyphicon-play"></span> Download Observed Water Level
+                                        <i class="bi bi-play-fill"></i>
+                                        Download Observed Water Level
                                     </a>
                                 </div>
                                 <h6>Download Sensor Water Level Data</h6>
                                 <div id="download_sensor_waterlevel" class="btn-group hidden" role="group">
                                     <a class="btn btn-info" role="button" id="submit-download-sensor-waterlevel">
-                                        <span class="glyphicon glyphicon-play"></span> Download Sensor Water Level
+                                        <i class="bi bi-play-fill"></i>
+                                        Download Sensor Water Level
                                     </a>
                                 </div>
                             </div>
@@ -213,7 +223,7 @@
             </div>
         <div id="info" class="hidden"></div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
         </div>
         </div>
     </div>
@@ -224,7 +234,6 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <div class="row">
           <div id="watershed-info" class="col-md-8"></div>
           <div class="col-md-4">
@@ -232,6 +241,7 @@
               <img class="logos" src="{% static base_name|add:'/images/byu_logo.png' %}">
               <img class="logos" src="{% static base_name|add:'/images/glofas_logo.png' %}">
               <img class="logos" src="{% static base_name|add:'/images/copernicus_logo.png' %}">
+              <button align="right" style="vertical-align: top;" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
           </div>
         </div>
@@ -240,17 +250,17 @@
       <div class="modal-body">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active"><a id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-toggle="tab">Forecast</a></li>
-          <li role="presentation"><a id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-toggle="tab">Historical Simulation</a></li>
-          <li role="presentation"><a id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-toggle="tab">Historical Simulation Statistics</a></li>
-          <li role="presentation"><a href="#download" aria-controls="download" role="tab" data-toggle="tab">Download</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link active" id="forecast_tab_link" href="#forecast_tab" aria-controls="forecast_tab" role="tab" data-bs-toggle="tab">Forecast</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" id="historical_tab_link" href="#historical" aria-controls="historical" role="tab" data-bs-toggle="tab">Historical Simulation</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" id="flow_duration_tab_link" href="#flow_duration" aria-controls="flow_duration" role="tab" data-bs-toggle="tab">Historical Simulation Statistics</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" href="#download" aria-controls="download" role="tab" data-bs-toggle="tab">Download</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="forecast_tab">
-            <div class="panel panel-default">
-              <div class="panel-body">
+          <div role="tabpanel" class="accordion tab-pane active" id="forecast_tab">
+            <div class="accordion-item panel-default">
+              <div class="accordion-body">
                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
                   <!-- <select id="datesSelect" class="form-control"></select> -->
                   {% gizmo date_picker %}
@@ -263,35 +273,37 @@
               </div>
             </div>
           </div> <!-- /.tab-pane -->
-          <div role="tabpanel" class="tab-pane" id="historical">
-            <div class="panel panel-default">
+          <div role="tabpanel" class="accordion tab-pane" id="historical">
+            <div class="accordion-item panel-default">
               <div class="flex-container-row"><img id="his-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-              <div id="historical-chart" class="panel-body"></div>
+              <div id="historical-chart" class="accordion-body"></div>
             </div>
           </div><!-- /.tab-pane -->
-          <div role="tabpanel" class="tab-pane" id="flow_duration">
-            <div class="panel panel-default">
+          <div role="tabpanel" class="accordion tab-pane" id="flow_duration">
+            <div class="accordion-item panel-default">
               <div class="flex-container-row"><img id="fdc-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-              <div id='fdc-chart' class="panel-body"></div>
+              <div id='fdc-chart' class="accordion-body"></div>
               <div class="flex-container-row"><img id="seasonal_d-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-              <div id='seasonal_d-chart' class="panel-body"></div>
+              <div id='seasonal_d-chart' class="accordion-body"></div>
               <div class="flex-container-row"><img id="seasonal_m-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
-              <div id='seasonal_m-chart' class="panel-body"></div>
+              <div id='seasonal_m-chart' class="accordion-body"></div>
             </div>
           </div><!-- /.tab-pane -->
-          <div role="tabpanel" class="tab-pane" id="download">
-            <div class="panel panel-default">
-              <div class="panel-body">
+          <div role="tabpanel" class="accordion tab-pane" id="download">
+            <div class="accordion-item panel-default">
+              <div class="accordion-body">
                 <h6>Download Forecast Data</h6>
                 <div id="download_forecast" class="btn-group hidden long-term-select" role="group">
                   <a class="btn btn-success" role="button" id="submit-download-forecast">
-                    <span class="glyphicon glyphicon-play"></span> Download Forecast
+                    <i class="bi bi-play-fill"></i>
+                    Download Forecast
                   </a>
                 </div>
                 <h6>Download ERA 5 Data</h6>
                 <div id="download_era_5" class="btn-group hidden" role="group">
                   <a class="btn btn-info" role="button" id="submit-download-5-csv">
-                    <span class="glyphicon glyphicon-play"></span> Download ERA 5 Data
+                    <i class="bi bi-play-fill"></i>
+                    Download ERA 5 Data
                   </a>
                 </div>
               </div>
@@ -301,7 +313,7 @@
       </div>
       <div id="info" class="hidden"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -312,8 +324,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h2 class="modal-title" id="about-modal-label">About HydroViewer</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p id="overview"><b>
@@ -337,7 +349,7 @@
         <p><a href="https://streamflow-prediction-tool.readthedocs.io/en/latest/" target="_blank">StreamFlow Prediction Tool</a></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -348,44 +360,44 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Table of Contents</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body tree">
         <!-- List group -->
         <ul class="list-group">
           <li class="list-group-item">
-            Accumulated Rainfall
             <div class="pull-right">
               <input id="wmsToggle0" name="AccRainEGE" type="checkbox" onclick="toggleAcc(0);"/>
               <label for="AccRainEGE" class="label-default"></label>
+              Accumulated Rainfall
             </div>
           </li>
           <li class="list-group-item">
-            Rainfall Probability > 50mm
             <div class="pull-right">
               <input id="wmsToggle1" name="EGE_probRgt50" type="checkbox" onclick="toggleAcc(1);"/>
               <label for="EGE_probRgt50" class="label-default"></label>
+              Rainfall Probability > 50mm
             </div>
           </li>
           <li class="list-group-item">
-            Rainfall Probability > 150mm
             <div class="pull-right">
               <input id="wmsToggle2" name="EGE_probRgt150" type="checkbox" onclick="toggleAcc(2);"/>
               <label for="EGE_probRgt150" class="label-default"></label>
+              Rainfall Probability > 150mm
             </div>
           </li>
           <li class="list-group-item">
-            Rainfall Probability > 300mm
             <div class="pull-right">
               <input id="wmsToggle3" name="EGE_probRgt300" type="checkbox" onclick="toggleAcc(3);"/>
               <label for="EGE_probRgt300" class="label-default"></label>
+              Rainfall Probability > 300mm
             </div>
           </li>
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -466,13 +466,13 @@ function view_watershed() {
                 });
 
                 wmsLayer2 = new ol.layer.Image({
-                	source: new ol.source.ImageWMS({
-                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
-                		serverType: 'geoserver',
-                		crossOrigin: 'Anonymous'
-                	})
+                    source: new ol.source.ImageWMS({
+                        //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                        url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
+                        params: {'LAYERS':"FEWS_Stations_N"},
+                        serverType: 'geoserver',
+                        crossOrigin: 'Anonymous'
+                    })
                 });
 
                 feature_layer2 = wmsLayer2;
@@ -529,13 +529,13 @@ function view_watershed() {
                 });
 
                 wmsLayer2 = new ol.layer.Image({
-                	source: new ol.source.ImageWMS({
-                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
-                		params: {'LAYERS':"FEWS_Stations_N"},
-                		serverType: 'geoserver',
-                		crossOrigin: 'Anonymous'
-                	})
+                    source: new ol.source.ImageWMS({
+                        //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                        url: 'https://geoserver.hydroshare.org/geoserver/HS-dd069299816c4f1b82cd1fb2d59ec0ab/wms',
+                        params: {'LAYERS':"FEWS_Stations_N"},
+                        serverType: 'geoserver',
+                        crossOrigin: 'Anonymous'
+                    })
                 });
 
                 feature_layer2 = wmsLayer2;
@@ -617,15 +617,15 @@ function get_warning_points(model, watershed, subbasin) {
             if (result.warning10 != 'undefined') {
                 var warLen10 = result.warning10.length;
                 for (var i = 0; i < warLen10; ++i) {
-					var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
-							result.warning10[i][0]
-						],
-						'EPSG:4326', 'EPSG:3857'));
-					var feature = new ol.Feature({
-						geometry: geometry,
-						point_size: 40
-				});
-				map.getLayers().item(3).getSource().addFeature(feature);
+                    var geometry = new ol.geom.Point(ol.proj.transform([result.warning10[i][1],
+                            result.warning10[i][0]
+                        ],
+                        'EPSG:4326', 'EPSG:3857'));
+                    var feature = new ol.Feature({
+                        geometry: geometry,
+                        point_size: 40
+                });
+                map.getLayers().item(3).getSource().addFeature(feature);
                 }
                 map.getLayers().item(3).setVisible(false);
 
@@ -935,7 +935,6 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
         },
         error: function(xhr, errmsg, err) {
             $('#table').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+".</div>"); // add the error to the dom
-			console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         },
         success: function(resp) {
           // console.log(resp)
@@ -996,15 +995,15 @@ function get_discharge_info (stationcode, stationname, startdateobs, enddateobs)
                 $('#download_sensor_discharge').removeClass('hidden');
 
                 } else if (data.error) {
-                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
-                	$('#info').removeClass('hidden');
+                    $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
+                    $('#info').removeClass('hidden');
 
-                	setTimeout(function() {
-                    	$('#info').addClass('hidden')
-                	}, 5000);
-            	} else {
-                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
-            	}
+                    setTimeout(function() {
+                        $('#info').addClass('hidden')
+                    }, 5000);
+                } else {
+                    $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+                }
             }
     })
 }
@@ -1055,15 +1054,15 @@ function get_waterlevel_info (stationcode, stationname, startdateobs, enddateobs
                 $('#download_sensor_waterlevel').removeClass('hidden');
 
                 } else if (data.error) {
-                	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
-                	$('#info').removeClass('hidden');
+                    $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Discharge Data</strong></p>');
+                    $('#info').removeClass('hidden');
 
-                	setTimeout(function() {
-                    	$('#info').addClass('hidden')
-                	}, 5000);
-            	} else {
-                	$('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
-            	}
+                    setTimeout(function() {
+                        $('#info').addClass('hidden')
+                    }, 5000);
+                } else {
+                    $('#info').html('<p><strong>An unexplainable error occurred.</strong></p>').removeClass('hidden');
+                }
         }
     })
 }
@@ -1346,7 +1345,7 @@ function resize_graphs() {
 
     $("#historical_tab_link").click(function() {
         if (m_downloaded_historical_streamflow) {
-        	Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
+            Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
         }
     });
 
@@ -1406,7 +1405,7 @@ $(function() {
 
 
     $('#datesSelect').change(function() { //when date is changed
-    	//console.log($("#datesSelect").val());
+        //console.log($("#datesSelect").val());
 
         //var sel_val = ($('#datesSelect option:selected').val()).split(',');
         sel_val = $("#datesSelect").val()
