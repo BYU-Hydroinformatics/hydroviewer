@@ -1,16 +1,16 @@
-from tethys_sdk.base import TethysAppBase, url_map_maker
+from tethys_sdk.base import TethysAppBase
 from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting
-from tethys_sdk.permissions import Permission, PermissionGroup
 
 base_name = __package__.split('.')[-1]
 base_url = base_name.replace('_', '-')
+
 
 class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer Colombia'
     index = 'home'
-    icon = '{0}/images/colombia-icon.jpg'.format(base_name)
-    package = '{0}'.format(base_name)
+    icon = f'{base_name}/images/colombia-icon.jpg'
+    package = base_name
     root_url = base_url
     color = '#00374b'
     description = 'This is the Hydroviewer App customized for Colombia.'

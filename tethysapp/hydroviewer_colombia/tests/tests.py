@@ -48,7 +48,7 @@ To run any tests:
 To learn more about writing tests, see:
     https://docs.djangoproject.com/en/1.9/topics/testing/overview/#writing-tests
     https://docs.python.org/2.7/library/unittest.html#module-unittest
-"""
+"""  # noqa E501
 
 
 class HydroviewerTestCase(TethysTestCase):

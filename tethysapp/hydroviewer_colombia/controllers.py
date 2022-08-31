@@ -1,29 +1,18 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from tethys_sdk.gizmos import *
+from tethys_sdk.gizmos import Button, TextInput, SelectInput, PlotlyView, DatePicker
 from django.http import HttpResponse, JsonResponse
 from tethys_sdk.permissions import has_permission
-from tethys_sdk.base import TethysAppBase
-from tethys_sdk.gizmos import PlotlyView
 from tethys_sdk.routing import controller
-from tethys_sdk.workspaces import app_workspace
 import os
 import requests
 from requests.auth import HTTPBasicAuth
 import json
-import urllib.request
-import urllib.error
-import urllib.parse
 import numpy as np
-import netCDF4 as nc
 
 from osgeo import ogr
 from osgeo import osr
 from csv import writer as csv_writer
-import csv
-import scipy.stats as sp
 import datetime as dt
-import ast
 import plotly.graph_objs as go
 import io
 import pandas as pd
@@ -31,33 +20,18 @@ import geoglows
 import hydrostats.data
 
 from .app import Hydroviewer as app
-from .helpers import *
+from .helpers import switch_model
 
 base_name = __package__.split('.')[-1]
 
 
-def set_custom_setting(defaultModelName, defaultWSName):
-    from tethys_apps.models import TethysApp
-    db_app = TethysApp.objects.get(package=app.package)
-    custom_settings = db_app.custom_settings
-
-    db_setting = db_app.custom_settings.get(name='default_model_type')
-    db_setting.value = defaultModelName
-    db_setting.save()
-
-    db_setting = db_app.custom_settings.get(name='default_watershed_name')
-    db_setting.value = defaultWSName
-    db_setting.save()
-
-@controller(
-    name='home',
-)
+@controller(name='home')
 def home(request):
     # Check if we have a default model. If we do, then redirect the user to the default model's page
     default_model = app.get_custom_setting('default_model_type')
     if default_model:
         model_func = switch_model(default_model)
-        if model_func is not 'invalid':
+        if model_func != 'invalid':
             return globals()[model_func](request)
         else:
             return home_standard(request)
@@ -86,10 +60,8 @@ def home_standard(request):
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
-@controller(
-    name='ecmwf',
-    url='ecmwf-rapid',
-)
+
+@controller(name='ecmwf', url='ecmwf-rapid')
 def ecmwf(request):
     # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
@@ -273,10 +245,8 @@ def ecmwf(request):
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
 
-@controller(
-    name='lis',
-    url='lis-rapid',
-)
+
+@controller(name='lis', url='lis-rapid')
 def lis(request):
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -327,10 +297,8 @@ def lis(request):
 
     return render(request, '{0}/lis.html'.format(base_name), context)
 
-@controller(
-    name='hiwat',
-    url='hiwat-rapid',
-)
+
+@controller(name='hiwat', url='hiwat-rapid')
 def hiwat(request):
     default_model = app.get_custom_setting('default_model_type')
     init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
@@ -382,11 +350,7 @@ def hiwat(request):
     return render(request, '{0}/hiwat.html'.format(base_name), context)
 
 
-@controller(
-    name='get-warning-points',
-    url='get-warning-points',
-    app_workspace=True,
-)
+@controller(name='get-warning-points', url='get-warning-points', app_workspace=True)
 def get_warning_points(request, app_workspace):
     get_data = request.GET
     colombia_id_path = os.path.join(app_workspace.path, 'colombia_reachids.csv')
@@ -398,11 +362,12 @@ def get_warning_points(request, app_workspace):
     if get_data['model'] == 'ECMWF-RAPID':
         try:
             watershed = get_data['watershed']
-            subbasin = get_data['subbasin']
+            api_source = app.get_custom_setting('api_source')
 
-            res = requests.get(app.get_custom_setting(
-                'api_source') + '/api/ForecastWarnings/?region=' + watershed + '-' + 'geoglows' + '&return_format=csv',
-                               verify=False).content
+            res = requests.get(
+                f"{api_source}/api/ForecastWarnings/?region={watershed}-geoglows&return_format=csv",
+                verify=False
+            ).content
 
             res_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
             cols = ['date_exceeds_return_period_2', 'date_exceeds_return_period_5', 'date_exceeds_return_period_10',
@@ -417,7 +382,7 @@ def get_warning_points(request, app_workspace):
                 new_rp = []
                 terms = term.split(',')
                 for te in terms:
-                    if te is not '0':
+                    if te != '0':
                         # print('yeah')
                         new_rp.append(1)
                     else:
@@ -479,38 +444,32 @@ def get_warning_points(request, app_workspace):
 
 
 def create_rp(df_):
-    war = {}
-
     list_coordinates = []
     for lat, lon in zip(df_['lat'].tolist(), df_['lon'].tolist()):
         list_coordinates.append([lat, lon])
 
     return list_coordinates
 
-@controller(
-    name='get-time-series',
-    url='get-time-series',
-)
+
+@controller(name='get-time-series', url='get-time-series')
 def ecmwf_get_time_series(request):
     get_data = request.GET
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
+        api_source = app.get_custom_setting('api_source')
 
         '''Getting Forecast Stats'''
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
             res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&date={startdate}&return_format=csv",
+                verify=False
+            ).content
         else:
             res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&return_format=csv",
+                verify=False
+            ).content
 
         stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         stats_df.index = pd.to_datetime(stats_df.index)
@@ -526,8 +485,9 @@ def ecmwf_get_time_series(request):
 
         '''Getting Forecast Records'''
         res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ForecastRecords/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+            f"{api_source}/api/ForecastRecords/?reach_id={comid}&return_format=csv",
+            verify=False
+        ).content
 
         records_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         records_df.index = pd.to_datetime(records_df.index)
@@ -549,14 +509,17 @@ def ecmwf_get_time_series(request):
             ))
 
             x_vals = (
-            records_df.index[0], stats_df.index[len(stats_df.index) - 1], stats_df.index[len(stats_df.index) - 1],
-            records_df.index[0])
+                records_df.index[0], stats_df.index[len(stats_df.index) - 1],
+                stats_df.index[len(stats_df.index) - 1],
+                records_df.index[0]
+            )
             max_visible = max(max(records_df.max()), max_visible)
 
         '''Getting Return Periods'''
         res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+            f"{api_source}/api/ReturnPeriods/?reach_id={comid}&return_format=csv",
+            verify=False
+        ).content
         rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 
         r2 = int(rperiods_df.iloc[0]['return_period_2'])
@@ -604,8 +567,11 @@ def ecmwf_get_time_series(request):
         hydroviewer_figure.add_trace(template(f'10 Year: {r10}', (r10, r10, r25, r25), colors['10 Year']))
         hydroviewer_figure.add_trace(template(f'25 Year: {r25}', (r25, r25, r50, r50), colors['25 Year']))
         hydroviewer_figure.add_trace(template(f'50 Year: {r50}', (r50, r50, r100, r100), colors['50 Year']))
-        hydroviewer_figure.add_trace(template(f'100 Year: {r100}', (
-        r100, r100, max(r100 + r100 * 0.05, max_visible), max(r100 + r100 * 0.05, max_visible)), colors['100 Year']))
+        hydroviewer_figure.add_trace(template(
+            f'100 Year: {r100}',
+            (r100, r100, max(r100 + r100 * 0.05, max_visible), max(r100 + r100 * 0.05, max_visible)),
+            colors['100 Year']
+        ))
 
         hydroviewer_figure['layout']['xaxis'].update(autorange=True)
 
@@ -621,23 +587,21 @@ def ecmwf_get_time_series(request):
         print(str(e))
         return JsonResponse({'error': 'No data found for the selected reach.'})
 
+
 def get_time_series(request):
     return ecmwf_get_time_series(request)
 
 
-@controller(
-    name='get-available-dates',
-    url='get-available-dates',
-)
+@controller(name='get-available-dates', url='get-available-dates')
 def get_available_dates(request):
     get_data = request.GET
 
     watershed = get_data['watershed']
     subbasin = get_data['subbasin']
     comid = get_data['comid']
-    res = requests.get(
-        app.get_custom_setting('api_source') + '/api/AvailableDates/?region=' + watershed + '-' + subbasin,
-        verify=False)
+    api_source = app.get_custom_setting('api_source')
+
+    res = requests.get(f"{api_source}/api/AvailableDates/?region={watershed}-geoglows", verify=False)
 
     data = res.json()
 
@@ -667,10 +631,7 @@ def get_available_dates(request):
     })
 
 
-@controller(
-    name='get-historic-data',
-    url='get-historic-data',
-)
+@controller(name='get-historic-data', url='get-historic-data')
 def get_historic_data(request):
     """""
     Returns ERA 5 hydrograph
@@ -679,15 +640,13 @@ def get_historic_data(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
+        api_source = app.get_custom_setting('api_source')
 
         era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+            f"{api_source}/api/HistoricSimulation/?reach_id={comid}&return_format=csv",
+            verify=False
+        ).content
 
         simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
         simulated_df[simulated_df < 0] = 0
@@ -697,8 +656,9 @@ def get_historic_data(request):
 
         '''Getting Return Periods'''
         res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+            f"{api_source}/api/ReturnPeriods/?reach_id={comid}&return_format=csv",
+            verify=False
+        ).content
         rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 
         hydroviewer_figure = geoglows.plots.historic_simulation(simulated_df, rperiods_df, titles={'Reach ID': comid})
@@ -716,19 +676,12 @@ def get_historic_data(request):
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
 
-@controller(
-    name='get-flow-duration-curve',
-    url='get-flow-duration-curve',
-)
+@controller(name='get-flow-duration-curve', url='get-flow-duration-curve')
 def get_flow_duration_curve(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
 
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
@@ -755,10 +708,7 @@ def get_flow_duration_curve(request):
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
 
-@controller(
-    name='get_historic_data_csv',
-    url='get-historic-data-csv',
-)
+@controller(name='get_historic_data_csv', url='get-historic-data-csv')
 def get_historic_data_csv(request):
     """""
     Returns ERA 5 data as csv
@@ -796,10 +746,7 @@ def get_historic_data_csv(request):
         return JsonResponse({'error': 'No historic data found.'})
 
 
-@controller(
-    name='get_forecast_data_csv',
-    url='get-forecast-data-csv',
-)
+@controller(name='get_forecast_data_csv', url='get-forecast-data-csv')
 def get_forecast_data_csv(request):
     """""
     Returns Forecast data as csv
@@ -812,6 +759,7 @@ def get_forecast_data_csv(request):
         watershed = get_data['watershed_name']
         subbasin = get_data['subbasin_name']
         comid = get_data['reach_id']
+        api_source = app.get_custom_setting('api_source')
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
         else:
@@ -821,13 +769,14 @@ def get_forecast_data_csv(request):
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
             res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&date={startdate}&return_format=csv",
+                verify=False
+            ).content
         else:
             res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&return_format=csv",
+                verify=False
+            ).content
 
         stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         stats_df.index = pd.to_datetime(stats_df.index)
@@ -849,10 +798,7 @@ def get_forecast_data_csv(request):
         return JsonResponse({'error': 'No forecast data found.'})
 
 
-@controller(
-    name='get_lis_shp',
-    url='get-lis-shp',
-)
+@controller(name='get_lis_shp', url='get-lis-shp')
 def shp_to_geojson(request):
     get_data = request.GET
 
@@ -912,7 +858,7 @@ def shp_to_geojson(request):
                     AXIS["Y",NORTH],
                     EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"],
                     AUTHORITY["EPSG","3857"]]
-                """
+                """  # noqa E501
             )
 
             coordTrans = osr.CoordinateTransformation(in_prj, out_prj)
@@ -991,10 +937,7 @@ def shp_to_geojson(request):
         return JsonResponse({'error': 'No shapefile found.'})
 
 
-@controller(
-    name='get-daily-seasonal-streamflow',
-    url='get-daily-seasonal-streamflow',
-)
+@controller(name='get-daily-seasonal-streamflow', url='get-daily-seasonal-streamflow')
 def get_daily_seasonal_streamflow(request):
     """
      Returns daily seasonal streamflow chart for unique river ID
@@ -1002,11 +945,7 @@ def get_daily_seasonal_streamflow(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
 
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
@@ -1035,10 +974,7 @@ def get_daily_seasonal_streamflow(request):
         return JsonResponse({'error': 'No historic data found for calculating daily seasonality.'})
 
 
-@controller(
-    name='get-monthly-seasonal-streamflow',
-    url='get-monthly-seasonal-streamflow',
-)
+@controller(name='get-monthly-seasonal-streamflow', url='get-monthly-seasonal-streamflow')
 def get_monthly_seasonal_streamflow(request):
     """
      Returns daily seasonal streamflow chart for unique river ID
@@ -1046,11 +982,7 @@ def get_monthly_seasonal_streamflow(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
 
         era_res = requests.get(
             app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
@@ -1079,13 +1011,11 @@ def get_monthly_seasonal_streamflow(request):
         return JsonResponse({'error': 'No historic data found for calculating monthly seasonality.'})
 
 
-@controller(
-    name='set_def_ws',
-    url='admin/setdefault',
-)
+@controller(name='set_def_ws', url='admin/setdefault')
 def setDefault(request):
     get_data = request.GET
-    set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
+    app.set_custom_setting('default_model_type', get_data.get('ws_name'))
+    app.set_custom_setting('default_watershed_name', get_data.get('model_name'))
     return JsonResponse({'success': True})
 
 
@@ -1099,41 +1029,35 @@ def get_units_title(unit_type):
     return units_title
 
 
-@controller(
-    name='forecastpercent',
-    url='ecmwf-rapid/forecastpercent',
-)
+@controller(name='forecastpercent', url='forecastpercent')
 def forecastpercent(request):
     get_data = request.GET
     try:
-        # model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
         comid = get_data['comid']
-        units = 'metric'
-
+        api_source = app.get_custom_setting('api_source')
         '''Getting Forecast Stats'''
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
             res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&date={startdate}&return_format=csv",
+                verify=False
+            ).content
 
             ens = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&date=' + startdate + '&ensemble=all&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastEnsembles/?reach_id={comid}&date={startdate}&ensemble=all&return_format=csv",
+                verify=False
+            ).content
 
         else:
             res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastStats/?reach_id={comid}&return_format=csv",
+                verify=False
+            ).content
 
             ens = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&ensemble=all&return_format=csv',
-                verify=False).content
+                f"{api_source}/api/ForecastEnsembles/?reach_id={comid}&ensemble=all&return_format=csv",
+                verify=False
+            ).content
 
         stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         stats_df.index = pd.to_datetime(stats_df.index)
@@ -1149,8 +1073,9 @@ def forecastpercent(request):
 
         '''Getting Return Periods'''
         res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+            f"{api_source}/api/ReturnPeriods/?reach_id={comid}&return_format=csv",
+            verify=False
+        ).content
         rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 
         table = geoglows.plots.probabilities_table(stats_df, ensemble_df, rperiods_df)
@@ -1161,10 +1086,7 @@ def forecastpercent(request):
         return JsonResponse({'error': 'No data found for the selected station.'})
 
 
-@controller(
-    name='get_discharge_data',
-    url='get-discharge-data',
-)
+@controller(name='get_discharge_data', url='get-discharge-data')
 def get_discharge_data(request):
     """
     Get data from fews stations
@@ -1259,10 +1181,7 @@ def get_discharge_data(request):
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
-@controller(
-    name='get_observed_discharge_csv',
-    url='get-observed-discharge-csv',
-)
+@controller(name='get_observed_discharge_csv', url='get-observed-discharge-csv')
 def get_observed_discharge_csv(request):
     """
     Get data from fews stations
@@ -1319,10 +1238,7 @@ def get_observed_discharge_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
-@controller(
-    name='get_sensor_discharge_csv',
-    url='get-sensor-discharge-csv',
-)
+@controller(name='get_sensor_discharge_csv', url='get-sensor-discharge-csv')
 def get_sensor_discharge_csv(request):
     """
       Get data from fews stations
@@ -1378,10 +1294,7 @@ def get_sensor_discharge_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Discharge Data.'})
 
 
-@controller(
-    name='get_waterlevel_data',
-    url='get-waterlevel-data',
-)
+@controller(name='get_waterlevel_data', url='get-waterlevel-data')
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
@@ -1476,10 +1389,7 @@ def get_waterlevel_data(request):
         return JsonResponse({'error': 'No  data found for the station.'})
 
 
-@controller(
-    name='get_observed_waterlevel_csv',
-    url='get-observed-waterlevel-csv',
-)
+@controller(name='get_observed_waterlevel_csv', url='get-observed-waterlevel-csv')
 def get_observed_waterlevel_csv(request):
     """
     Get data from fews stations
@@ -1536,10 +1446,7 @@ def get_observed_waterlevel_csv(request):
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
 
-@controller(
-    name='get_sensor_waterlevel_csv',
-    url='get-sensor-waterlevel-csv',
-)
+@controller(name='get_sensor_waterlevel_csv', url='get-sensor-waterlevel-csv')
 def get_sensor_waterlevel_csv(request):
     """
       Get data from fews stations

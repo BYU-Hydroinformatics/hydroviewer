@@ -46,10 +46,8 @@
   height: 220px;
   margin: 0 auto;
 }
-.map-view-legend {
+#map-view-legend {
   bottom: 50px;
-  /*right: 20px;*/
-  width: 150px;
   max-height: 90%;
   overflow-y: auto;
   margin: 5px;
@@ -81,10 +79,6 @@
   padding: 0 2px;
 }
 
-.modal-dialog {
-  max-width: none;
-}
-
 .logo-image img {
   max-width: 100%;
 }
@@ -98,7 +92,7 @@
   border-radius: 0;
 }
 #graph .modal-dialog {
-  width: 85%;
+  min-width: 75%;
   height: 75%;
   padding: 0;
 }
@@ -211,12 +205,13 @@
   height: 100%;
 }
 
-.obslogos {
-  width: 40%;
-  padding: 0 5px 0 5px;
+#obsgraph .modal-dialog {
+  min-width: 75%;
+  height: 75%;
 }
-.datepicker {
-  width: 80%;
+
+.obslogos {
+  width: 20%;
   padding: 0 5px 0 5px;
 }
 #startdatepicker {
@@ -227,7 +222,10 @@
   align-items: center;
   float: right;
 }
-#returntable{
-    width: 100%;
-    height: 100%;
+#returntable {
+  width: 100%;
+  height: 100%;
+}
+.input-group.mb-3{
+  margin-bottom: 0 !important;
 }
