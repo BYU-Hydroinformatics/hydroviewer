@@ -217,7 +217,7 @@ def ecmwf(request):
                             initial=date,
                             classes='datepicker')
 
-    res = requests.get('https://geoglows.ecmwf.int/api/AvailableDates/?region=central_america-geoglows', verify=False)
+    res = requests.get('https://geoglows.ecmwf.int/api/AvailableDates/?region=south_america-geoglows', verify=False)
     data = res.json()
     dates_array = (data.get('available_dates'))
 

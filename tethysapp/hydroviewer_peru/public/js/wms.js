@@ -366,8 +366,8 @@ function view_watershed() {
         var layerName = workspace + ':' + watershed + '-' + subbasin + '-geoglows-drainage_line';
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                //url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 params: { 'LAYERS': layerName },
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -381,8 +381,8 @@ function view_watershed() {
 
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                //url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -395,8 +395,8 @@ function view_watershed() {
         map.addLayer(wmsLayer2);
 
         $loading.addClass('hidden');
-        //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
-        var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
+        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        //var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -409,8 +409,8 @@ function view_watershed() {
             success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
-                    //.split(workspace + ':' + watershed + '-' + subbasin)[1]
-                    .split('HS-9b6a7f2197ec403895bacebdca4d0074:south_america-peru-geoglows-drainage_line')[1]
+                    .split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    //.split('HS-9b6a7f2197ec403895bacebdca4d0074:south_america-peru-geoglows-drainage_line')[1]
                     .split('LatLongBoundingBox ')[1]
                     .split('/></FeatureType>')[0];
 
@@ -465,8 +465,8 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		//url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
@@ -528,8 +528,8 @@ function view_watershed() {
 
                 wmsLayer2 = new ol.layer.Image({
                 	source: new ol.source.ImageWMS({
-                		//url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                		//url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 		serverType: 'geoserver',
                 		crossOrigin: 'Anonymous'
