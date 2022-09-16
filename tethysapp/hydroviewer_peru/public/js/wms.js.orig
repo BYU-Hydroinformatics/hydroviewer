@@ -414,8 +414,15 @@ function view_watershed() {
         console.log(sld_string)
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
+<<<<<<< HEAD
                 url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
                 //url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+=======
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                url: 'https://tethys2.byu.edu/geoserver/peru_hydroviewer/wms'+ '?service=WMS&version=1.1.1&request=GetCapabilities&',
+                
+                // url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms'+ '?service=WMS&version=1.1.1&request=GetCapabilities&',
+>>>>>>> f85b6b5cf5e72d0ffa060d3b0d4bdb86155c3461
                 params: { 'LAYERS': layerName },
                 // params: { 'LAYERS': layerName, 'SLD_BODY': sld_string },
 
