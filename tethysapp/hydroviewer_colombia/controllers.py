@@ -1,33 +1,24 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import *
-from django.http import HttpResponse, JsonResponse
-from tethys_sdk.permissions import has_permission
-from tethys_sdk.base import TethysAppBase
+from django.shortcuts import render
 from tethys_sdk.gizmos import PlotlyView
+from tethys_sdk.base import TethysAppBase
 from tethys_sdk.workspaces import app_workspace
-import os
-import requests
-from requests.auth import HTTPBasicAuth
-import json
-import urllib.request
-import urllib.error
-import urllib.parse
-import numpy as np
-import netCDF4 as nc
+from tethys_sdk.permissions import has_permission
+from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
 
-from osgeo import ogr
-from osgeo import osr
-from csv import writer as csv_writer
-import csv
-import scipy.stats as sp
-import datetime as dt
-import ast
-import plotly.graph_objs as go
 import io
-import pandas as pd
+import os
+import json
+import requests
 import geoglows
+import numpy as np
+import pandas as pd
+import datetime as dt
 import hydrostats.data
+import plotly.graph_objs as go
+from csv import writer as csv_writer
+from requests.auth import HTTPBasicAuth
 
 from .app import Hydroviewer as app
 from .helpers import *
@@ -66,7 +57,7 @@ def home_standard(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'), ('LIS-RAPID', 'lis')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf')],
                               initial=['Select Model'],
                               original=True)
 
@@ -83,6 +74,28 @@ def home_standard(request):
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
+def get_popup_response(request):
+    """
+    get station attributes
+    """
+
+    simulated_data_path_file = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+    f = open(simulated_data_path_file, 'w')
+    f.close()
+
+    stats_data_path_file = os.path.join(app.get_app_workspace().path, 'stats_data.json')
+    f2 = open(stats_data_path_file, 'w')
+    f2.close()
+
+    ensemble_data_path_file = os.path.join(app.get_app_workspace().path, 'ensemble_data.json')
+    f3 = open(ensemble_data_path_file, 'w')
+    f3.close()
+
+    return_obj = {}
+
+    print("finished get_popup_response")
+
+    return JsonResponse({})
 
 def ecmwf(request):
     # Can Set Default permissions : Only allowed for admin users
@@ -113,24 +126,11 @@ def ecmwf(request):
     model_input = SelectInput(display_text='',
                               name='model',
                               multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
+                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),],
                               initial=[init_model_val],
                               classes=hiddenAttr,
                               original=True)
 
-    # uncomment for displaying watersheds in the SPT
-    # res = requests.get(app.get_custom_setting('api_source') + '/apps/streamflow-prediction-tool/api/GetWatersheds/',
-    #                    headers={'Authorization': 'Token ' + app.get_custom_setting('spt_token')})
-    #
-    # watershed_list_raw = json.loads(res.content)
-    #
-    # app.get_custom_setting('keywords').lower().replace(' ', '').split(',')
-    # watershed_list = [value for value in watershed_list_raw if
-    #                   any(val in value[0].lower().replace(' ', '') for
-    #                       val in app.get_custom_setting('keywords').lower().replace(' ', '').split(','))]
-
-    # Retrieve a geoserver engine and geoserver credentials.
     geoserver_engine = app.get_spatial_dataset_service(
         name='main_geoserver', as_engine=True)
 
@@ -243,13 +243,40 @@ def ecmwf(request):
                              today_button=True,
                              initial='')
 
+    #Select Region
     region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
     regions = SelectInput(
         display_text='Zoom to a Region:',
         name='regions',
         multiple=False,
-        original=True,
-        options=[(region_index[opt]['name'], opt) for opt in region_index]
+        #original=True,
+        options=[(region_index[opt]['name'], opt) for opt in region_index],
+        initial='',
+        select2_options={'placeholder': 'Select a Region', 'allowClear': False}
+    )
+
+    # Select Basins
+    basin_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson2', 'index2.json')))
+    basins = SelectInput(
+        display_text='Zoom to a Basin:',
+        name='basins',
+        multiple=False,
+        # original=True,
+        options=[(basin_index[opt]['name'], opt) for opt in basin_index],
+        initial='',
+        select2_options={'placeholder': 'Select a Basin', 'allowClear': False}
+    )
+
+    # Select SubBasins
+    subbasin_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson3', 'index3.json')))
+    subbasins = SelectInput(
+        display_text='Zoom to a Subbasin:',
+        name='subbasins',
+        multiple=False,
+        # original=True,
+        options=[(subbasin_index[opt]['name'], opt) for opt in subbasin_index],
+        initial='',
+        select2_options={'placeholder': 'Select a Subbasin', 'allowClear': False}
     )
 
     context = {
@@ -262,112 +289,12 @@ def ecmwf(request):
         "startdateobs": startdateobs,
         "enddateobs": enddateobs,
         "date_picker": date_picker,
-        "regions": regions
+        "regions": regions,
+        "basins": basins,
+        "subbasins": subbasins,
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
-
-
-def lis(request):
-    default_model = app.get_custom_setting('default_model_type')
-    init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
-    init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
-
-    model_input = SelectInput(display_text='',
-                              name='model',
-                              multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
-                              initial=[init_model_val],
-                              original=True)
-
-    watershed_list = [['Select Watershed', '']]
-
-    if app.get_custom_setting('lis_path'):
-        res = os.listdir(app.get_custom_setting('lis_path'))
-
-        for i in res:
-            feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
-            if feat_name not in str(watershed_list):
-                watershed_list.append([feat_name, i])
-
-    # Add the default WS if present and not already in the list
-    # Not sure if this will work with LIS type. Need to test it out.
-    if default_model == 'LIS-RAPID' and init_ws_val and init_ws_val not in str(watershed_list):
-        watershed_list.append([init_ws_val, init_ws_val])
-
-    watershed_select = SelectInput(display_text='',
-                                   name='watershed',
-                                   options=watershed_list,
-                                   initial=[init_ws_val],
-                                   original=True,
-                                   attributes={'onchange': "javascript:view_watershed();"}
-                                   )
-
-    zoom_info = TextInput(display_text='',
-                          initial=json.dumps(app.get_custom_setting('zoom_info')),
-                          name='zoom_info',
-                          disabled=True)
-    context = {
-        "base_name": base_name,
-        "model_input": model_input,
-        "watershed_select": watershed_select,
-        "zoom_info": zoom_info
-    }
-
-    return render(request, '{0}/lis.html'.format(base_name), context)
-
-
-def hiwat(request):
-    default_model = app.get_custom_setting('default_model_type')
-    init_model_val = request.GET.get('model', False) or default_model or 'Select Model'
-    init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
-
-    model_input = SelectInput(display_text='',
-                              name='model',
-                              multiple=False,
-                              options=[('Select Model', ''), ('ECMWF-RAPID', 'ecmwf'),
-                                       ('LIS-RAPID', 'lis'), ('HIWAT-RAPID', 'hiwat')],
-                              initial=[init_model_val],
-                              original=True)
-
-    watershed_list = [['Select Watershed', '']]
-
-    if app.get_custom_setting('lis_path'):
-        res = os.listdir(app.get_custom_setting('hiwat_path'))
-
-        for i in res:
-            feat_name = i.split('-')[0].replace('_', ' ').title() + ' (' + \
-                        i.split('-')[1].replace('_', ' ').title() + ')'
-            if feat_name not in str(watershed_list):
-                watershed_list.append([feat_name, i])
-
-    # Add the default WS if present and not already in the list
-    # Not sure if this will work with LIS type. Need to test it out.
-    if default_model == 'HIWAT-RAPID' and init_ws_val and init_ws_val not in str(watershed_list):
-        watershed_list.append([init_ws_val, init_ws_val])
-
-    watershed_select = SelectInput(display_text='',
-                                   name='watershed',
-                                   options=watershed_list,
-                                   initial=[init_ws_val],
-                                   original=True,
-                                   attributes={'onchange': "javascript:view_watershed();"}
-                                   )
-
-    zoom_info = TextInput(display_text='',
-                          initial=json.dumps(app.get_custom_setting('zoom_info')),
-                          name='zoom_info',
-                          disabled=True)
-    context = {
-        "base_name": base_name,
-        "model_input": model_input,
-        "watershed_select": watershed_select,
-        "zoom_info": zoom_info
-    }
-
-    return render(request, '{0}/hiwat.html'.format(base_name), context)
 
 
 @app_workspace
@@ -484,20 +411,25 @@ def ecmwf_get_time_series(request):
         '''Getting Forecast Stats'''
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
-            res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
         else:
-            res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
+            startdate = 'most_recent'
 
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+            res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv', verify=False).content
+        else:
+            res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',verify=False).content
+
+        '''Stats'''
         stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         stats_df.index = pd.to_datetime(stats_df.index)
         stats_df[stats_df < 0] = 0
         stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
         stats_df.index = pd.to_datetime(stats_df.index)
+
+        stats_data_file_path = os.path.join(app.get_app_workspace().path, 'stats_data.json')
+        stats_df.index.name = 'Datetime'
+        stats_df.to_json(stats_data_file_path)
 
         hydroviewer_figure = geoglows.plots.forecast_stats(stats=stats_df, titles={'Reach ID': comid})
 
@@ -506,9 +438,7 @@ def ecmwf_get_time_series(request):
         max_visible = max(stats_df.max())
 
         '''Getting Forecast Records'''
-        res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ForecastRecords/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+        res = requests.get(app.get_custom_setting('api_source') + '/api/ForecastRecords/?reach_id=' + comid + '&return_format=csv', verify=False).content
 
         records_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
         records_df.index = pd.to_datetime(records_df.index)
@@ -642,7 +572,6 @@ def get_available_dates(request):
         "available_dates": json.dumps(dates)
     })
 
-
 def get_historic_data(request):
     """""
     Returns ERA 5 hydrograph
@@ -657,15 +586,22 @@ def get_historic_data(request):
         comid = get_data['comid']
         units = 'metric'
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+        '''Historical Simulation'''
+        era_res = requests.get(app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',verify=False).content
 
         simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
         simulated_df[simulated_df < 0] = 0
         simulated_df.index = pd.to_datetime(simulated_df.index)
         simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
         simulated_df.index = pd.to_datetime(simulated_df.index)
+
+        simulated_data_file_path = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+        simulated_df.reset_index(level=0, inplace=True)
+        simulated_df['datetime'] = simulated_df['datetime'].dt.strftime('%Y-%m-%d')
+        simulated_df.set_index('datetime', inplace=True)
+        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.index.name = 'Datetime'
+        simulated_df.to_json(simulated_data_file_path)
 
         '''Getting Return Periods'''
         res = requests.get(
@@ -698,15 +634,10 @@ def get_flow_duration_curve(request):
         comid = get_data['comid']
         units = 'metric'
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
-
-        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
-        simulated_df[simulated_df < 0] = 0
+        simulated_data_file_path = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+        simulated_df = pd.read_json(simulated_data_file_path, convert_dates=True)
         simulated_df.index = pd.to_datetime(simulated_df.index)
-        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
-        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.sort_index(inplace=True, ascending=True)
 
         hydroviewer_figure = geoglows.plots.flow_duration_curve(simulated_df, titles={'Reach ID': comid})
 
@@ -736,20 +667,13 @@ def get_historic_data_csv(request):
         subbasin = get_data['subbasin_name']
         comid = get_data['reach_id']
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
-
-        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
-        simulated_df[simulated_df < 0] = 0
+        simulated_data_file_path = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+        simulated_df = pd.read_json(simulated_data_file_path, convert_dates=True)
         simulated_df.index = pd.to_datetime(simulated_df.index)
-        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
-        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.sort_index(inplace=True, ascending=True)
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=historic_streamflow_{0}_{1}_{2}.csv'.format(watershed,
-                                                                                                            subbasin,
-                                                                                                            comid)
+        response['Content-Disposition'] = 'attachment; filename=historic_streamflow_{0}_{1}_{2}.csv'.format(watershed, subbasin, comid)
 
         simulated_df.to_csv(encoding='utf-8', header=True, path_or_buf=response)
 
@@ -772,28 +696,17 @@ def get_forecast_data_csv(request):
         watershed = get_data['watershed_name']
         subbasin = get_data['subbasin_name']
         comid = get_data['reach_id']
+
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
         else:
             startdate = 'most_recent'
 
         '''Getting Forecast Stats'''
-        if get_data['startdate'] != '':
-            startdate = get_data['startdate']
-            res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
-        else:
-            res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
-
-        stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        stats_data_file_path = os.path.join(app.get_app_workspace().path, 'stats_data.json')
+        stats_df = pd.read_json(stats_data_file_path, convert_dates=True)
         stats_df.index = pd.to_datetime(stats_df.index)
-        stats_df[stats_df < 0] = 0
-        stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
-        stats_df.index = pd.to_datetime(stats_df.index)
+        stats_df.sort_index(inplace=True, ascending=True)
 
         init_time = stats_df.index[0]
         response = HttpResponse(content_type='text/csv')
@@ -808,144 +721,36 @@ def get_forecast_data_csv(request):
         print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
+def get_forecast_ens_data_csv(request):
+    """""
+    Returns Forecast data as csv
+    """""
 
-def shp_to_geojson(request):
     get_data = request.GET
 
     try:
-        model = get_data['model']
-        watershed = get_data['watershed']
-        subbasin = get_data['subbasin']
+        # model = get_data['model']
+        watershed = get_data['watershed_name']
+        subbasin = get_data['subbasin_name']
+        comid = get_data['reach_id']
 
-        driver = ogr.GetDriverByName('ESRI Shapefile')
-        if model == 'LIS-RAPID':
-            reprojected_shp_path = os.path.join(
-                app.get_custom_setting('lis_path'),
-                '-'.join([watershed, subbasin]).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
-            )
-        elif model == 'HIWAT-RAPID':
-            reprojected_shp_path = os.path.join(
-                app.get_custom_setting('hiwat_path'),
-                '-'.join([watershed, subbasin]).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line']).replace(' ', '_'),
-                '-'.join([watershed, subbasin, 'drainage_line', '3857.shp']).replace(' ', '_')
-            )
+        '''Getting Forecast Stats'''
+        ensemble_data_file_path = os.path.join(app.get_app_workspace().path, 'ensemble_data.json')
+        ensemble_df = pd.read_json(ensemble_data_file_path, convert_dates=True)
+        ensemble_df.index = pd.to_datetime(ensemble_df.index)
+        ensemble_df.sort_index(inplace=True, ascending=True)
 
-        if not os.path.exists(reprojected_shp_path):
+        init_time = ensemble_df.index[0]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_ens_{0}_{1}_{2}_{3}.csv'.format(watershed, subbasin, comid, init_time)
 
-            raw_shp_path = reprojected_shp_path.replace('-3857', '')
+        ensemble_df.to_csv(encoding='utf-8', header=True, path_or_buf=response)
 
-            raw_shp_src = driver.Open(raw_shp_path)
-            raw_shp = raw_shp_src.GetLayer()
-
-            in_prj = raw_shp.GetSpatialRef()
-
-            out_prj = osr.SpatialReference()
-
-            out_prj.ImportFromWkt(
-                """
-                PROJCS["WGS 84 / Pseudo-Mercator",
-                    GEOGCS["WGS 84",
-                        DATUM["WGS_1984",
-                            SPHEROID["WGS 84",6378137,298.257223563,
-                                AUTHORITY["EPSG","7030"]],
-                            AUTHORITY["EPSG","6326"]],
-                        PRIMEM["Greenwich",0,
-                            AUTHORITY["EPSG","8901"]],
-                        UNIT["degree",0.0174532925199433,
-                            AUTHORITY["EPSG","9122"]],
-                        AUTHORITY["EPSG","4326"]],
-                    PROJECTION["Mercator_1SP"],
-                    PARAMETER["central_meridian",0],
-                    PARAMETER["scale_factor",1],
-                    PARAMETER["false_easting",0],
-                    PARAMETER["false_northing",0],
-                    UNIT["metre",1,
-                        AUTHORITY["EPSG","9001"]],
-                    AXIS["X",EAST],
-                    AXIS["Y",NORTH],
-                    EXTENSION["PROJ4","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"],
-                    AUTHORITY["EPSG","3857"]]
-                """
-            )
-
-            coordTrans = osr.CoordinateTransformation(in_prj, out_prj)
-
-            reprojected_shp_src = driver.CreateDataSource(reprojected_shp_path)
-            reprojected_shp = reprojected_shp_src.CreateLayer('-'.join([watershed, subbasin,
-                                                                        'drainage_line', '3857']).encode('utf-8'),
-                                                              geom_type=ogr.wkbLineString)
-
-            raw_shp_lyr_def = raw_shp.GetLayerDefn()
-            for i in range(0, raw_shp_lyr_def.GetFieldCount()):
-                field_def = raw_shp_lyr_def.GetFieldDefn(i)
-                if field_def.name in ['COMID', 'watershed', 'subbasin']:
-                    reprojected_shp.CreateField(field_def)
-
-            # get the output layer's feature definition
-            reprojected_shp_lyr_def = reprojected_shp.GetLayerDefn()
-
-            # loop through the input features
-            in_feature = raw_shp.GetNextFeature()
-            while in_feature:
-                # get the input geometry
-                geom = in_feature.GetGeometryRef()
-                # reproject the geometry
-                geom.Transform(coordTrans)
-                # create a new feature
-                out_feature = ogr.Feature(reprojected_shp_lyr_def)
-                # set the geometry and attribute
-                out_feature.SetGeometry(geom)
-                out_feature.SetField('COMID', in_feature.GetField(in_feature.GetFieldIndex('COMID')))
-                # out_feature.SetField('watershed', in_feature.GetField(in_feature.GetFieldIndex('watershed')))
-                # out_feature.SetField('subbasin', in_feature.GetField(in_feature.GetFieldIndex('subbasin')))
-                # add the feature to the shapefile
-                reprojected_shp.CreateFeature(out_feature)
-                # dereference the features and get the next input feature
-                out_feature = None
-                in_feature = raw_shp.GetNextFeature()
-
-            fc = {
-                'type': 'FeatureCollection',
-                'features': []
-            }
-
-            for feature in reprojected_shp:
-                fc['features'].append(feature.ExportToJson(as_object=True))
-
-            with open(reprojected_shp_path.replace('.shp', '.json'), 'w') as f:
-                json.dump(fc, f)
-
-            # Save and close the shapefiles
-            raw_shp_src = None
-            reprojected_shp_src = None
-
-        shp_src = driver.Open(reprojected_shp_path)
-        shp = shp_src.GetLayer()
-
-        extent = list(shp.GetExtent())
-        xmin, ymin, xmax, ymax = extent[0], extent[2], extent[1], extent[3]
-
-        with open(reprojected_shp_path.replace('.shp', '.json'), 'r') as f:
-            geojson_streams = json.load(f)
-
-            geojson_layer = {
-                'source': 'GeoJSON',
-                'options': json.dumps(geojson_streams),
-                'legend_title': '-'.join([watershed, subbasin, 'drainage_line']),
-                'legend_extent': [xmin, ymin, xmax, ymax],
-                'legend_extent_projection': 'EPSG:3857',
-                'feature_selection': True
-            }
-
-            return JsonResponse(geojson_layer)
+        return response
 
     except Exception as e:
         print(str(e))
-        return JsonResponse({'error': 'No shapefile found.'})
-
+        return JsonResponse({'error': 'No forecast data found.'})
 
 def get_daily_seasonal_streamflow(request):
     """
@@ -960,15 +765,10 @@ def get_daily_seasonal_streamflow(request):
         comid = get_data['comid']
         units = 'metric'
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
-
-        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
-        simulated_df[simulated_df < 0] = 0
+        simulated_data_file_path = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+        simulated_df = pd.read_json(simulated_data_file_path, convert_dates=True)
         simulated_df.index = pd.to_datetime(simulated_df.index)
-        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
-        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.sort_index(inplace=True, ascending=True)
 
         dayavg_df = hydrostats.data.daily_average(simulated_df, rolling=True)
 
@@ -1000,15 +800,10 @@ def get_monthly_seasonal_streamflow(request):
         comid = get_data['comid']
         units = 'metric'
 
-        era_res = requests.get(
-            app.get_custom_setting('api_source') + '/api/HistoricSimulation/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
-
-        simulated_df = pd.read_csv(io.StringIO(era_res.decode('utf-8')), index_col=0)
-        simulated_df[simulated_df < 0] = 0
+        simulated_data_file_path = os.path.join(app.get_app_workspace().path, 'simulated_data.json')
+        simulated_df = pd.read_json(simulated_data_file_path, convert_dates=True)
         simulated_df.index = pd.to_datetime(simulated_df.index)
-        simulated_df.index = simulated_df.index.to_series().dt.strftime("%Y-%m-%d")
-        simulated_df.index = pd.to_datetime(simulated_df.index)
+        simulated_df.sort_index(inplace=True, ascending=True)
 
         monavg_df = hydrostats.data.monthly_average(simulated_df)
 
@@ -1052,45 +847,38 @@ def forecastpercent(request):
         comid = get_data['comid']
         units = 'metric'
 
+        '''Forecast'''
+        if get_data['startdate'] != '':
+            startdate = get_data['startdate']
+        else:
+            startdate = 'most_recent'
+
         '''Getting Forecast Stats'''
         if get_data['startdate'] != '':
             startdate = get_data['startdate']
-            res = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastStats/?reach_id=' + comid + '&date=' + startdate + '&return_format=csv',
-                verify=False).content
-
-            ens = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&date=' + startdate + '&ensemble=all&return_format=csv',
-                verify=False).content
-
+            ens = requests.get(app.get_custom_setting('api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&date=' + startdate + '&ensemble=all&return_format=csv', verify=False).content
         else:
-            res = requests.get(
-                app.get_custom_setting('api_source') + '/api/ForecastStats/?reach_id=' + comid + '&return_format=csv',
-                verify=False).content
+            ens = requests.get(app.get_custom_setting('api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&ensemble=all&return_format=csv', verify=False).content
 
-            ens = requests.get(
-                app.get_custom_setting(
-                    'api_source') + '/api/ForecastEnsembles/?reach_id=' + comid + '&ensemble=all&return_format=csv',
-                verify=False).content
-
-        stats_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
+        '''Getting Forecast Stats'''
+        stats_data_file_path = os.path.join(app.get_app_workspace().path, 'stats_data.json')
+        stats_df = pd.read_json(stats_data_file_path, convert_dates=True)
         stats_df.index = pd.to_datetime(stats_df.index)
-        stats_df[stats_df < 0] = 0
-        stats_df.index = stats_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
-        stats_df.index = pd.to_datetime(stats_df.index)
+        stats_df.sort_index(inplace=True, ascending=True)
 
+        '''Getting Forecast Ensemble'''
         ensemble_df = pd.read_csv(io.StringIO(ens.decode('utf-8')), index_col=0)
         ensemble_df.index = pd.to_datetime(ensemble_df.index)
         ensemble_df[ensemble_df < 0] = 0
         ensemble_df.index = ensemble_df.index.to_series().dt.strftime("%Y-%m-%d %H:%M:%S")
         ensemble_df.index = pd.to_datetime(ensemble_df.index)
 
+        ensemble_data_file_path = os.path.join(app.get_app_workspace().path, 'ensemble_data.json')
+        ensemble_df.index.name = 'Datetime'
+        ensemble_df.to_json(ensemble_data_file_path)
+
         '''Getting Return Periods'''
-        res = requests.get(
-            app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv',
-            verify=False).content
+        res = requests.get(app.get_custom_setting('api_source') + '/api/ReturnPeriods/?reach_id=' + comid + '&return_format=csv', verify=False).content
         rperiods_df = pd.read_csv(io.StringIO(res.decode('utf-8')), index_col=0)
 
         table = geoglows.plots.probabilities_table(stats_df, ensemble_df, rperiods_df)
