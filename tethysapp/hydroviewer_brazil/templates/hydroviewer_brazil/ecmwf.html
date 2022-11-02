@@ -9,18 +9,6 @@
 {% block app_content %}
   <div id="map" class="map">
       <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
-          <div id="wmslegend0" hidden>
-             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=AccRainEGE&amp;format=image/png&amp;STYLE=default"/>
-          </div>
-          <div id="wmslegend1" hidden>
-             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt50&amp;format=image/png&amp;STYLE=default"/>
-          </div>
-          <div id="wmslegend2" hidden>
-             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt150&amp;format=image/png&amp;STYLE=default"/>
-          </div>
-          <div id="wmslegend3" hidden>
-             <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt300&amp;format=image/png&amp;STYLE=default"/>
-          </div>
           <div>
               <svg width="20" height="20" viewPort="0 0 20 20" version="1.1"
                    xmlns="http://www.w3.org/2000/svg">
@@ -78,8 +66,13 @@
               2-Year Warnings <input id="stp-2-toggle" class="toggle-layer" type="checkbox" data-toggle="toggle" data-size="mini">
           </div>
           <div>
-              <br>
-              {% gizmo select_input regions %}
+            {% gizmo select_input2 regions %}
+          </div>
+          <div>
+            {% gizmo select_input2 basins %}
+          </div>
+          <div>
+            {% gizmo select_input2 subbasins %}
           </div>
       </div>
   </div>
@@ -108,18 +101,18 @@
     </div>
   {% endif %}
 
-  {% if defaultUpdateButton %}
+  <!--{% if defaultUpdateButton %}
   <div id="defaultModelContainer" style="margin-right: 15px;">
     {% gizmo defaultUpdateButton %}
   </div>
-  {% endif %}
+  {% endif %}-->
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Graph">
     <a data-toggle="modal" data-target="#graph"><span class="glyphicon glyphicon-globe"></span></a>
   </div>
 
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
+  <!--<div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Table of Contents">
     <a data-toggle="modal" data-target="#toc_modal"><span class="glyphicon glyphicon-list-alt"></span></a>
-  </div>
+  </div>-->
 
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
     <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
@@ -306,24 +299,19 @@
       </div>
       <div class="modal-body">
         <p id="overview"><b>
-          This web application was created to allow users to visualize hydrologic model results
-          from different sources. It currently displays GloFAS and LDAS model results.
+          This web application was created to allow users to visualize the results of the global hydrologic model
+          GEOGloWS ECMWF Streamflow Services.
         </b></p>
         <h3>How it works</h3>
-        <h6>1. Click on Get Started.</h6>
-        <h6>2. Select a hydrologic model and a corresponding watershed of interest.</h6>
-        <h6>3. Once you click select a watershed, the map will automatically zoom to that specific watershed.</h6>
-        <h6>4. Click on any of the stream reaches within the watershed.</h6>
-        <h6>6. A hydrograph for the selected reach with the most current streamflow result will be displayed
+        <h6>1. Click on any of the stream reaches within the watershed.</h6>
+        <h6>2. A hydrograph for the selected reach with the most current streamflow result will be displayed
           in the graph area next to the map.</h6>
-        <h6>7. If previous dates are available, the Select Date dropdown will be displayed on top of the graph.
+        <h6>3. If previous dates are available, the Select Date dropdown will be displayed on top of the graph.
           Select any of the available dates to display the forecast for that specific date in the graph.</h6>
-        <h6>8. Click the close button to exit the application.</h6>
+        <h6>4. Click the close button to exit the application.</h6>
 
         <h5>Additional Resources:</h5>
-        <p><a href="https://www.ecmwf.int/en/about/what-we-do/global-forecasts" target="_blank">ECMWF Global Forecasts</a></p>
-        <p><a href="http://rapid-hub.org/" target="_blank">RAPID River Routing Model</a></p>
-        <p><a href="https://streamflow-prediction-tool.readthedocs.io/en/latest/" target="_blank">StreamFlow Prediction Tool</a></p>
+        <p><a href="https://geoglows.ecmwf.int/documentation" target="_blank">GEOGloWS ECMWF Global Forecasts</a></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
