@@ -171,6 +171,10 @@ class Hydroviewer(TethysAppBase):
                 name='get_observed_waterlevel_csv',
                 url='ecmwf-rapid/get-observed-waterlevel-csv',
                 controller='{0}.controllers.get_observed_waterlevel_csv'.format(base_name)),
+            UrlMap(
+                name='get_stations_directories',
+                url='get-station-directories',
+                controller='{0}.controllers.get_station_directories'.format(base_name)),
         )
 
         return url_maps

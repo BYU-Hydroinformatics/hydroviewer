@@ -459,7 +459,6 @@ function view_watershed() {
         });
 
     } else {
-
         map.updateSize();
         //map.removeInteraction(select_interaction);
         map.removeLayer(wmsLayer);
@@ -1374,6 +1373,133 @@ function getSubBasinGeoJsons() {
     }
 }
 
+function getSearchData () {
+	let search_value = $("#searchList").val();
+    console.log(search_value);
+    $.ajax({
+        type    : 'GET',
+        url     : 'get-station-directories',
+        data    : {'data_search' : search_value},
+        error   : function () {
+            $('#search-alert').html(
+                '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+            );
+            $("#search-alert").removeClass('hidden');
+
+            setTimeout(function () {
+                $('#search-alert').html(
+                    '<p></p>'
+                );
+                $("#search-alert").addClass('hidden');
+            }, 1500);
+        },
+        success : function (resp) {
+
+            var boundary_file = resp['boundary'];
+            var stations_file = resp['stations'];
+            var message       = resp['message'];
+
+            if (message >= 400) {
+                $('#search-alert').html(
+                    '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+                );
+                $("#search-alert").removeClass('hidden');
+
+                setTimeout(function () {
+                    $('#search-alert').html(
+                        '<p></p>'
+                    );
+                    $("#search-alert").addClass('hidden');
+                }, 1500);
+            } else {
+                console.log(message);
+                console.log(boundary_file);
+                console.log(stations_file);
+
+                var boundarySource = new ol.source.Vector({
+                });
+                boundarySource.addFeatures(
+                  new ol.format.GeoJSON().readFeatures(boundary_file, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: map.getView().getProjection()
+                  })
+                );
+
+                 var boundaryStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0)', // Change
+                        width: 0, // Change
+                    })
+                 });
+
+                 var boundaryLayer = new ol.layer.Vector({
+                    name: 'myBoundary',
+                    source: boundarySource,
+                    style: boundaryStyle
+                 });
+
+                var stationsSource = new ol.source.Vector({
+                });
+                stationsSource.addFeatures(
+                  new ol.format.GeoJSON().readFeatures(stations_file, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: map.getView().getProjection()
+                  })
+                );
+
+                 var stationsStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({ color: 'rgba(0, 0, 0, 0)' }),
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 1)',
+                            width: 2
+                        })
+                    })
+                 });
+
+                 var stationLayer = new ol.layer.Vector({
+                    name: 'myStations',
+                    source: stationsSource,
+                    style: stationsStyle
+                 });
+
+                 // Remove back data
+                map.getLayers().forEach(function(boundaryLayer) {
+                    if (boundaryLayer.get('name')=='myBoundary')
+                        map.removeLayer(boundaryLayer);
+                 });
+                 map.getLayers().forEach(function(regionLayer) {
+                    if (regionLayer.get('name')=='myRegion')
+                        map.removeLayer(regionLayer);
+                 });
+
+                 // Add to map layer
+                 map.addLayer(boundaryLayer)
+                 map.addLayer(stationLayer)
+
+
+                 // Animation for extend map
+                 setTimeout(function() {
+                    var myExtent = boundaryLayer.getSource().getExtent();
+                    map.getView().fit(myExtent, map.getSize());
+                }, 500);
+
+
+                // Remove staions layer
+                setTimeout(function () {
+                    map.getLayers().forEach(function(stationLayer) {
+                        if (stationLayer.get('name')=='myStations')
+                            map.removeLayer(stationLayer);
+                    });
+                }, 10000);
+
+
+            }
+
+        },
+    });
+}
 
 $('#stp-stream-toggle').on('change', function() {
     wmsLayer.setVisible($('#stp-stream-toggle').prop('checked'))
@@ -1404,3 +1530,4 @@ $('#stp-2-toggle').on('change', function() {
 $('#regions').change(function() {getRegionGeoJsons()});
 $('#basins').change(function() {getBasinGeoJsons()});
 $('#subbasins').change(function() {getSubBasinGeoJsons()});
+$('#searchList').change(function() {getSearchData()});

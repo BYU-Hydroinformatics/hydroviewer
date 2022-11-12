@@ -32,6 +32,8 @@ from dateutil.relativedelta import relativedelta
 from .app import Hydroviewer as app
 from .helpers import *
 
+from .model import Stations_manage
+
 base_name = __package__.split('.')[-1]
 
 def set_custom_setting(defaultModelName, defaultWSName):
@@ -107,6 +109,11 @@ def get_popup_response(request):
     return JsonResponse({})
 
 def ecmwf(request):
+    # Global oriented objects build at build of the
+    # start of the app.
+
+    global stations
+
     # Can Set Default permissions : Only allowed for admin users
     can_update_default = has_permission(request, 'update_default')
 
@@ -258,8 +265,10 @@ def ecmwf(request):
         display_text='Zoom to a Region:',
         name='regions',
         multiple=False,
-        original=True,
-        options=[(region_index[opt]['name'], opt) for opt in region_index]
+        #original=True,
+        options=[(region_index[opt]['name'], opt) for opt in region_index],
+        initial='',
+        select2_options={'placeholder': 'Select a Region', 'allowClear': False}
     )
 
     # Select Basins
@@ -286,6 +295,20 @@ def ecmwf(request):
         select2_options={'placeholder': 'Select a Subbasin', 'allowClear': False}
     )
 
+    # Search functions
+    filepath_stations = os.path.join(os.path.join(app.get_app_workspace().path), 'Brazil_Stations_RT.json')
+    stations = Stations_manage(dir_path=filepath_stations)
+
+    station_list = stations.get_search_list()
+    search_list = SelectInput(
+        display_text="Search:",
+        name="searchList",
+        multiple=False,
+        options=[(opt.capitalize(), opt) for opt in station_list],
+        initial="",
+        select2_options={'placeholder': 'Stations Search', 'allowClear': False}
+    )
+
     context = {
         "base_name": base_name,
         "model_input": model_input,
@@ -299,6 +322,7 @@ def ecmwf(request):
         "regions": regions,
         "basins": basins,
         "subbasins": subbasins,
+        "searchList": search_list,
     }
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
@@ -1266,3 +1290,19 @@ def get_observed_waterlevel_csv(request):
         print(str(e))
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
+def get_station_directories(request):
+    global stations
+
+    try:
+        id_search = request.GET['data_search']
+        output_file, output_station_file, message, estaciones, boundary = stations(search_id=id_search)
+
+        return JsonResponse({
+            "boundary": boundary,
+            "stations": estaciones,
+            "message": message,
+        })
+
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'An unknown error occurred while retrieving build data search.'})
