@@ -22,7 +22,7 @@ var create_rules = function(properties){
 }
 
 var create_style = function(layer,properties){
-    console.log(layer);
+    //console.log(layer);
     //Display styling for the selected watershed boundaries
     var sld_string =
         '<StyledLayerDescriptor version="1.0.0"\

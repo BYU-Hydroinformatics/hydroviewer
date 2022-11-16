@@ -163,6 +163,42 @@ var two_symbols = [new ol.style.RegularShape({
     })
 })];
 
+function get_requestData (model, watershed, subbasin, comid, startdate){
+  getdata = {
+      'model': model,
+      'watershed': watershed,
+      'subbasin': subbasin,
+      'comid': comid,
+      'startdate': startdate
+  };
+  $.ajax({
+      url: 'get-request-data',
+      type: 'GET',
+      data: getdata,
+      error: function() {
+          $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the data</strong></p>');
+          $('#info').removeClass('hidden');
+          console.log(e);
+          $('#historical-chart').addClass('hidden');
+          $('#fdc-chart').addClass('hidden');
+          $('#seasonal_d-chart').addClass('hidden');
+          $('#seasonal_m-chart').addClass('hidden');
+          setTimeout(function () {
+              $('#info').addClass('hidden')
+          }, 5000);
+      },
+      success: function (data) {
+        console.log(data)
+        get_time_series(model, watershed, subbasin, comid, startdate);
+        get_historic_data(model, watershed, subbasin, comid, startdate);
+        get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
+        get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
+        get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
+      }
+  })
+
+}
+
 
 function toggleAcc(layerID) {
     let layer = wms_layers[layerID];
@@ -180,14 +216,11 @@ function toggleAcc(layerID) {
 
 
 function init_map() {
+
     var base_layer = new ol.layer.Tile({
-        source: new ol.source.BingMaps({
-            key: 'eLVu8tDRPeQqmBlKAjcw~82nOqZJe2EpKmqd-kQrSmg~AocUZ43djJ-hMBHQdYDyMbT-Enfsk0mtUIGws1WeDuOvjY4EXCH-9OK3edNLDgkc',
-            imagerySet: 'Road'
-            //            imagerySet: 'AerialWithLabels'
+        source: new ol.source.OSM({
         })
     });
-
 
     wms_layers = [
         new ol.layer.Tile({
@@ -411,14 +444,14 @@ function view_watershed() {
         ]
         
         var sld_string = create_style(layerName,properties);
-        console.log(sld_string)
+        //console.log(sld_string)
         wmsLayer = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
-                //url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
-                params: { 'LAYERS': layerName },
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                //params: { 'LAYERS': layerName },
+                params: {'LAYERS':"south_america-peru-geoglows-drainage_line"},
                 // params: { 'LAYERS': layerName, 'SLD_BODY': sld_string },
-
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             }),
@@ -431,8 +464,8 @@ function view_watershed() {
 
         wmsLayer2 = new ol.layer.Image({
             source: new ol.source.ImageWMS({
-                url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                //url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
+                //url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
+                url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
                 params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -445,8 +478,8 @@ function view_watershed() {
         map.addLayer(wmsLayer2);
         // wmsLayer.getSource().updateParams({'STYLES': undefined, 'SLD_BODY': sld_string});
         $loading.addClass('hidden');
-        var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
-        //var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
+        //var ajax_url = JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "") + '/' + workspace + '/' + watershed + '-' + subbasin + '-drainage_line/wfs?request=GetCapabilities';
+        var ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
 
         var capabilities = $.ajax(ajax_url, {
             type: 'GET',
@@ -459,8 +492,8 @@ function view_watershed() {
             success: function() {
                 var x = capabilities.responseText
                     .split('<FeatureTypeList>')[1]
-                    .split(workspace + ':' + watershed + '-' + subbasin)[1]
-                    //.split('HS-9b6a7f2197ec403895bacebdca4d0074:south_america-peru-geoglows-drainage_line')[1]
+                    //.split(workspace + ':' + watershed + '-' + subbasin)[1]
+                    .split('HS-9b6a7f2197ec403895bacebdca4d0074:south_america-peru-geoglows-drainage_line')[1]
                     .split('LatLongBoundingBox ')[1]
                     .split('/></FeatureType>')[0];
 
@@ -471,132 +504,6 @@ function view_watershed() {
                 var extent = ol.proj.transform([minx, miny], 'EPSG:4326', 'EPSG:3857').concat(ol.proj.transform([maxx, maxy], 'EPSG:4326', 'EPSG:3857'));
 
                 map.getView().fit(extent, map.getSize())
-            }
-        });
-
-    } else if ($('#model option:selected').text() === 'LIS-RAPID' && $('#watershedSelect option:selected').val() !== "") {
-        $("#watershed-info").empty();
-
-        $('#dates').addClass('hidden');
-
-        var model = $('#model option:selected').text();
-        var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
-        var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
-        var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
-        var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
-        $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
-
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
-        $.ajax({
-            type: 'GET',
-            url: 'get-lis-shp/',
-            dataType: 'json',
-            data: {
-                'model': model,
-                'watershed': watershed,
-                'subbasin': subbasin
-            },
-            beforeSend: function () {
-                $('#featureLoader').show();
-            },
-            success: function(result) {
-                wmsLayer = new ol.layer.Vector({
-                    renderMode: 'image',
-                    source: new ol.source.Vector({
-                        features: (new ol.format.GeoJSON()).readFeatures(result.options)
-                    }),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'blue',
-                            width: 1
-                        })
-                    })
-                });
-
-                wmsLayer2 = new ol.layer.Image({
-                	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		//url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
-                		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
-                		serverType: 'geoserver',
-                		crossOrigin: 'Anonymous'
-                	})
-                });
-
-                feature_layer2 = wmsLayer2;
-
-                map.addLayer(wmsLayer);
-                map.addLayer(wmsLayer2);
-
-                feature_layer = wmsLayer;
-
-                map.getView().fit(result.legend_extent, map.getSize())
-            },
-            complete: function(){
-                $('#featureLoader').hide();
-            }
-        });
-
-    } else if ($('#model option:selected').text() === 'HIWAT-RAPID' && $('#watershedSelect option:selected').val() !== "") {
-        $("#watershed-info").empty();
-
-        $('#dates').addClass('hidden');
-
-        var model = $('#model option:selected').text();
-        var watershed = $('#watershedSelect option:selected').text().split(' (')[0].replace(' ', '_').toLowerCase();
-        var subbasin = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '').toLowerCase();
-        var watershed_display_name = $('#watershedSelect option:selected').text().split(' (')[0];
-        var subbasin_display_name = $('#watershedSelect option:selected').text().split(' (')[1].replace(')', '');
-        $("#watershed-info").append('<h3>Current Watershed: ' + watershed_display_name + '</h3><h5>Subbasin Name: ' + subbasin_display_name);
-
-        var layerName = workspace + ':' + watershed + '-' + subbasin + '-drainage_line';
-        $.ajax({
-            type: 'GET',
-            url: 'get-hiwat-shp/',
-            dataType: 'json',
-            data: {
-                'model': model,
-                'watershed': watershed,
-                'subbasin': subbasin
-            },
-            beforeSend: function () {
-                $('#featureLoader').show();
-            },
-            success: function(result) {
-                wmsLayer = new ol.layer.Vector({
-                    renderMode: 'image',
-                    source: new ol.source.Vector({
-                        features: (new ol.format.GeoJSON()).readFeatures(result.options)
-                    }),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'blue',
-                            width: 1
-                        })
-                    })
-                });
-
-                wmsLayer2 = new ol.layer.Image({
-                	source: new ol.source.ImageWMS({
-                		url: JSON.parse($('#geoserver_endpoint').val())[0].replace(/\/$/, "")+'/wms',
-                		//url: 'https://geoserver.hydroshare.org/geoserver/HS-9b6a7f2197ec403895bacebdca4d0074/wms',
-                		params: {'LAYERS':"SENAMHI_Stations_RT_v3"},
-                		serverType: 'geoserver',
-                		crossOrigin: 'Anonymous'
-                	})
-                });
-
-                feature_layer2 = wmsLayer2;
-
-                map.addLayer(wmsLayer);
-                map.addLayer(wmsLayer2);
-
-                feature_layer = wmsLayer;
-
-                map.getView().fit(result.legend_extent, map.getSize())
-            },
-            complete: function(){
-                $('#featureLoader').hide();
             }
         });
 
@@ -793,6 +700,8 @@ function get_time_series(model, watershed, subbasin, comid, startdate) {
 
                 //resize main graph
                 Plotly.Plots.resize($("#long-term-chart .js-plotly-plot")[0]);
+
+                get_forecast_percent(watershed, subbasin, comid, startdate);
 
                 var params = {
                     watershed_name: watershed,
@@ -997,6 +906,21 @@ function get_forecast_percent(watershed, subbasin, comid, startdate) {
 
             $("#forecast-table").show();
             // $('#table').html(resp);
+
+            var params = {
+            watershed_name: watershed,
+            subbasin_name: subbasin,
+            reach_id: comid,
+            startdate: startdate,
+          };
+
+          $('#submit-download-forecast-ens').attr({
+            target: '_blank',
+            href: 'get-forecast-ens-data-csv?' + jQuery.param(params)
+          });
+
+          $('#download_forecast_ens').removeClass('hidden');
+
         }
     });
 }
@@ -1191,14 +1115,7 @@ function map_events() {
                             }
 
                             get_available_dates(model, watershed, subbasin, comid);
-                            get_time_series(model, watershed, subbasin, comid, startdate);
-                            get_historic_data(model, watershed, subbasin, comid, startdate);
-                            get_flow_duration_curve(model, watershed, subbasin, comid, startdate);
-                            get_daily_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
-                            get_monthly_seasonal_streamflow(model, watershed, subbasin, comid, startdate);
-                            if (model === 'ECMWF-RAPID') {
-                                get_forecast_percent(watershed, subbasin, comid, startdate);
-                            };
+                            get_requestData (model, watershed, subbasin, comid, startdate);
 
                             var workspace = JSON.parse($('#geoserver_endpoint').val())[1];
 
@@ -1245,81 +1162,6 @@ function add_feature(model, workspace, comid) {
         map.addLayer(featureOverlay);
         map.getLayers().item(5);
 
-    } else if (model === 'LIS-RAPID') {
-        var vectorSource;
-        $.ajax({
-            type: 'GET',
-            url: 'get-lis-shp/',
-            dataType: 'json',
-            data: {
-                'model': model,
-                'watershed': workspace[0],
-                'subbasin': workspace[1]
-            },
-            success: function(result) {
-                JSON.parse(result.options).features.forEach(function(elm) {
-                    if (elm.properties.COMID === parseInt(comid)) {
-                        var filtered_json = {
-                            "type": "FeatureCollection",
-                            "features": [elm]
-                        };
-                        vectorSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(filtered_json)
-                        });
-                    }
-                });
-
-                featureOverlay = new ol.layer.Vector({
-                    source: vectorSource,
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: '#00BFFF',
-                            width: 8
-                        })
-                    })
-                });
-                map.addLayer(featureOverlay);
-                map.getLayers().item(5);
-            }
-        });
-
-    } else if (model === 'HIWAT-RAPID') {
-        var vectorSource;
-        $.ajax({
-            type: 'GET',
-            url: 'get-hiwat-shp/',
-            dataType: 'json',
-            data: {
-                'model': model,
-                'watershed': workspace[0],
-                'subbasin': workspace[1]
-            },
-            success: function(result) {
-                JSON.parse(result.options).features.forEach(function(elm) {
-                    if (elm.properties.COMID === parseInt(comid)) {
-                        var filtered_json = {
-                            "type": "FeatureCollection",
-                            "features": [elm]
-                        };
-                        vectorSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(filtered_json)
-                        });
-                    }
-                });
-
-                featureOverlay = new ol.layer.Vector({
-                    source: vectorSource,
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: '#00BFFF',
-                            width: 8
-                        })
-                    })
-                });
-                map.addLayer(featureOverlay);
-                map.getLayers().item(5);
-            }
-        });
     }
 }
 
@@ -1333,10 +1175,6 @@ function submit_model() {
 
         if ($('#model option:selected').val() === 'ecmwf') {
             location.href = 'http://' + location.host + base_path + 'ecmwf-rapid/?model=ECMWF-RAPID';
-        } else if ($('#model option:selected').val() === 'lis') {
-            location.href = 'http://' + location.host + base_path + 'lis-rapid/?model=LIS-RAPID';
-        } else if ($('#model option:selected').val() === 'hiwat') {
-            location.href = 'http://' + location.host + base_path + 'hiwat-rapid/?model=HIWAT-RAPID';
         } else {
             location.href = 'http://' + location.host + base_path;
         }
@@ -1471,6 +1309,239 @@ function getRegionGeoJsons() {
     }
 }
 
+function getProvinceGeoJsons() {
+
+    let geojsons = region_index2[$("#provinces").val()]['geojsons'];
+    for (let i in geojsons) {
+        var regionsSource = new ol.source.Vector({
+           url: staticGeoJSON2 + geojsons[i],
+           format: new ol.format.GeoJSON()
+        });
+
+        var regionStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 3
+            })
+        });
+
+        var regionsLayer = new ol.layer.Vector({
+            name: 'myRegion',
+            source: regionsSource,
+            style: regionStyle
+        });
+
+        map.getLayers().forEach(function(regionsLayer) {
+        if (regionsLayer.get('name')=='myRegion')
+            map.removeLayer(regionsLayer);
+        });
+        map.addLayer(regionsLayer)
+
+        setTimeout(function() {
+            var myExtent = regionsLayer.getSource().getExtent();
+            map.getView().fit(myExtent, map.getSize());
+        }, 500);
+    }
+}
+
+function getBasinGeoJsons() {
+
+    let basins = region_index3[$("#basins").val()]['geojsons'];
+    for (let i in basins) {
+        var regionsSource = new ol.source.Vector({
+           url: staticGeoJSON3 + basins[i],
+           format: new ol.format.GeoJSON()
+        });
+
+        var regionStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#0050a0',
+                width: 3
+            })
+        });
+
+        var regionsLayer = new ol.layer.Vector({
+            name: 'myRegion',
+            source: regionsSource,
+            style: regionStyle
+        });
+
+        map.getLayers().forEach(function(regionsLayer) {
+        if (regionsLayer.get('name')=='myRegion')
+            map.removeLayer(regionsLayer);
+        });
+        map.addLayer(regionsLayer)
+
+        setTimeout(function() {
+            var myExtent = regionsLayer.getSource().getExtent();
+            map.getView().fit(myExtent, map.getSize());
+        }, 500);
+    }
+}
+
+function getSubBasinGeoJsons() {
+
+    let subbasins = region_index4[$("#subbasins").val()]['geojsons'];
+    for (let i in subbasins) {
+        var regionsSource = new ol.source.Vector({
+           url: staticGeoJSON4 + subbasins[i],
+           format: new ol.format.GeoJSON()
+        });
+
+        var regionStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#009C3B',
+                width: 3
+            })
+        });
+
+        var regionsLayer = new ol.layer.Vector({
+            name: 'myRegion',
+            source: regionsSource,
+            style: regionStyle
+        });
+
+        map.getLayers().forEach(function(regionsLayer) {
+        if (regionsLayer.get('name')=='myRegion')
+            map.removeLayer(regionsLayer);
+        });
+        map.addLayer(regionsLayer)
+
+        setTimeout(function() {
+            var myExtent = regionsLayer.getSource().getExtent();
+            map.getView().fit(myExtent, map.getSize());
+        }, 500);
+    }
+}
+
+function getSearchData () {
+	let search_value = $("#searchList").val();
+    console.log(search_value);
+    $.ajax({
+        type    : 'GET',
+        url     : 'get-station-directories',
+        data    : {'data_search' : search_value},
+        error   : function () {
+            $('#search-alert').html(
+                '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+            );
+            $("#search-alert").removeClass('hidden');
+
+            setTimeout(function () {
+                $('#search-alert').html(
+                    '<p></p>'
+                );
+                $("#search-alert").addClass('hidden');
+            }, 1500);
+        },
+        success : function (resp) {
+
+            var boundary_file = resp['boundary'];
+            var stations_file = resp['stations'];
+            var message       = resp['message'];
+
+            if (message >= 400) {
+                $('#search-alert').html(
+                    '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+                );
+                $("#search-alert").removeClass('hidden');
+
+                setTimeout(function () {
+                    $('#search-alert').html(
+                        '<p></p>'
+                    );
+                    $("#search-alert").addClass('hidden');
+                }, 1500);
+            } else {
+                console.log(message);
+                console.log(boundary_file);
+                console.log(stations_file);
+
+                var boundarySource = new ol.source.Vector({
+                });
+                boundarySource.addFeatures(
+                  new ol.format.GeoJSON().readFeatures(boundary_file, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: map.getView().getProjection()
+                  })
+                );
+
+                 var boundaryStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0)', // Change
+                        width: 0, // Change
+                    })
+                 });
+
+                 var boundaryLayer = new ol.layer.Vector({
+                    name: 'myBoundary',
+                    source: boundarySource,
+                    style: boundaryStyle
+                 });
+
+                var stationsSource = new ol.source.Vector({
+                });
+                stationsSource.addFeatures(
+                  new ol.format.GeoJSON().readFeatures(stations_file, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: map.getView().getProjection()
+                  })
+                );
+
+                 var stationsStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({ color: 'rgba(0, 0, 0, 0)' }),
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 1)',
+                            width: 2
+                        })
+                    })
+                 });
+
+                 var stationLayer = new ol.layer.Vector({
+                    name: 'myStations',
+                    source: stationsSource,
+                    style: stationsStyle
+                 });
+
+                 // Remove back data
+                map.getLayers().forEach(function(boundaryLayer) {
+                    if (boundaryLayer.get('name')=='myBoundary')
+                        map.removeLayer(boundaryLayer);
+                 });
+                 map.getLayers().forEach(function(regionLayer) {
+                    if (regionLayer.get('name')=='myRegion')
+                        map.removeLayer(regionLayer);
+                 });
+
+                 // Add to map layer
+                 map.addLayer(boundaryLayer)
+                 map.addLayer(stationLayer)
+
+
+                 // Animation for extend map
+                 setTimeout(function() {
+                    var myExtent = boundaryLayer.getSource().getExtent();
+                    map.getView().fit(myExtent, map.getSize());
+                }, 500);
+
+
+                // Remove staions layer
+                setTimeout(function () {
+                    map.getLayers().forEach(function(stationLayer) {
+                        if (stationLayer.get('name')=='myStations')
+                            map.removeLayer(stationLayer);
+                    });
+                }, 10000);
+
+
+            }
+
+        },
+    });
+}
+
 
 $('#stp-stream-toggle').on('change', function() {
     wmsLayer.setVisible($('#stp-stream-toggle').prop('checked'))
@@ -1499,3 +1570,7 @@ $('#stp-2-toggle').on('change', function() {
 
 // Regions gizmo listener
 $('#regions').change(function() {getRegionGeoJsons()});
+$('#provinces').change(function() {getProvinceGeoJsons()});
+$('#basins').change(function() {getBasinGeoJsons()});
+$('#subbasins').change(function() {getSubBasinGeoJsons()});
+$('#searchList').change(function() {getSearchData()});

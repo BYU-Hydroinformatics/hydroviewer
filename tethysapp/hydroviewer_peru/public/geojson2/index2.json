@@ -1,0 +1,794 @@
+{
+  "peru": {
+    "name": "Peru",
+    "geojsons": ["Peru.json"]
+  },
+  "0101_CHACHAPOYAS": {
+    "name": "0101 CHACHAPOYAS",
+    "geojsons": ["0101_CHACHAPOYAS.json"]
+  },
+  "0102_BAGUA": {
+    "name": "0102 BAGUA",
+    "geojsons": ["0102_BAGUA.json"]
+  },
+  "0103_BONGARA": {
+    "name": "0103 BONGARA",
+    "geojsons": ["0103_BONGARA.json"]
+  },
+  "0104_CONDORCANQUI": {
+    "name": "0104 CONDORCANQUI",
+    "geojsons": ["0104_CONDORCANQUI.json"]
+  },
+  "0105_LUYA": {
+    "name": "0105 LUYA",
+    "geojsons": ["0105_LUYA.json"]
+  },
+  "0106_RODRIGUEZ_DE_MENDOZA": {
+    "name": "0106 RODRIGUEZ DE MENDOZA",
+    "geojsons": ["0106_RODRIGUEZ_DE_MENDOZA.json"]
+  },
+  "0107_UTCUBAMBA": {
+    "name": "0107 UTCUBAMBA",
+    "geojsons": ["0107_UTCUBAMBA.json"]
+  },
+  "0201_HUARAZ": {
+    "name": "0201 HUARAZ",
+    "geojsons": ["0201_HUARAZ.json"]
+  },
+  "0202_AIJA": {
+    "name": "0202 AIJA",
+    "geojsons": ["0202_AIJA.json"]
+  },
+  "0203_ANTONIO_RAYMONDI": {
+    "name": "0203 ANTONIO RAYMONDI",
+    "geojsons": ["0203_ANTONIO_RAYMONDI.json"]
+  },
+  "0204_ASUNCION": {
+    "name": "0204 ASUNCION",
+    "geojsons": ["0204_ASUNCION.json"]
+  },
+  "0205_BOLOGNESI": {
+    "name": "0205 BOLOGNESI",
+    "geojsons": ["0205_BOLOGNESI.json"]
+  },
+  "0206_CARHUAZ": {
+    "name": "0206 CARHUAZ",
+    "geojsons": ["0206_CARHUAZ.json"]
+  },
+  "0207_CARLOS_FERMIN_FITZCARRALD": {
+    "name": "0207 CARLOS FERMIN FITZCARRALD",
+    "geojsons": ["0207_CARLOS_FERMIN_FITZCARRALD.json"]
+  },
+  "0208_CASMA": {
+    "name": "0208 CASMA",
+    "geojsons": ["0208_CASMA.json"]
+  },
+  "0209_CORONGO": {
+    "name": "0209 CORONGO",
+    "geojsons": ["0209_CORONGO.json"]
+  },
+  "0210_HUARI": {
+    "name": "0210 HUARI",
+    "geojsons": ["0210_HUARI.json"]
+  },
+  "0211_HUARMEY": {
+    "name": "0211 HUARMEY",
+    "geojsons": ["0211_HUARMEY.json"]
+  },
+  "0212_HUAYLAS": {
+    "name": "0212 HUAYLAS",
+    "geojsons": ["0212_HUAYLAS.json"]
+  },
+  "0213_MARISCAL_LUZURIAGA": {
+    "name": "0213 MARISCAL LUZURIAGA",
+    "geojsons": ["0213_MARISCAL_LUZURIAGA.json"]
+  },
+  "0214_OCROS": {
+    "name": "0214 OCROS",
+    "geojsons": ["0214_OCROS.json"]
+  },
+  "0215_PALLASCA": {
+    "name": "0215 PALLASCA",
+    "geojsons": ["0215_PALLASCA.json"]
+  },
+  "0216_POMABAMBA": {
+    "name": "0216 POMABAMBA",
+    "geojsons": ["0216_POMABAMBA.json"]
+  },
+  "0217_RECUAY": {
+    "name": "0217 RECUAY",
+    "geojsons": ["0217_RECUAY.json"]
+  },
+  "0218_SANTA": {
+    "name": "0218 SANTA",
+    "geojsons": ["0218_SANTA.json"]
+  },
+  "0219_SIHUAS": {
+    "name": "0219 SIHUAS",
+    "geojsons": ["0219_SIHUAS.json"]
+  },
+  "0220_YUNGAY": {
+    "name": "0220 YUNGAY",
+    "geojsons": ["0220_YUNGAY.json"]
+  },
+  "0301_ABANCAY": {
+    "name": "0301 ABANCAY",
+    "geojsons": ["0301_ABANCAY.json"]
+  },
+  "0302_ANDAHUAYLAS": {
+    "name": "0302 ANDAHUAYLAS",
+    "geojsons": ["0302_ANDAHUAYLAS.json"]
+  },
+  "0303_ANTABAMBA": {
+    "name": "0303 ANTABAMBA",
+    "geojsons": ["0303_ANTABAMBA.json"]
+  },
+  "0304_AYMARAES": {
+    "name": "0304 AYMARAES",
+    "geojsons": ["0304_AYMARAES.json"]
+  },
+  "0305_COTABAMBAS": {
+    "name": "0305 COTABAMBAS",
+    "geojsons": ["0305_COTABAMBAS.json"]
+  },
+  "0306_CHINCHEROS": {
+    "name": "0306 CHINCHEROS",
+    "geojsons": ["0306_CHINCHEROS.json"]
+  },
+  "0307_GRAU": {
+    "name": "0307 GRAU",
+    "geojsons": ["0307_GRAU.json"]
+  },
+  "0401_AREQUIPA": {
+    "name": "0401 AREQUIPA",
+    "geojsons": ["0401_AREQUIPA.json"]
+  },
+  "0402_CAMANA": {
+    "name": "0402 CAMANA",
+    "geojsons": ["0402_CAMANA.json"]
+  },
+  "0403_CARAVELI": {
+    "name": "0403 CARAVELI",
+    "geojsons": ["0403_CARAVELI.json"]
+  },
+  "0404_CASTILLA": {
+    "name": "0404 CASTILLA",
+    "geojsons": ["0404_CASTILLA.json"]
+  },
+  "0405_CAYLLOMA": {
+    "name": "0405 CAYLLOMA",
+    "geojsons": ["0405_CAYLLOMA.json"]
+  },
+  "0406_CONDESUYOS": {
+    "name": "0406 CONDESUYOS",
+    "geojsons": ["0406_CONDESUYOS.json"]
+  },
+  "0407_ISLAY": {
+    "name": "0407 ISLAY",
+    "geojsons": ["0407_ISLAY.json"]
+  },
+  "0408_LA_UNION": {
+    "name": "0408 LA UNION",
+    "geojsons": ["0408_LA_UNION.json"]
+  },
+  "0501_HUAMANGA": {
+    "name": "0501_HUAMANGA",
+    "geojsons": ["0501_HUAMANGA.json"]
+  },
+  "0502_CANGALLO": {
+    "name": "0502 CANGALLO",
+    "geojsons": ["0502_CANGALLO.json"]
+  },
+  "0503_HUANCA_SANCOS": {
+    "name": "0503 HUANCA SANCOS",
+    "geojsons": ["0503_HUANCA_SANCOS.json"]
+  },
+  "0504_HUANTA": {
+    "name": "0504 HUANTA",
+    "geojsons": ["0504_HUANTA.json"]
+  },
+  "0505_LA_MAR": {
+    "name": "0505 LA MAR",
+    "geojsons": ["0505_LA_MAR.json"]
+  },
+  "0506_LUCANAS": {
+    "name": "0506 LUCANAS",
+    "geojsons": ["0506_LUCANAS.json"]
+  },
+  "0507_PARINACOCHAS": {
+    "name": "0507 PARINACOCHAS",
+    "geojsons": ["0507_PARINACOCHAS.json"]
+  },
+  "0508_PAUCAR_DEL_SARA_SARA": {
+    "name": "0508 PAUCAR DEL SARA SARA",
+    "geojsons": ["0508_PAUCAR_DEL_SARA_SARA.json"]
+  },
+  "0509_SUCRE": {
+    "name": "0509 SUCRE",
+    "geojsons": ["0509_SUCRE.json"]
+  },
+  "0510_VICTOR_FAFARDO": {
+    "name": "0510 VICTOR FAFARDO",
+    "geojsons": ["0510_VICTOR_FAFARDO.json"]
+  },
+  "0510_VICTOR_FAJARDO": {
+    "name": "0510 VICTOR FAJARDO",
+    "geojsons": ["0510_VICTOR_FAJARDO.json"]
+  },
+  "0511_VILCAS_HUAMAN": {
+    "name": "0511 VILCAS HUAMAN",
+    "geojsons": ["0511_VILCAS_HUAMAN.json"]
+  },
+  "0601_CAJAMARCA": {
+    "name": "0601 CAJAMARCA",
+    "geojsons": ["0601_CAJAMARCA.json"]
+  },
+  "0602_CAJABAMBA": {
+    "name": "0602 CAJABAMBA",
+    "geojsons": ["0602_CAJABAMBA.json"]
+  },
+  "0603_CELENDIN": {
+    "name": "0603 CELENDIN",
+    "geojsons": ["0603_CELENDIN.json"]
+  },
+  "0604_CHOTA": {
+    "name": "0604 CHOTA",
+    "geojsons": ["0604_CHOTA.json"]
+  },
+  "0605_CONTUMAZA": {
+    "name": "0605 CONTUMAZA",
+    "geojsons": ["0605_CONTUMAZA.json"]
+  },
+  "0606_CUTERVO": {
+    "name": "0606 CUTERVO",
+    "geojsons": ["0606_CUTERVO.json"]
+  },
+  "0607_HUALGAYOC": {
+    "name": "0607 HUALGAYOC",
+    "geojsons": ["0607_HUALGAYOC.json"]
+  },
+  "0608_JAEN": {
+    "name": "0608 JAEN",
+    "geojsons": ["0608_JAEN.json"]
+  },
+  "0609_SAN_IGNACIO": {
+    "name": "0609 SAN IGNACIO",
+    "geojsons": ["0609_SAN_IGNACIO.json"]
+  },
+  "0610_SAN_MARCOS": {
+    "name": "0610 SAN MARCOS",
+    "geojsons": ["0610_SAN_MARCOS.json"]
+  },
+  "0611_SAN_MIGUEL": {
+    "name": "0611 SAN MIGUEL",
+    "geojsons": ["0611_SAN_MIGUEL.json"]
+  },
+  "0612_SAN_PABLO": {
+    "name": "0612 SAN PABLO",
+    "geojsons": ["0612_SAN_PABLO.json"]
+  },
+  "0613_SANTA_CRUZ": {
+    "name": "0613 SANTA CRUZ",
+    "geojsons": ["0613_SANTA_CRUZ.json"]
+  },
+  "0701_CALLAO": {
+    "name": "0701 CALLAO",
+    "geojsons": ["0701_CALLAO.json"]
+  },
+  "0801_CUSCO": {
+    "name": "0801 CUSCO",
+    "geojsons": ["0801_CUSCO.json"]
+  },
+  "0802_ACOMAYO": {
+    "name": "0802 ACOMAYO",
+    "geojsons": ["0802_ACOMAYO.json"]
+  },
+  "0803_ANTA": {
+    "name": "0803 ANTA",
+    "geojsons": ["0803_ANTA.json"]
+  },
+  "0804_CALCA": {
+    "name": "0804 CALCA",
+    "geojsons": ["0804_CALCA.json"]
+  },
+  "0805_CANAS": {
+    "name": "0805 CANAS",
+    "geojsons": ["0805_CANAS.json"]
+  },
+  "0806_CANCHIS": {
+    "name": "0806 CANCHIS",
+    "geojsons": ["0806_CANCHIS.json"]
+  },
+  "0807_CHUMBIVILCAS": {
+    "name": "0807 CHUMBIVILCAS",
+    "geojsons": ["0807_CHUMBIVILCAS.json"]
+  },
+  "0808_ESPINAR": {
+    "name": "0808 ESPINAR",
+    "geojsons": ["0808_ESPINAR.json"]
+  },
+  "0809_LA_CONVENCION": {
+    "name": "0809 LA CONVENCION",
+    "geojsons": ["0809_LA_CONVENCION.json"]
+  },
+  "0810_PARURO": {
+    "name": "0810 PARURO",
+    "geojsons": ["0810_PARURO.json"]
+  },
+  "0811_PAUCARTAMBO": {
+    "name": "0811 PAUCARTAMBO",
+    "geojsons": ["0811_PAUCARTAMBO.json"]
+  },
+  "0812_QUISPICANCHI": {
+    "name": "0812 QUISPICANCHI",
+    "geojsons": ["0812_QUISPICANCHI.json"]
+  },
+  "0813_URUBAMBA": {
+    "name": "0813 URUBAMBA",
+    "geojsons": ["0813_URUBAMBA.json"]
+  },
+  "0901_HUANCAVELICA": {
+    "name": "0901 HUANCAVELICA",
+    "geojsons": ["0901_HUANCAVELICA.json"]
+  },
+  "0902_ACOBAMBA": {
+    "name": "0902 ACOBAMBA",
+    "geojsons": ["0902_ACOBAMBA.json"]
+  },
+  "0903_ANGARAES": {
+    "name": "0903 ANGARAES",
+    "geojsons": ["0903_ANGARAES.json"]
+  },
+  "0904_CASTROVIRREYNA": {
+    "name": "0904 CASTROVIRREYNA",
+    "geojsons": ["0904_CASTROVIRREYNA.json"]
+  },
+  "0905_CHURCAMPA": {
+    "name": "0905 CHURCAMPA",
+    "geojsons": ["0905_CHURCAMPA.json"]
+  },
+  "0906_HUAYTARA": {
+    "name": "0906 HUAYTARA",
+    "geojsons": ["0906_HUAYTARA.json"]
+  },
+  "0907_TAYACAJA": {
+    "name": "0907 TAYACAJA",
+    "geojsons": ["0907_TAYACAJA.json"]
+  },
+  "1001_HUANUCO": {
+    "name": "1001 HUANUCO",
+    "geojsons": ["1001_HUANUCO.json"]
+  },
+  "1002_AMBO": {
+    "name": "1002 AMBO",
+    "geojsons": ["1002_AMBO.json"]
+  },
+  "1003_DOS_DE_MAYO": {
+    "name": "1003 DOS DE MAYO",
+    "geojsons": ["1003_DOS_DE_MAYO.json"]
+  },
+  "1004_HUACAYBAMBA": {
+    "name": "1004 HUACAYBAMBA",
+    "geojsons": ["1004_HUACAYBAMBA.json"]
+  },
+  "1005_HUAMALIES": {
+    "name": "1005 HUAMALIES",
+    "geojsons": ["1005_HUAMALIES.json"]
+  },
+  "1006_LEONCIO_PRADO": {
+    "name": "1006 LEONCIO PRADO",
+    "geojsons": ["1006_LEONCIO_PRADO.json"]
+  },
+  "1007_MARANON": {
+    "name": "1007 MARANON",
+    "geojsons": ["1007_MARANON.json"]
+  },
+  "1008_PACHITEA": {
+    "name": "1008 PACHITEA",
+    "geojsons": ["1008_PACHITEA.json"]
+  },
+  "1009_PUERTO_INCA": {
+    "name": "1009 PUERTO INCA",
+    "geojsons": ["1009_PUERTO_INCA.json"]
+  },
+  "1010_LAURICOCHA": {
+    "name": "1010 LAURICOCHA",
+    "geojsons": ["1010_LAURICOCHA.json"]
+  },
+  "1011_YAROWILCA": {
+    "name": "1011 YAROWILCA",
+    "geojsons": ["1011_YAROWILCA.json"]
+  },
+  "1101_ICA": {
+    "name": "1101 ICA",
+    "geojsons": ["1101_ICA.json"]
+  },
+  "1102_CHINCHA": {
+    "name": "1102 CHINCHA",
+    "geojsons": ["1102_CHINCHA.json"]
+  },
+  "1103_NAZCA": {
+    "name": "1103 NAZCA",
+    "geojsons": ["1103_NAZCA.json"]
+  },
+  "1104_PALPA": {
+    "name": "1104 PALPA",
+    "geojsons": ["1104_PALPA.json"]
+  },
+  "1105_PISCO": {
+    "name": "1105 PISCO",
+    "geojsons": ["1105_PISCO.json"]
+  },
+  "1201_HUANCAYO": {
+    "name": "1201 HUANCAYO",
+    "geojsons": ["1201_HUANCAYO.json"]
+  },
+  "1202_CONCEPCION": {
+    "name": "1202 CONCEPCION",
+    "geojsons": ["1202_CONCEPCION.json"]
+  },
+  "1203_CHANCHAMAYO": {
+    "name": "1203 CHANCHAMAYO",
+    "geojsons": ["1203_CHANCHAMAYO.json"]
+  },
+  "1204_JAUJA": {
+    "name": "1204 JAUJA",
+    "geojsons": ["1204_JAUJA.json"]
+  },
+  "1205_JUNIN": {
+    "name": "1205 JUNIN",
+    "geojsons": ["1205_JUNIN.json"]
+  },
+  "1206_SATIPO": {
+    "name": "1206 SATIPO",
+    "geojsons": ["1206_SATIPO.json"]
+  },
+  "1207_TARMA": {
+    "name": "1207 TARMA",
+    "geojsons": ["1207_TARMA.json"]
+  },
+  "1208_YAULI": {
+    "name": "1208 YAULI",
+    "geojsons": ["1208_YAULI.json"]
+  },
+  "1209_CHUPACA": {
+    "name": "1209 CHUPACA",
+    "geojsons": ["1209_CHUPACA.json"]
+  },
+  "1301_TRUJILLO": {
+    "name": "1301 TRUJILLO",
+    "geojsons": ["1301_TRUJILLO.json"]
+  },
+  "1302_ASCOPE": {
+    "name": "1302 ASCOPE",
+    "geojsons": ["1302_ASCOPE.json"]
+  },
+  "1303_BOLIVAR": {
+    "name": "1303 BOLIVAR",
+    "geojsons": ["1303_BOLIVAR.json"]
+  },
+  "1304_CHEPEN": {
+    "name": "1304 CHEPEN",
+    "geojsons": ["1304_CHEPEN.json"]
+  },
+  "1305_JULCAN": {
+    "name": "1305 JULCAN",
+    "geojsons": ["1305_JULCAN.json"]
+  },
+  "1306_OTUZCO": {
+    "name": "1306 OTUZCO",
+    "geojsons": ["1306_OTUZCO.json"]
+  },
+  "1307_PACASMAYO": {
+    "name": "1307 PACASMAYO",
+    "geojsons": ["1307_PACASMAYO.json"]
+  },
+  "1308_PATAZ": {
+    "name": "1308 PATAZ",
+    "geojsons": ["1308_PATAZ.json"]
+  },
+  "1309_SANCHEZ_CARRION": {
+    "name": "1309 SANCHEZ CARRION",
+    "geojsons": ["1309_SANCHEZ_CARRION.json"]
+  },
+  "1310_SANTIAGO_DE_CHUCO": {
+    "name": "1310 SANTIAGO DE CHUCO",
+    "geojsons": ["1310_SANTIAGO_DE_CHUCO.json"]
+  },
+  "1311_GRAN_CHIMU": {
+    "name": "1311 GRAN CHIMU",
+    "geojsons": ["1311_GRAN_CHIMU.json"]
+  },
+  "1312_VIRU": {
+    "name": "1312 VIRU",
+    "geojsons": ["1312_VIRU.json"]
+  },
+  "1401_CHICLAYO": {
+    "name": "1401 CHICLAYO",
+    "geojsons": ["1401_CHICLAYO.json"]
+  },
+  "1402_FERRENAFE": {
+    "name": "1402 FERRENAFE",
+    "geojsons": ["1402_FERRENAFE.json"]
+  },
+  "1403_LAMBAYEQUE": {
+    "name": "1403 LAMBAYEQUE",
+    "geojsons": ["1403_LAMBAYEQUE.json"]
+  },
+  "1501_LIMA": {
+    "name": "1501 LIMA",
+    "geojsons": ["1501_LIMA.json"]
+  },
+  "1502_BARRANCA": {
+    "name": "1502 BARRANCA",
+    "geojsons": ["1502_BARRANCA.json"]
+  },
+  "1503_CAJATAMBO": {
+    "name": "1503 CAJATAMBO",
+    "geojsons": ["1503_CAJATAMBO.json"]
+  },
+  "1504_CANTA": {
+    "name": "1504 CANTA",
+    "geojsons": ["1504_CANTA.json"]
+  },
+  "1505_CANETE": {
+    "name": "1505 CANETE",
+    "geojsons": ["1505_CANETE.json"]
+  },
+  "1506_HUARAL": {
+    "name": "1506 HUARAL",
+    "geojsons": ["1506_HUARAL.json"]
+  },
+  "1507_HUAROCHIRI": {
+    "name": "1507 HUAROCHIRI",
+    "geojsons": ["1507_HUAROCHIRI.json"]
+  },
+  "1508_HUAURA": {
+    "name": "1508 HUAURA",
+    "geojsons": ["1508_HUAURA.json"]
+  },
+  "1509_OYON": {
+    "name": "1509 OYON",
+    "geojsons": ["1509_OYON.json"]
+  },
+  "1510_YAUYOS": {
+    "name": "1510 YAUYOS",
+    "geojsons": ["1510_YAUYOS.json"]
+  },
+  "1601_MAYNAS": {
+    "name": "1601 MAYNAS",
+    "geojsons": ["1601_MAYNAS.json"]
+  },
+  "1602_ALTO_AMAZONAS": {
+    "name": "1602 ALTO AMAZONAS",
+    "geojsons": ["1602_ALTO_AMAZONAS.json"]
+  },
+  "1603_LORETO": {
+    "name": "1603 LORETO",
+    "geojsons": ["1603_LORETO.json"]
+  },
+  "1604_MARISCAL_RAMON_CASTILLA": {
+    "name": "1604 MARISCAL RAMON CASTILLA",
+    "geojsons": ["1604_MARISCAL_RAMON_CASTILLA.json"]
+  },
+  "1605_REQUENA": {
+    "name": "1605 REQUENA",
+    "geojsons": ["1605_REQUENA.json"]
+  },
+  "1606_UCAYALI": {
+    "name": "1606 UCAYALI",
+    "geojsons": ["1606_UCAYALI.json"]
+  },
+  "1607_DATEM_DEL_MARANON": {
+    "name": "1607 DATEM DEL MARANON",
+    "geojsons": ["1607_DATEM_DEL_MARANON.json"]
+  },
+  "1701_TAMBOPATA": {
+    "name": "1701 TAMBOPATA",
+    "geojsons": ["1701_TAMBOPATA.json"]
+  },
+  "1702_MANU": {
+    "name": "1702 MANU",
+    "geojsons": ["1702_MANU.json"]
+  },
+  "1703_TAHUAMANU": {
+    "name": "1703 TAHUAMANU",
+    "geojsons": ["1703_TAHUAMANU.json"]
+  },
+  "1801_MARISCAL_NIETO": {
+    "name": "1801 MARISCAL NIETO",
+    "geojsons": ["1801_MARISCAL_NIETO.json"]
+  },
+  "1802_GENERAL_SANCHEZ_CERRO": {
+    "name": "1802 GENERAL SANCHEZ CERRO",
+    "geojsons": ["1802_GENERAL_SANCHEZ_CERRO.json"]
+  },
+  "1803_ILO": {
+    "name": "1803 ILO",
+    "geojsons": ["1803_ILO.json"]
+  },
+  "1901_PASCO": {
+    "name": "1901 PASCO",
+    "geojsons": ["1901_PASCO.json"]
+  },
+  "1902_DANIEL_ALCIDES_CARRION": {
+    "name": "1902 DANIEL ALCIDES CARRION",
+    "geojsons": ["1902_DANIEL_ALCIDES_CARRION.json"]
+  },
+  "1903_OXAPAMPA": {
+    "name": "1903 OXAPAMPA",
+    "geojsons": ["1903_OXAPAMPA.json"]
+  },
+  "2001_PIURA": {
+    "name": "2001 PIURA",
+    "geojsons": ["2001_PIURA.json"]
+  },
+  "2001_PUIRA": {
+    "name": "2001 PUIRA",
+    "geojsons": ["2001_PUIRA.json"]
+  },
+  "2002_AYABACA": {
+    "name": "2002 AYABACA",
+    "geojsons": ["2002_AYABACA.json"]
+  },
+  "2003_HUANCABAMBA": {
+    "name": "2003 HUANCABAMBA",
+    "geojsons": ["2003_HUANCABAMBA.json"]
+  },
+  "2004_MORROPON": {
+    "name": "2004 MORROPON",
+    "geojsons": ["2004_MORROPON.json"]
+  },
+  "2005_PAITA": {
+    "name": "2005 PAITA",
+    "geojsons": ["2005_PAITA.json"]
+  },
+  "2006_SULLANA": {
+    "name": "2006 SULLANA",
+    "geojsons": ["2006_SULLANA.json"]
+  },
+  "2007_TALARA": {
+    "name": "2007 TALARA",
+    "geojsons": ["2007_TALARA.json"]
+  },
+  "2008_SECHURA": {
+    "name": "2008 SECHURA",
+    "geojsons": ["2008_SECHURA.json"]
+  },
+  "2101_PUNO": {
+    "name": "2101 PUNO",
+    "geojsons": ["2101_PUNO.json"]
+  },
+  "2102_AZANGARO": {
+    "name": "2102 AZANGARO",
+    "geojsons": ["2102_AZANGARO.json"]
+  },
+  "2103_CARABAYA": {
+    "name": "2103 CARABAYA",
+    "geojsons": ["2103_CARABAYA.json"]
+  },
+  "2104_CHUCUITO": {
+    "name": "2104 CHUCUITO",
+    "geojsons": ["2104_CHUCUITO.json"]
+  },
+  "2105_EL_COLLAO": {
+    "name": "2105 EL COLLAO",
+    "geojsons": ["2105_EL_COLLAO.json"]
+  },
+  "2106_HUANCANE": {
+    "name": "2106 HUANCANE",
+    "geojsons": ["2106_HUANCANE.json"]
+  },
+  "2107_LAMPA": {
+    "name": "2107 LAMPA",
+    "geojsons": ["2107_LAMPA.json"]
+  },
+  "2108_MELGAR": {
+    "name": "2108 MELGAR",
+    "geojsons": ["2108_MELGAR.json"]
+  },
+  "2109_MOHO": {
+    "name": "2109 MOHO",
+    "geojsons": ["2109_MOHO.json"]
+  },
+  "2110_SAN_ANTONIO_DE_PUTINA": {
+    "name": "2110 SAN ANTONIO DE PUTINA",
+    "geojsons": ["2110_SAN_ANTONIO_DE_PUTINA.json"]
+  },
+  "2111_SAN_ROMAN": {
+    "name": "2111 SAN ROMAN",
+    "geojsons": ["2111_SAN_ROMAN.json"]
+  },
+  "2112_SANDIA": {
+    "name": "2112 SANDIA",
+    "geojsons": ["2112_SANDIA.json"]
+  },
+  "2113_YUNGUYO": {
+    "name": "2113 YUNGUYO",
+    "geojsons": ["2113_YUNGUYO.json"]
+  },
+  "2201_MOYOBAMBA": {
+    "name": "2201 MOYOBAMBA",
+    "geojsons": ["2201_MOYOBAMBA.json"]
+  },
+  "2202_BELLAVISTA": {
+    "name": "2202 BELLAVISTA",
+    "geojsons": ["2202_BELLAVISTA.json"]
+  },
+  "2203_EL_DORADO": {
+    "name": "2203 EL DORADO",
+    "geojsons": ["2203_EL_DORADO.json"]
+  },
+  "2204_HUALLAGA": {
+    "name": "2204 HUALLAGA",
+    "geojsons": ["2204_HUALLAGA.json"]
+  },
+  "2205_LAMAS": {
+    "name": "2205 LAMAS",
+    "geojsons": ["2205_LAMAS.json"]
+  },
+  "2206_MARISCAL_CACERES": {
+    "name": "2206 MARISCAL CACERES",
+    "geojsons": ["2206_MARISCAL_CACERES.json"]
+  },
+  "2207_PICOTA": {
+    "name": "2207 PICOTA",
+    "geojsons": ["2207_PICOTA.json"]
+  },
+  "2208_RIOJA": {
+    "name": "2208 RIOJA",
+    "geojsons": ["2208_RIOJA.json"]
+  },
+  "2209_SAN_MARTIN": {
+    "name": "2209 SAN MARTIN",
+    "geojsons": ["2209_SAN_MARTIN.json"]
+  },
+  "2210_TOCACHE": {
+    "name": "2210 TOCACHE",
+    "geojsons": ["2210_TOCACHE.json"]
+  },
+  "2301_TACNA": {
+    "name": "2301 TACNA",
+    "geojsons": ["2301_TACNA.json"]
+  },
+  "2302_CANDARAVE": {
+    "name": "2302 CANDARAVE",
+    "geojsons": ["2302_CANDARAVE.json"]
+  },
+  "2303_JORGE_BASADRE": {
+    "name": "2303 JORGE BASADRE",
+    "geojsons": ["2303_JORGE_BASADRE.json"]
+  },
+  "2304_TARATA": {
+    "name": "2304 TARATA",
+    "geojsons": ["2304_TARATA.json"]
+  },
+  "2401_TUMBES": {
+    "name": "2401 TUMBES",
+    "geojsons": ["2401_TUMBES.json"]
+  },
+  "2402_CONTRALMIRANTE_VILLAR": {
+    "name": "2402 CONTRALMIRANTE VILLAR",
+    "geojsons": ["2402_CONTRALMIRANTE_VILLAR.json"]
+  },
+  "2403_ZARUMILLA": {
+    "name": "2403 ZARUMILLA",
+    "geojsons": ["2403_ZARUMILLA.json"]
+  },
+  "2501_CORONEL_PORTILLO": {
+    "name": "2501 CORONEL PORTILLO",
+    "geojsons": ["2501_CORONEL_PORTILLO.json"]
+  },
+  "2502_ATALAYA": {
+    "name": "2502 ATALAYA",
+    "geojsons": ["2502_ATALAYA.json"]
+  },
+  "2503_PADRE_ABAD": {
+    "name": "2503 PADRE ABAD",
+    "geojsons": ["2503_PADRE_ABAD.json"]
+  },
+  "2504_PURUS": {
+    "name": "2504 PURUS",
+    "geojsons": ["2504_PURUS.json"]
+  }
+}

@@ -1,0 +1,930 @@
+let region_index4 = {
+	  "peru": {
+        "name": "Peru",
+        "geojsons": ["Peru.json"]
+      },
+	  "0144_Cuenca_Mauri": {
+        "name": "0144 Cuenca Mauri",
+        "geojsons": ["0144_Cuenca_Mauri.json"]
+      },
+      "0146_Cuenca_Cano": {
+        "name": "0146 Cuenca Cano",
+        "geojsons": ["0146_Cuenca_Cano.json"]
+      },
+      "0148_Cuenca_Ushusuma": {
+        "name": "0148 Cuenca Ushusuma",
+        "geojsons": ["0148_Cuenca_Ushusuma.json"]
+      },
+      "0152_Cuenca_Mauri_Chico": {
+        "name": "0152 Cuenca Mauri Chico",
+        "geojsons": ["0152_Cuenca_Mauri_Chico.json"]
+      },
+      "0155_Intercuenca_0155": {
+        "name": "0155 Intercuenca-0155",
+        "geojsons": ["0155_Intercuenca_0155.json"]
+      },
+      "0156_Cuenca_Callaccame": {
+        "name": "0156 Cuenca Callaccame",
+        "geojsons": ["0156_Cuenca_Callaccame.json"]
+      },
+      "0157_Intercuenca_0157": {
+        "name": "0157 Intercuenca-0157",
+        "geojsons": ["0157_Intercuenca_0157.json"]
+      },
+      "015_Lago_Titicaca": {
+        "name": "015 Lago Titicaca",
+        "geojsons": ["015_Lago_Titicaca.json"]
+      },
+      "016_Cuenca_Ilave": {
+        "name": "016 Cuenca Ilave",
+        "geojsons": ["016_Cuenca_Ilave.json"]
+      },
+      "0171_Intercuenca_0171": {
+        "name": "0171 Intercuenca-0171",
+        "geojsons": ["0171_Intercuenca_0171.json"]
+      },
+      "0172_Cuenca_Suches": {
+        "name": "0172 Cuenca Suches",
+        "geojsons": ["0172_Cuenca_Suches.json"]
+      },
+      "0173_Intercuenca_0173": {
+        "name": "0173 Intercuenca-0173",
+        "geojsons": ["0173_Intercuenca_0173.json"]
+      },
+      "0174_Cuenca_Ilpa": {
+        "name": "0174 Cuenca Ilpa",
+        "geojsons": ["0174_Cuenca_Ilpa.json"]
+      },
+      "0175_Intercuenca_0175": {
+        "name": "0175 Intercuenca-0175",
+        "geojsons": ["0175_Intercuenca_0175.json"]
+      },
+      "0176_Cuenca_Coata": {
+        "name": "0176 Cuenca Coata",
+        "geojsons": ["0176_Cuenca_Coata.json"]
+      },
+      "0178_Cuenca_Huancane": {
+        "name": "0178 Cuenca Huancane",
+        "geojsons": ["0178_Cuenca_Huancane.json"]
+      },
+      "0179_Intercuenca_Ramis": {
+        "name": "0179 Intercuenca Ramis",
+        "geojsons": ["0179_Intercuenca_Ramis.json"]
+      },
+      "017_Lago_Titicaca": {
+        "name": "017 Lago Titicaca",
+        "geojsons": ["017_Lago_Titicaca.json"]
+      },
+      "018_Cuenca_Pucara": {
+        "name": "018 Cuenca Pucara",
+        "geojsons": ["018_Cuenca_Pucara.json"]
+      },
+      "019_Cuenca_Azangaro": {
+        "name": "019 Cuenca Azangaro",
+        "geojsons": ["019_Cuenca_Azangaro.json"]
+      },
+      "1314_Cuenca_Lluta": {
+        "name": "1314 Cuenca Lluta",
+        "geojsons": ["1314_Cuenca_Lluta.json"]
+      },
+      "13152_Cuenca_De_la_Concordia": {
+        "name": "13152 Cuenca De la Concordia",
+        "geojsons": ["13152_Cuenca_De_la_Concordia.json"]
+      },
+      "13153_Intercuenca_13153": {
+        "name": "13153 Intercuenca-13153",
+        "geojsons": ["13153_Intercuenca_13153.json"]
+      },
+      "13154_Cuenca_Hospicio": {
+        "name": "13154 Cuenca Hospicio",
+        "geojsons": ["13154_Cuenca_Hospicio.json"]
+      },
+      "13155_Intercuenca_13155": {
+        "name": "13155 Intercuenca-13155",
+        "geojsons": ["13155_Intercuenca_13155.json"]
+      },
+      "13156_Cuenca_Caplina": {
+        "name": "13156 Cuenca Caplina",
+        "geojsons": ["13156_Cuenca_Caplina.json"]
+      },
+      "13157_Intercuenca_13157": {
+        "name": "13157 Intercuenca-13157",
+        "geojsons": ["13157_Intercuenca_13157.json"]
+      },
+      "13158_Cuenca_Sama": {
+        "name": "13158 Cuenca Sama",
+        "geojsons": ["13158_Cuenca_Sama.json"]
+      },
+      "13159_Intercuenca_13159": {
+        "name": "13159 Intercuenca-13159",
+        "geojsons": ["13159_Intercuenca_13159.json"]
+      },
+      "1316_Cuenca_Locumba": {
+        "name": "1316 Cuenca Locumba",
+        "geojsons": ["1316_Cuenca_Locumba.json"]
+      },
+      "13170_Interna_13170": {
+        "name": "13170 Interna 13170",
+        "geojsons": ["13170_Interna_13170.json"]
+      },
+      "13171_Intercuenca_13171": {
+        "name": "13171 Intercuenca-13171",
+        "geojsons": ["13171_Intercuenca_13171.json"]
+      },
+      "13172_Cuenca_Ilo_Moquegua": {
+        "name": "13172 Cuenca Ilo Moquegua",
+        "geojsons": ["13172_Cuenca_Ilo_Moquegua.json"]
+      },
+      "13173_Intercuenca_13173": {
+        "name": "13173 Intercuenca-13173",
+        "geojsons": ["13173_Intercuenca_13173.json"]
+      },
+      "13174_Intercuenca_13174": {
+        "name": "13174 Intercuenca-13174",
+        "geojsons": ["13174_Intercuenca_13174.json"]
+      },
+      "13175_Intercuenca_13175": {
+        "name": "13175 Intercuenca-13175",
+        "geojsons": ["13175_Intercuenca_13175.json"]
+      },
+      "13176_Intercuenca_13176": {
+        "name": "13176 Intercuenca-13176",
+        "geojsons": ["13176_Intercuenca_13176.json"]
+      },
+      "13177_Intercuenca_13177": {
+        "name": "13177 Intercuenca-13177",
+        "geojsons": ["13177_Intercuenca_13177.json"]
+      },
+      "13178_Cuenca_Honda": {
+        "name": "13178 Cuenca Honda",
+        "geojsons": ["13178_Cuenca_Honda.json"]
+      },
+      "13179_Intercuenca_13179": {
+        "name": "13179 Intercuenca-13179",
+        "geojsons": ["13179_Intercuenca_13179.json"]
+      },
+      "1318_Cuenca_Tambo": {
+        "name": "1318 Cuenca Tambo",
+        "geojsons": ["1318_Cuenca_Tambo.json"]
+      },
+      "1319_Intercuenca_1319": {
+        "name": "1319 Intercuenca-1319",
+        "geojsons": ["1319_Intercuenca_1319.json"]
+      },
+      "132_Cuenca_Quilca_Vitor_Chili": {
+        "name": "132 Cuenca Quilca Vitor Chili",
+        "geojsons": ["132_Cuenca_Quilca_Vitor_Chili.json"]
+      },
+      "133_Intercuenca_133": {
+        "name": "133 Intercuenca-133",
+        "geojsons": ["133_Intercuenca_133.json"]
+      },
+      "134_Cuenca_Camana": {
+        "name": "134 Cuenca Camana",
+        "geojsons": ["134_Cuenca_Camana.json"]
+      },
+      "135_Intercuenca_135": {
+        "name": "135 Intercuenca-135",
+        "geojsons": ["135_Intercuenca_135.json"]
+      },
+      "136_Cuenca_Ocona": {
+        "name": "136 Cuenca Ocona",
+        "geojsons": ["136_Cuenca_Ocona.json"]
+      },
+      "13711_Intercuenca_13711": {
+        "name": "13711 Intercuenca-13711",
+        "geojsons": ["13711_Intercuenca_13711.json"]
+      },
+      "13712_Cuenca_Pescadores_Caraveli": {
+        "name": "13712 Cuenca Pescadores Caraveli",
+        "geojsons": ["13712_Cuenca_Pescadores_Caraveli.json"]
+      },
+      "13713_Intercuenca_13713": {
+        "name": "13713 Intercuenca-13713",
+        "geojsons": ["13713_Intercuenca_13713.json"]
+      },
+      "13714_Cuenca_Atico": {
+        "name": "13714 Cuenca Atico",
+        "geojsons": ["13714_Cuenca_Atico.json"]
+      },
+      "137151_Intercuenca_137151": {
+        "name": "137151 Intercuenca-137151",
+        "geojsons": ["137151_Intercuenca_137151.json"]
+      },
+      "137152_Cuenca_Choclon": {
+        "name": "137152 Cuenca Choclon",
+        "geojsons": ["137152_Cuenca_Choclon.json"]
+      },
+      "137153_Intercuenca_137153": {
+        "name": "137153 Intercuenca-137153",
+        "geojsons": ["137153_Intercuenca_137153.json"]
+      },
+      "137154_Cuenca_Chaparra": {
+        "name": "137154 Cuenca Chaparra",
+        "geojsons": ["137154_Cuenca_Chaparra.json"]
+      },
+      "137155_Intercuenca_137155": {
+        "name": "137155 Intercuenca-137155",
+        "geojsons": ["137155_Intercuenca_137155.json"]
+      },
+      "137156_Cuenca_Chala": {
+        "name": "137156 Cuenca Chala",
+        "geojsons": ["137156_Cuenca_Chala.json"]
+      },
+      "137157_Intercuenca_137157": {
+        "name": "137157 Intercuenca-137157",
+        "geojsons": ["137157_Intercuenca_137157.json"]
+      },
+      "137158_Cuenca_Honda": {
+        "name": "137158 Cuenca Honda",
+        "geojsons": ["137158_Cuenca_Honda.json"]
+      },
+      "137159_Intercuenca_137159": {
+        "name": "137159 Intercuenca-137159",
+        "geojsons": ["137159_Intercuenca_137159.json"]
+      },
+      "13716_Cuenca_Yauca": {
+        "name": "13716 Cuenca Yauca",
+        "geojsons": ["13716_Cuenca_Yauca.json"]
+      },
+      "13717_Intercuenca_13717": {
+        "name": "13717 Intercuenca-13717",
+        "geojsons": ["13717_Intercuenca_13717.json"]
+      },
+      "13718_Cuenca_Acari": {
+        "name": "13718 Cuenca Acari",
+        "geojsons": ["13718_Cuenca_Acari.json"]
+      },
+      "13719_Intercuenca_13719": {
+        "name": "13719 Intercuenca-13719",
+        "geojsons": ["13719_Intercuenca_13719.json"]
+      },
+      "1372_Cuenca_Grande": {
+        "name": "1372 Cuenca Grande",
+        "geojsons": ["1372_Cuenca_Grande.json"]
+      },
+      "1373_Intercuenca_1373": {
+        "name": "1373 Intercuenca-1373",
+        "geojsons": ["1373_Intercuenca_1373.json"]
+      },
+      "1374_Cuenca_Ica": {
+        "name": "1374 Cuenca Ica",
+        "geojsons": ["1374_Cuenca_Ica.json"]
+      },
+      "13751_Intercuenca_13751": {
+        "name": "13751 Intercuenca-13751",
+        "geojsons": ["13751_Intercuenca_13751.json"]
+      },
+      "13752_Cuenca_Pisco": {
+        "name": "13752 Cuenca Pisco",
+        "geojsons": ["13752_Cuenca_Pisco.json"]
+      },
+      "137531_Intercuenca_137531": {
+        "name": "137531 Intercuenca-137531",
+        "geojsons": ["137531_Intercuenca_137531.json"]
+      },
+      "137532_Cuenca_San_Juan": {
+        "name": "137532 Cuenca San Juan",
+        "geojsons": ["137532_Cuenca_San_Juan.json"]
+      },
+      "137533_Intercuenca_137533": {
+        "name": "137533 Intercuenca-137533",
+        "geojsons": ["137533_Intercuenca_137533.json"]
+      },
+      "137534_Cuenca_Topara": {
+        "name": "137534 Cuenca Topara",
+        "geojsons": ["137534_Cuenca_Topara.json"]
+      },
+      "137539_Intercuenca_137539": {
+        "name": "137539 Intercuenca-137539",
+        "geojsons": ["137539_Intercuenca_137539.json"]
+      },
+      "13754_Cuenca_Canete": {
+        "name": "13754 Cuenca Canete",
+        "geojsons": ["13754_Cuenca_Canete.json"]
+      },
+      "1375511_Intercuenca_1375511": {
+        "name": "1375511 Intercuenca-1375511",
+        "geojsons": ["1375511_Intercuenca_1375511.json"]
+      },
+      "1375512_Cuenca_Omas": {
+        "name": "1375512 Cuenca Omas",
+        "geojsons": ["1375512_Cuenca_Omas.json"]
+      },
+      "1375519_Intercuenca_1375519": {
+        "name": "1375519 Intercuenca-1375519",
+        "geojsons": ["1375519_Intercuenca_1375519.json"]
+      },
+      "137552_Cuenca_Mala": {
+        "name": "137552 Cuenca Mala",
+        "geojsons": ["137552_Cuenca_Mala.json"]
+      },
+      "1375531_Intercuenca_1375531": {
+        "name": "1375531 Intercuenca-1375531",
+        "geojsons": ["1375531_Intercuenca_1375531.json"]
+      },
+      "1375532_Cuenca_Chilca": {
+        "name": "1375532 Cuenca Chilca",
+        "geojsons": ["1375532_Cuenca_Chilca.json"]
+      },
+      "1375533_Intercuenca_1375533": {
+        "name": "1375533 Intercuenca-1375533",
+        "geojsons": ["1375533_Intercuenca_1375533.json"]
+      },
+      "1375534_Cuenca_Lurin": {
+        "name": "1375534 Cuenca Lurin",
+        "geojsons": ["1375534_Cuenca_Lurin.json"]
+      },
+      "1375539_Intercuenca_1375539": {
+        "name": "1375539 Intercuenca-1375539",
+        "geojsons": ["1375539_Intercuenca_1375539.json"]
+      },
+      "137554_Cuenca_Rimac": {
+        "name": "137554 Cuenca Rimac",
+        "geojsons": ["137554_Cuenca_Rimac.json"]
+      },
+      "137555_Intercuenca_137555": {
+        "name": "137555 Intercuenca-137555",
+        "geojsons": ["137555_Intercuenca_137555.json"]
+      },
+      "137556_Cuenca_Chillon": {
+        "name": "137556 Cuenca Chillon",
+        "geojsons": ["137556_Cuenca_Chillon.json"]
+      },
+      "137557_Intercuenca_137557": {
+        "name": "137557 Intercuenca-137557",
+        "geojsons": ["137557_Intercuenca_137557.json"]
+      },
+      "137558_Cuenca_Chancay_Huaral": {
+        "name": "137558 Cuenca Chancay Huaral",
+        "geojsons": ["137558_Cuenca_Chancay_Huaral.json"]
+      },
+      "137559_Intercuenca_137559": {
+        "name": "137559 Intercuenca-137559",
+        "geojsons": ["137559_Intercuenca_137559.json"]
+      },
+      "13756_Cuenca_Huaura": {
+        "name": "13756 Cuenca Huaura",
+        "geojsons": ["13756_Cuenca_Huaura.json"]
+      },
+      "137571_Intercuenca_137571": {
+        "name": "137571 Intercuenca-137571",
+        "geojsons": ["137571_Intercuenca_137571.json"]
+      },
+      "137572_Cuenca_Supe": {
+        "name": "137572 Cuenca Supe",
+        "geojsons": ["137572_Cuenca_Supe.json"]
+      },
+      "137579_Intercuenca_137579": {
+        "name": "137579 Intercuenca-137579",
+        "geojsons": ["137579_Intercuenca_137579.json"]
+      },
+      "13758_Cuenca_Pativilca": {
+        "name": "13758 Cuenca Pativilca",
+        "geojsons": ["13758_Cuenca_Pativilca.json"]
+      },
+      "137591_Intercuenca_137591": {
+        "name": "137591 Intercuenca-137591",
+        "geojsons": ["137591_Intercuenca_137591.json"]
+      },
+      "137592_Cuenca_Fortaleza": {
+        "name": "137592 Cuenca Fortaleza",
+        "geojsons": ["137592_Cuenca_Fortaleza.json"]
+      },
+      "137593_Intercuenca_137593": {
+        "name": "137593 Intercuenca-137593",
+        "geojsons": ["137593_Intercuenca_137593.json"]
+      },
+      "137594_Cuenca_Huarmey": {
+        "name": "137594 Cuenca Huarmey",
+        "geojsons": ["137594_Cuenca_Huarmey.json"]
+      },
+      "1375951_Intercuenca_1375951": {
+        "name": "1375951 Intercuenca-1375951",
+        "geojsons": ["1375951_Intercuenca_1375951.json"]
+      },
+      "1375952_Cuenca_Culebras": {
+        "name": "1375952 Cuenca Culebras",
+        "geojsons": ["1375952_Cuenca_Culebras.json"]
+      },
+      "1375959_Intercuenca_1375959": {
+        "name": "1375959 Intercuenca-1375959",
+        "geojsons": ["1375959_Intercuenca_1375959.json"]
+      },
+      "137596_Cuenca_Casma": {
+        "name": "137596 Cuenca Casma",
+        "geojsons": ["137596_Cuenca_Casma.json"]
+      },
+      "137597_Intercuenca_137597": {
+        "name": "137597 Intercuenca-137597",
+        "geojsons": ["137597_Intercuenca_137597.json"]
+      },
+      "137598_Cuenca_Nepena": {
+        "name": "137598 Cuenca Nepena",
+        "geojsons": ["137598_Cuenca_Nepena.json"]
+      },
+      "1375991_Intercuenca_1375991": {
+        "name": "1375991 Intercuenca-1375991",
+        "geojsons": ["1375991_Intercuenca_1375991.json"]
+      },
+      "1375992_Cuenca_Lacramarca": {
+        "name": "1375992 Cuenca Lacramarca",
+        "geojsons": ["1375992_Cuenca_Lacramarca.json"]
+      },
+      "1375999_Intercuenca_1375999": {
+        "name": "1375999 Intercuenca-1375999",
+        "geojsons": ["1375999_Intercuenca_1375999.json"]
+      },
+      "1376_Cuenca_Santa": {
+        "name": "1376 Cuenca Santa",
+        "geojsons": ["1376_Cuenca_Santa.json"]
+      },
+      "137711_Intercuenca_137711": {
+        "name": "137711 Intercuenca-137711",
+        "geojsons": ["137711_Intercuenca_137711.json"]
+      },
+      "137712_Cuenca_Huamansana": {
+        "name": "137712 Cuenca Huamansana",
+        "geojsons": ["137712_Cuenca_Huamansana.json"]
+      },
+      "137713_Intercuenca_137713": {
+        "name": "137713 Intercuenca-137713",
+        "geojsons": ["137713_Intercuenca_137713.json"]
+      },
+      "137714_Cuenca_Viru": {
+        "name": "137714 Cuenca Viru",
+        "geojsons": ["137714_Cuenca_Viru.json"]
+      },
+      "137715_Intercuenca_137715": {
+        "name": "137715 Intercuenca-137715",
+        "geojsons": ["137715_Intercuenca_137715.json"]
+      },
+      "137716_Cuenca_Moche": {
+        "name": "137716 Cuenca Moche",
+        "geojsons": ["137716_Cuenca_Moche.json"]
+      },
+      "137719_Intercuenca_137719": {
+        "name": "137719 Intercuenca-137719",
+        "geojsons": ["137719_Intercuenca_137719.json"]
+      },
+      "13772_Cuenca_Chicama": {
+        "name": "13772 Cuenca Chicama",
+        "geojsons": ["13772_Cuenca_Chicama.json"]
+      },
+      "13773_Intercuenca_13773": {
+        "name": "13773 Intercuenca-13773",
+        "geojsons": ["13773_Intercuenca_13773.json"]
+      },
+      "13774_Cuenca_Jequetepeque": {
+        "name": "13774 Cuenca Jequetepeque",
+        "geojsons": ["13774_Cuenca_Jequetepeque.json"]
+      },
+      "137751_Intercuenca_137751": {
+        "name": "137751 Intercuenca-137751",
+        "geojsons": ["137751_Intercuenca_137751.json"]
+      },
+      "137752_Cuenca_Chaman": {
+        "name": "137752 Cuenca Chaman",
+        "geojsons": ["137752_Cuenca_Chaman.json"]
+      },
+      "137753_Intercuenca_137753": {
+        "name": "137753 Intercuenca-137753",
+        "geojsons": ["137753_Intercuenca_137753.json"]
+      },
+      "137754_Cuenca_Zana": {
+        "name": "137754 Cuenca Zana",
+        "geojsons": ["137754_Cuenca_Zana.json"]
+      },
+      "137759_Intercuenca_137759": {
+        "name": "137759 Intercuenca-137759",
+        "geojsons": ["137759_Intercuenca_137759.json"]
+      },
+      "13776_Cuenca_Chancay_Lambayeque": {
+        "name": "13776 Cuenca Chancay Lambayeque",
+        "geojsons": ["13776_Cuenca_Chancay_Lambayeque.json"]
+      },
+      "137771_Intercuenca_137771": {
+        "name": "137771 Intercuenca-137771",
+        "geojsons": ["137771_Intercuenca_137771.json"]
+      },
+      "137772_Cuenca_Motupe": {
+        "name": "137772 Cuenca Motupe",
+        "geojsons": ["137772_Cuenca_Motupe.json"]
+      },
+      "137773_Intercuenca_137773": {
+        "name": "137773 Intercuenca-137773",
+        "geojsons": ["137773_Intercuenca_137773.json"]
+      },
+      "137774_Cuenca_Olmos": {
+        "name": "137774 Cuenca Olmos",
+        "geojsons": ["137774_Cuenca_Olmos.json"]
+      },
+      "137779_Intercuenca_137779": {
+        "name": "137779 Intercuenca-137779",
+        "geojsons": ["137779_Intercuenca_137779.json"]
+      },
+      "13778_Cuenca_Cascajal": {
+        "name": "13778 Cuenca Cascajal",
+        "geojsons": ["13778_Cuenca_Cascajal.json"]
+      },
+      "13779_Intercuenca_13779": {
+        "name": "13779 Intercuenca-13779",
+        "geojsons": ["13779_Intercuenca_13779.json"]
+      },
+      "1378_Cuenca_Piura": {
+        "name": "1378 Cuenca Piura",
+        "geojsons": ["1378_Cuenca_Piura.json"]
+      },
+      "1379_Intercuenca_1379": {
+        "name": "1379 Intercuenca-1379",
+        "geojsons": ["1379_Intercuenca_1379.json"]
+      },
+      "138_Cuenca_Chira": {
+        "name": "138 Cuenca Chira",
+        "geojsons": ["138_Cuenca_Chira.json"]
+      },
+      "1391_Intercuenca_1391": {
+        "name": "1391 Intercuenca-1391",
+        "geojsons": ["1391_Intercuenca_1391.json"]
+      },
+      "1392_Cuenca_Parinas": {
+        "name": "1392 Cuenca Parinas",
+        "geojsons": ["1392_Cuenca_Parinas.json"]
+      },
+      "13931_Intercuenca_13931": {
+        "name": "13931 Intercuenca-13931",
+        "geojsons": ["13931_Intercuenca_13931.json"]
+      },
+      "13932_Cuenca_Fernandez": {
+        "name": "13932 Cuenca Fernandez",
+        "geojsons": ["13932_Cuenca_Fernandez.json"]
+      },
+      "13933_Intercuenca_13933": {
+        "name": "13933 Intercuenca-13933",
+        "geojsons": ["13933_Intercuenca_13933.json"]
+      },
+      "13934_Cuenca_Quebrada_Seca": {
+        "name": "13934 Cuenca Quebrada Seca",
+        "geojsons": ["13934_Cuenca_Quebrada_Seca.json"]
+      },
+      "13935_Intercuenca_13935": {
+        "name": "13935 Intercuenca-13935",
+        "geojsons": ["13935_Intercuenca_13935.json"]
+      },
+      "13936_Cuenca_Bocapan": {
+        "name": "13936 Cuenca Bocapan",
+        "geojsons": ["13936_Cuenca_Bocapan.json"]
+      },
+      "13939_Intercuenca_13939": {
+        "name": "13939 Intercuenca-13939",
+        "geojsons": ["13939_Intercuenca_13939.json"]
+      },
+      "1394_Cuenca_Tumbes": {
+        "name": "1394 Cuenca Tumbes",
+        "geojsons": ["1394_Cuenca_Tumbes.json"]
+      },
+      "13951_Intercuenca_13951": {
+        "name": "13951 Intercuenca-13951",
+        "geojsons": ["13951_Intercuenca_13951.json"]
+      },
+      "13952_Cuenca_Zarumilla": {
+        "name": "13952 Cuenca Zarumilla",
+        "geojsons": ["13952_Cuenca_Zarumilla.json"]
+      },
+      "4662_Cuenca_Orthon": {
+        "name": "4662 Cuenca Orthon",
+        "geojsons": ["4662_Cuenca_Orthon.json"]
+      },
+      "46643_Intercuenca_Medio_Bajo_Madre_de_Dios": {
+        "name": "46643 Intercuenca Medio Bajo Madre de Dios",
+        "geojsons": ["46643_Intercuenca_Medio_Bajo_Madre_de_Dios.json"]
+      },
+      "46644_Cuenca_Tambopata": {
+        "name": "46644 Cuenca Tambopata",
+        "geojsons": ["46644_Cuenca_Tambopata.json"]
+      },
+      "46645_Intercuenca_Medio_Madre_de_Dios": {
+        "name": "46645 Intercuenca Medio Madre de Dios",
+        "geojsons": ["46645_Intercuenca_Medio_Madre_de_Dios.json"]
+      },
+      "46646_Cuenca_De_Las_Piedras": {
+        "name": "46646 Cuenca De Las Piedras",
+        "geojsons": ["46646_Cuenca_De_Las_Piedras.json"]
+      },
+      "46647_Intercuenca_Medio_Alto_Madre_de_Dios": {
+        "name": "46647 Intercuenca Medio Alto Madre de Dios",
+        "geojsons": ["46647_Intercuenca_Medio_Alto_Madre_de_Dios.json"]
+      },
+      "46648_Cuenca_Inambari": {
+        "name": "46648 Cuenca Inambari",
+        "geojsons": ["46648_Cuenca_Inambari.json"]
+      },
+      "46649_Intercuenca_Alto_Madre_de_Dios": {
+        "name": "46649 Intercuenca Alto Madre de Dios",
+        "geojsons": ["46649_Intercuenca_Alto_Madre_de_Dios.json"]
+      },
+      "49269_Intercuenca_Alto_Acre": {
+        "name": "49269 Intercuenca Alto Acre",
+        "geojsons": ["49269_Intercuenca_Alto_Acre.json"]
+      },
+      "49289_Intercuenca_Alto_Iaco": {
+        "name": "49289 Intercuenca Alto Iaco",
+        "geojsons": ["49289_Intercuenca_Alto_Iaco.json"]
+      },
+      "4929_Alto_Purus": {
+        "name": "4929 Alto Purus",
+        "geojsons": ["4929_Alto_Purus.json"]
+      },
+      "4964_Cuenca_Tarau": {
+        "name": "4964 Cuenca Tarau",
+        "geojsons": ["4964_Cuenca_Tarau.json"]
+      },
+      "4969_Intercuenca_Alto_Yurua": {
+        "name": "4969 Intercuenca Alto Yurua",
+        "geojsons": ["4969_Intercuenca_Alto_Yurua.json"]
+      },
+      "4974_Cuenca_Putumayo": {
+        "name": "4974 Cuenca Putumayo",
+        "geojsons": ["4974_Cuenca_Putumayo.json"]
+      },
+      "4976_Cuenca_Yavari": {
+        "name": "4976 Cuenca Yavari",
+        "geojsons": ["4976_Cuenca_Yavari.json"]
+      },
+      "4977_Intercuenca_4977": {
+        "name": "4977 Intercuenca-4977",
+        "geojsons": ["4977_Intercuenca_4977.json"]
+      },
+      "4978_Cuenca_Napo": {
+        "name": "4978 Cuenca Napo",
+        "geojsons": ["4978_Cuenca_Napo.json"]
+      },
+      "49791_Intercuenca_49791": {
+        "name": "49791 Intercuenca-49791",
+        "geojsons": ["49791_Intercuenca_49791.json"]
+      },
+      "49792_Cuenca_Maniti": {
+        "name": "49792 Cuenca Maniti",
+        "geojsons": ["49792_Cuenca_Maniti.json"]
+      },
+      "49793_Intercuenca_49793": {
+        "name": "49793 Intercuenca-49793",
+        "geojsons": ["49793_Intercuenca_49793.json"]
+      },
+      "49794_Cuenca_Nanay": {
+        "name": "49794 Cuenca Nanay",
+        "geojsons": ["49794_Cuenca_Nanay.json"]
+      },
+      "49795_Intercuenca_49795": {
+        "name": "49795 Intercuenca-49795",
+        "geojsons": ["49795_Intercuenca_49795.json"]
+      },
+      "49796_Cuenca_Itaya": {
+        "name": "49796 Cuenca Itaya",
+        "geojsons": ["49796_Cuenca_Itaya.json"]
+      },
+      "49797_Intercuenca_49797": {
+        "name": "49797 Intercuenca-49797",
+        "geojsons": ["49797_Intercuenca_49797.json"]
+      },
+      "49798_Cuenca_Tahuayo": {
+        "name": "49798 Cuenca Tahuayo",
+        "geojsons": ["49798_Cuenca_Tahuayo.json"]
+      },
+      "49799_Intercuenca_49799": {
+        "name": "49799 Intercuenca-49799",
+        "geojsons": ["49799_Intercuenca_49799.json"]
+      },
+      "4981_Intercuenca_Bajo_Maranon": {
+        "name": "4981 Intercuenca Bajo Maranon",
+        "geojsons": ["4981_Intercuenca_Bajo_Maranon.json"]
+      },
+      "4982_Cuenca_Tigre": {
+        "name": "4982 Cuenca Tigre",
+        "geojsons": ["4982_Cuenca_Tigre.json"]
+      },
+      "4983_Intercuenca_Medio_Bajo_Maranon": {
+        "name": "4983 Intercuenca Medio Bajo Maranon",
+        "geojsons": ["4983_Intercuenca_Medio_Bajo_Maranon.json"]
+      },
+      "49841_Intercuenca_Bajo_Huallga": {
+        "name": "49841 Intercuenca Bajo Huallga",
+        "geojsons": ["49841_Intercuenca_Bajo_Huallga.json"]
+      },
+      "49842_Cuenca_Paranapura": {
+        "name": "49842 Cuenca Paranapura",
+        "geojsons": ["49842_Cuenca_Paranapura.json"]
+      },
+      "49843_Intercuenca_Medio_Bajo_Huallaga": {
+        "name": "49843 Intercuenca Medio Bajo Huallaga",
+        "geojsons": ["49843_Intercuenca_Medio_Bajo_Huallaga.json"]
+      },
+      "49844_Cuenca_Mayo": {
+        "name": "49844 Cuenca Mayo",
+        "geojsons": ["49844_Cuenca_Mayo.json"]
+      },
+      "49845_Intercuenca_Medio_Huallaga": {
+        "name": "49845 Intercuenca Medio Huallaga",
+        "geojsons": ["49845_Intercuenca_Medio_Huallaga.json"]
+      },
+      "49846_Cuenca_Biabo": {
+        "name": "49846 Cuenca Biabo",
+        "geojsons": ["49846_Cuenca_Biabo.json"]
+      },
+      "49847_Intercuenca_Medio_Alto_Huallaga": {
+        "name": "49847 Intercuenca Medio Alto Huallaga",
+        "geojsons": ["49847_Intercuenca_Medio_Alto_Huallaga.json"]
+      },
+      "49848_Cuenca_Huayabamba": {
+        "name": "49848 Cuenca Huayabamba",
+        "geojsons": ["49848_Cuenca_Huayabamba.json"]
+      },
+      "49849_Intercuenca_Alto_Huallaga": {
+        "name": "49849 Intercuenca Alto Huallaga",
+        "geojsons": ["49849_Intercuenca_Alto_Huallaga.json"]
+      },
+      "4985_Intercuenca_Medio_Maranon": {
+        "name": "4985 Intercuenca Medio Maranon",
+        "geojsons": ["4985_Intercuenca_Medio_Maranon.json"]
+      },
+      "4986_Cuenca_Pastaza": {
+        "name": "4986 Cuenca Pastaza",
+        "geojsons": ["4986_Cuenca_Pastaza.json"]
+      },
+      "49871_Intercuenca_49871": {
+        "name": "49871 Intercuenca-49871",
+        "geojsons": ["49871_Intercuenca_49871.json"]
+      },
+      "49872_Cuenca_Carhuapanas": {
+        "name": "49872 Cuenca Carhuapanas",
+        "geojsons": ["49872_Cuenca_Carhuapanas.json"]
+      },
+      "49873_Intercuenca_49873": {
+        "name": "49873 Intercuenca-49873",
+        "geojsons": ["49873_Intercuenca_49873.json"]
+      },
+      "49874_Cuenca_Potro": {
+        "name": "49874 Cuenca Potro",
+        "geojsons": ["49874_Cuenca_Potro.json"]
+      },
+      "49875_Intercuenca_49875": {
+        "name": "49875 Intercuenca-49875",
+        "geojsons": ["49875_Intercuenca_49875.json"]
+      },
+      "49876_Cuenca_Morona": {
+        "name": "49876 Cuenca Morona",
+        "geojsons": ["49876_Cuenca_Morona.json"]
+      },
+      "49877_Intercuenca_49877": {
+        "name": "49877 Intercuenca-49877",
+        "geojsons": ["49877_Intercuenca_49877.json"]
+      },
+      "49878_Cuenca_Santiago": {
+        "name": "49878 Cuenca Santiago",
+        "geojsons": ["49878_Cuenca_Santiago.json"]
+      },
+      "49879_Intercuenca_49879": {
+        "name": "49879 Intercuenca-49879",
+        "geojsons": ["49879_Intercuenca_49879.json"]
+      },
+      "4988_Cuenca_Cenepa": {
+        "name": "4988 Cuenca Cenepa",
+        "geojsons": ["4988_Cuenca_Cenepa.json"]
+      },
+      "49891_Intercuenca_Alto_Maranon_I": {
+        "name": "49891 Intercuenca Alto Maranon I",
+        "geojsons": ["49891_Intercuenca_Alto_Maranon_I.json"]
+      },
+      "49892_Cuenca_Chinchipe": {
+        "name": "49892 Cuenca Chinchipe",
+        "geojsons": ["49892_Cuenca_Chinchipe.json"]
+      },
+      "49893_Intercuenca_Alto_Maranon_II": {
+        "name": "49893 Intercuenca Alto Maranon II",
+        "geojsons": ["49893_Intercuenca_Alto_Maranon_II.json"]
+      },
+      "49894_Cuenca_Utcubamba": {
+        "name": "49894 Cuenca Utcubamba",
+        "geojsons": ["49894_Cuenca_Utcubamba.json"]
+      },
+      "49895_Intercuenca_Alto_Maranon_III": {
+        "name": "49895 Intercuenca Alto Maranon III",
+        "geojsons": ["49895_Intercuenca_Alto_Maranon_III.json"]
+      },
+      "49896_Cuenca_Chamaya": {
+        "name": "49896 Cuenca Chamaya",
+        "geojsons": ["49896_Cuenca_Chamaya.json"]
+      },
+      "49897_Intercuenca_Alto_Maranon_IV": {
+        "name": "49897 Intercuenca Alto Maranon IV",
+        "geojsons": ["49897_Intercuenca_Alto_Maranon_IV.json"]
+      },
+      "49898_Cuenca_Crisnejas": {
+        "name": "49898 Cuenca Crisnejas",
+        "geojsons": ["49898_Cuenca_Crisnejas.json"]
+      },
+      "49899_Intercuenca_Alto_Maranon_V": {
+        "name": "49899 Intercuenca Alto Maranon V",
+        "geojsons": ["49899_Intercuenca_Alto_Maranon_V.json"]
+      },
+      "49911_Intercuenca_49911": {
+        "name": "49911 Intercuenca-49911",
+        "geojsons": ["49911_Intercuenca_49911.json"]
+      },
+      "49912_Cuenca_Tapiche": {
+        "name": "49912 Cuenca Tapiche",
+        "geojsons": ["49912_Cuenca_Tapiche.json"]
+      },
+      "49913_Intercuenca_49913": {
+        "name": "49913 Intercuenca-49913",
+        "geojsons": ["49913_Intercuenca_49913.json"]
+      },
+      "49914_Cuenca_Cushabatay": {
+        "name": "49914 Cuenca Cushabatay",
+        "geojsons": ["49914_Cuenca_Cushabatay.json"]
+      },
+      "49915_Intercuenca_49915": {
+        "name": "49915 Intercuenca-49915",
+        "geojsons": ["49915_Intercuenca_49915.json"]
+      },
+      "49916_Cuenca_Aguaytia": {
+        "name": "49916 Cuenca Aguaytia",
+        "geojsons": ["49916_Cuenca_Aguaytia.json"]
+      },
+      "49917_Intercuenca_49917": {
+        "name": "49917 Intercuenca-49917",
+        "geojsons": ["49917_Intercuenca_49917.json"]
+      },
+      "49918_Cuenca_Tamaya": {
+        "name": "49918 Cuenca Tamaya",
+        "geojsons": ["49918_Cuenca_Tamaya.json"]
+      },
+      "49919_Intercuenca_49919": {
+        "name": "49919 Intercuenca-49919",
+        "geojsons": ["49919_Intercuenca_49919.json"]
+      },
+      "4992_Cuenca_Pachitea": {
+        "name": "4992 Cuenca Pachitea",
+        "geojsons": ["4992_Cuenca_Pachitea.json"]
+      },
+      "4993_Intercuenca_Medio_Bajo_Ucayali": {
+        "name": "4993 Intercuenca Medio Bajo Ucayali",
+        "geojsons": ["4993_Intercuenca_Medio_Bajo_Ucayali.json"]
+      },
+      "4994_Cuenca_Urubamba": {
+        "name": "4994 Cuenca Urubamba",
+        "geojsons": ["4994_Cuenca_Urubamba.json"]
+      },
+      "49951_Intercuenca_49951": {
+        "name": "49951 Intercuenca-49951",
+        "geojsons": ["49951_Intercuenca_49951.json"]
+      },
+      "49952_Cuenca_Poyeni": {
+        "name": "49952 Cuenca Poyeni",
+        "geojsons": ["49952_Cuenca_Poyeni.json"]
+      },
+      "49953_Intercuenca_49953": {
+        "name": "49953 Intercuenca-49953",
+        "geojsons": ["49953_Intercuenca_49953.json"]
+      },
+      "49954_Cuenca_Perene": {
+        "name": "49954 Cuenca Perene",
+        "geojsons": ["49954_Cuenca_Perene.json"]
+      },
+      "49955_Intercuenca_49955": {
+        "name": "49955 Intercuenca-49955",
+        "geojsons": ["49955_Intercuenca_49955.json"]
+      },
+      "49956_Cuenca_Cutivireni": {
+        "name": "49956 Cuenca Cutivireni",
+        "geojsons": ["49956_Cuenca_Cutivireni.json"]
+      },
+      "49957_Intercuenca_49957": {
+        "name": "49957 Intercuenca-49957",
+        "geojsons": ["49957_Intercuenca_49957.json"]
+      },
+      "49958_Cuenca_Anapati": {
+        "name": "49958 Cuenca Anapati",
+        "geojsons": ["49958_Cuenca_Anapati.json"]
+      },
+      "49959_Intercuenca_49959": {
+        "name": "49959 Intercuenca-49959",
+        "geojsons": ["49959_Intercuenca_49959.json"]
+      },
+      "4996_Cuenca_Mantaro": {
+        "name": "4996 Cuenca Mantaro",
+        "geojsons": ["4996_Cuenca_Mantaro.json"]
+      },
+      "4997_Intercuenca_Bajo_Apurimac": {
+        "name": "4997 Intercuenca Bajo Apurimac",
+        "geojsons": ["4997_Intercuenca_Bajo_Apurimac.json"]
+      },
+      "4998_Cuenca_Pampas": {
+        "name": "4998 Cuenca Pampas",
+        "geojsons": ["4998_Cuenca_Pampas.json"]
+      },
+      "4999_Intercuenca_Alto_Apurimac": {
+        "name": "4999 Intercuenca Alto Apurimac",
+        "geojsons": ["4999_Intercuenca_Alto_Apurimac.json"]
+      }
+};
