@@ -233,13 +233,13 @@
 {% block header_buttons %} 
 
 {% if zoom_info %}
-<div class="hidden" style="margin-right: 15px">
+<div class="d-none" style="margin-right: 15px">
   {% gizmo text_input zoom_info %}
 </div>
 {% endif %} 
 
 {% if geoserver_endpoint %}
-<div class="hidden" style="margin-right: 15px">
+<div class="d-none" style="margin-right: 15px">
   {% gizmo text_input geoserver_endpoint %}
 </div>
 {% endif %} 
@@ -357,7 +357,7 @@
               <div class="flex-container-row">
                 <img
                   id="observed-loading-WL"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -371,7 +371,7 @@
                 <h6>Download Observed Water Level Data</h6>
                 <div
                   id="download_observed_waterlevel"
-                  class="btn-group hidden long-term-select"
+                  class="btn-group d-none long-term-select"
                   role="group"
                 >
                   <a
@@ -388,7 +388,7 @@
           </div>
         </div>
       </div>
-      <div id="info" class="hidden"></div>
+      <div id="info" class="d-none"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-bs-dismiss="modal">
           Close
@@ -489,7 +489,7 @@
               <div class="panel-body">
                 <div
                   id="dates"
-                  class="hidden form-group"
+                  class="d-none form-group"
                   style="padding: 30px 30px 20px 0"
                 >
                   <!-- <select id="datesSelect" class="form-control"></select> -->
@@ -498,7 +498,7 @@
                 <div class="flex-container-row">
                   <img
                     id="view-file-loading"
-                    class="view-file hidden"
+                    class="view-file d-none"
                     src="{% static base_name|add:'/images/loader.gif' %}"
                   />
                 </div>
@@ -519,7 +519,7 @@
               <div class="flex-container-row">
                 <img
                   id="his-view-file-loading"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -532,7 +532,7 @@
               <div class="flex-container-row">
                 <img
                   id="fdc-view-file-loading"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -540,7 +540,7 @@
               <div class="flex-container-row">
                 <img
                   id="seasonal_d-view-file-loading"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -548,7 +548,7 @@
               <div class="flex-container-row">
                 <img
                   id="seasonal_m-view-file-loading"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -562,7 +562,7 @@
                 <h6>Download Forecast Stats Data</h6>
                 <div
                   id="download_forecast"
-                  class="btn-group hidden long-term-select"
+                  class="btn-group d-none long-term-select"
                   role="group"
                 >
                   <a
@@ -577,7 +577,7 @@
                 <h6>Download Forecast Ensemble Data</h6>
                 <div
                   id="download_forecast_ens"
-                  class="btn-group hidden long-term-select"
+                  class="btn-group d-none long-term-select"
                   role="group"
                 >
                   <a
@@ -590,7 +590,7 @@
                   </a>
                 </div>
                 <h6>Download ERA 5 Data</h6>
-                <div id="download_era_5" class="btn-group hidden" role="group">
+                <div id="download_era_5" class="btn-group d-none" role="group">
                   <a
                     class="btn btn-success"
                     role="button"
@@ -605,7 +605,7 @@
           </div>
         </div>
       </div>
-      <div id="info" class="hidden"></div>
+      <div id="info" class="d-none"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-bs-dismiss="modal">
           Close

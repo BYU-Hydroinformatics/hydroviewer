@@ -51,13 +51,13 @@
 {% block header_buttons %} 
 
 {% if zoom_info %}
-<div class="hidden" style="margin-right: 15px">
+<div class="d-none" style="margin-right: 15px">
   {% gizmo text_input zoom_info %}
 </div>
 {% endif %} 
 
 {% if geoserver_endpoint %}
-<div class="hidden" style="margin-right: 15px">
+<div class="d-none" style="margin-right: 15px">
   {% gizmo text_input geoserver_endpoint %}
 </div>
 {% endif %} 
@@ -163,7 +163,7 @@
               <div class="flex-container-row">
                 <img
                   id="his-view-file-loading"
-                  class="view-file hidden"
+                  class="view-file d-none"
                   src="{% static base_name|add:'/images/loader.gif' %}"
                 />
               </div>
@@ -177,7 +177,7 @@
                 <h6>Download HIWAT Data</h6>
                 <div
                   id="download_forecast"
-                  class="btn-group hidden long-term-select"
+                  class="btn-group d-none long-term-select"
                   role="group"
                 >
                   <a
@@ -194,7 +194,7 @@
           </div>
         </div>
       </div>
-      <div id="info" class="hidden"></div>
+      <div id="info" class="d-none"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-bs-dismiss="modal">
           Close
@@ -221,7 +221,7 @@
           data-bs-dismiss="modal"
           aria-label="Close"
         >
-          <span aria-hidden="true">&times;</span>
+          <span aria-d-none="true">&times;</span>
         </button>
         <h2 class="modal-title" id="about-modal-label">About HydroViewer</h2>
       </div>
