@@ -296,20 +296,12 @@
   role="dialog"
   aria-labelledby="about-modal-label"
 >
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button
-          type="button"
-          class="close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
         <div class="row">
           <div id="station-info" class="col-md-8"></div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div align="right">
               <img
                 class="obslogos"
@@ -325,26 +317,28 @@
               />
             </div>
           </div>
+
         </div>
+        
         <div id="interaction"></div>
       </div>
       <div class="modal-body">
-        <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active">
+        <ul class="nav nav-tabs" >
+          <li  class="nav-item">
             <a
               id="observedWL_tab_link"
               href="#observedWL"
               aria-controls="observedWL"
-              role="tab"
               data-bs-toggle="tab"
-              >Observed Water Level</a
-            >
+              class="nav-link active"
+              >Observed Water Level
+              </a>
           </li>
-          <li role="presentation">
+          <li class="nav-item">
             <a
               href="#download_data"
               aria-controls="download_data"
-              role="tab"
+              class="nav-link"
               data-bs-toggle="tab"
               >Download</a
             >
@@ -390,7 +384,7 @@
       </div>
       <div id="info" class="d-none"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
           Close
         </button>
       </div>
@@ -406,20 +400,12 @@
   role="dialog"
   aria-labelledby="about-modal-label"
 >
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button
-          type="button"
-          class="close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
         <div class="row">
           <div id="watershed-info" class="col-md-8"></div>
-          <div class="col-md-4">
+          <div class="col-md-2">
             <div align="right">
               <img
                 class="logos"
@@ -435,47 +421,49 @@
               />
             </div>
           </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" class="col-md-2"></button>
+
         </div>
         <div id="interaction"></div>
       </div>
       <div class="modal-body">
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active">
+        <ul class="nav nav-tabs" >
+          <li class="nav-item">
             <a
               id="forecast_tab_link"
               href="#forecast_tab"
               aria-controls="forecast_tab"
-              role="tab"
+              class="nav-link active"
               data-bs-toggle="tab"
               >Forecast</a
             >
           </li>
-          <li role="presentation">
+          <li class="nav-item">
             <a
               id="historical_tab_link"
               href="#historical"
               aria-controls="historical"
-              role="tab"
+              class="nav-link"
               data-bs-toggle="tab"
               >Historical Simulation</a
             >
           </li>
-          <li role="presentation">
+          <li class="nav-item">
             <a
               id="flow_duration_tab_link"
               href="#flow_duration"
               aria-controls="flow_duration"
-              role="tab"
+              class="nav-link"
               data-bs-toggle="tab"
               >Historical Simulation Statistics</a
             >
           </li>
-          <li role="presentation">
+          <li class="nav-item">
             <a
               href="#download"
               aria-controls="download"
-              role="tab"
+              class="nav-link"
               data-bs-toggle="tab"
               >Download</a
             >
@@ -607,7 +595,7 @@
       </div>
       <div id="info" class="d-none"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
           Close
         </button>
       </div>
@@ -665,7 +653,7 @@
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
           Close
         </button>
       </div>
@@ -742,7 +730,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
           Close
         </button>
       </div>
