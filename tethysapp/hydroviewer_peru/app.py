@@ -8,7 +8,7 @@ base_url = base_name.replace('_', '-')
 class Hydroviewer(TethysAppBase):
 
     name = 'HydroViewer Peru'
-    index = '{0}:home'.format(base_name)
+    index = 'home'
     icon = '{0}/images/hydroviewer_peru_logo.jpeg'.format(base_name)
     package = '{0}'.format(base_name)
     root_url = base_url
