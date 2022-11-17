@@ -129,8 +129,8 @@ def ecmwf(request):
             name='update_button',
             style='success',
             attributes={
-                'data-toggle': 'tooltip',
-                'data-placement': 'bottom',
+                'data-bs-toggle': 'tooltip',
+                'data-bs-placement': 'bottom',
                 'title': 'Save as Default Options for WS'
             })
     else:
