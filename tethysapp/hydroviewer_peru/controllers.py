@@ -139,7 +139,7 @@ def ecmwf(request):
     # Check if we need to hide the WS options dropdown.
     hiddenAttr = ""
     if app.get_custom_setting('show_dropdown') and app.get_custom_setting('default_model_type') and app.get_custom_setting('default_watershed_name'):
-        d-noneAttr = "d-none"
+        hiddenAttr = "d-none"
 
     init_model_val = request.GET.get('model', False) or app.get_custom_setting('default_model_type') or 'Select Model'
     init_ws_val = app.get_custom_setting('default_watershed_name') or 'Select Watershed'
