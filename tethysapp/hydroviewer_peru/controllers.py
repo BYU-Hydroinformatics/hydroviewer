@@ -6,7 +6,7 @@ from tethys_sdk.workspaces import app_workspace
 from tethys_sdk.permissions import has_permission
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-
+from tethys_sdk.routing import controller
 import io
 import os
 import ast
@@ -36,7 +36,7 @@ from dateutil.relativedelta import relativedelta
 from .model import Stations_manage
 
 base_name = __package__.split('.')[-1]
-
+base_url = base_name.replace('_', '-')
 
 def set_custom_setting(defaultModelName, defaultWSName):
 
@@ -52,7 +52,7 @@ def set_custom_setting(defaultModelName, defaultWSName):
     db_setting.value = defaultWSName
     db_setting.save()
 
-
+@controller(name='home', url= base_url)
 def home(request):
 
     # Check if we have a default model. If we do, then redirect the user to the default model's page
@@ -88,6 +88,7 @@ def home_standard(request):
 
     return render(request, '{0}/home.html'.format(base_name), context)
 
+@controller(name='get_popup_response',url=f'{base_url}/get-request-data')
 def get_popup_response(request):
     """
     get station attributes
@@ -111,7 +112,7 @@ def get_popup_response(request):
 
     return JsonResponse({})
 
-
+@controller(name='ecmwf',url=f'{base_url}/ecmwf-rapid')
 def ecmwf(request):
 
     # Global oriented objects build at build of the
@@ -344,7 +345,7 @@ def ecmwf(request):
 
     return render(request, '{0}/ecmwf.html'.format(base_name), context)
 
-@app_workspace
+@controller(url={'get-warning-points': f'{base_url}/ecmwf-rapid/get-warning-points', 'get-warning-points2':f'{base_url}/get-warning-points'}, app_workspace=True)
 def get_warning_points(request,app_workspace):
     get_data = request.GET
     peru_id_path = os.path.join(app_workspace.path, 'peru_reachids.csv')
@@ -433,6 +434,7 @@ def create_rp(df_):
 
     return list_coordinates
 
+@controller(url={'get-time-series': f'{base_url}/ecmwf-rapid/get-time-series', 'get-time-series2': f'{base_url}/get-time-series'})
 def ecmwf_get_time_series(request):
     get_data = request.GET
     try:
@@ -564,6 +566,7 @@ def ecmwf_get_time_series(request):
 def get_time_series(request):
     return ecmwf_get_time_series(request)
 
+@controller(url={'get-available-dates': f'{base_url}/ecmwf-rapid/get-available-dates', 'get-available-dates2': f'{base_url}/get-available-dates'})
 def get_available_dates(request):
     get_data = request.GET
 
@@ -601,7 +604,7 @@ def get_available_dates(request):
         "available_dates": json.dumps(dates)
     })
 
-
+@controller(url={'get-historic-data': f'{base_url}/ecmwf-rapid/get-historic-data', 'get-historic-data2': f'{base_url}/get-historic-data'})
 def get_historic_data(request):
     """""
     Returns ERA Interim hydrograph
@@ -652,7 +655,7 @@ def get_historic_data(request):
         print(str(e))
         return JsonResponse({'error': 'No historic data found for the selected reach.'})
 
-
+@controller(url={'get-flow-duration-curve': f'{base_url}/ecmwf-rapid/get-flow-duration-curve', 'get-flow-duration-curve2': f'{base_url}/get-flow-duration-curve'})
 def get_flow_duration_curve(request):
     get_data = request.GET
 
@@ -682,7 +685,7 @@ def get_flow_duration_curve(request):
         print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating flow duration curve.'})
 
-
+@controller(url={'get_historic_data_csv': f'{base_url}/ecmwf-rapid/get-historic-data-csv', 'get_historic_data_csv2': f'{base_url}/get-historic-data-csv'})
 def get_historic_data_csv(request):
     """""
     Returns ERA 5 data as csv
@@ -712,7 +715,7 @@ def get_historic_data_csv(request):
         print(str(e))
         return JsonResponse({'error': 'No historic data found.'})
 
-
+@controller(url={'get_forecast_data_csv': f'{base_url}/ecmwf-rapid/get-forecast-data-csv', 'get_forecast_data_csv2': f'{base_url}/get-forecast-data-csv'})
 def get_forecast_data_csv(request):
     """""
     Returns Forecast data as csv
@@ -749,7 +752,7 @@ def get_forecast_data_csv(request):
         print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
-
+@controller(name='get_forecast_ens_data_csv',url=f'{base_url}/get-forecast-ens-data-csv')
 def get_forecast_ens_data_csv(request):
     """""
     Returns Forecast data as csv
@@ -786,7 +789,7 @@ def get_forecast_ens_data_csv(request):
         print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
-
+@controller(url={'get-daily-seasonal-streamflow': f'{base_url}/ecmwf-rapid/get-daily-seasonal-streamflow', 'get-daily-seasonal-streamflow2': f'{base_url}/get-daily-seasonal-streamflow'})
 def get_daily_seasonal_streamflow(request):
     """
     Returns daily seasonal streamflow chart for unique river ID
@@ -821,6 +824,7 @@ def get_daily_seasonal_streamflow(request):
         print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating daily seasonality.'})
 
+@controller(url={'get-monthly-seasonal-streamflow': f'{base_url}/ecmwf-rapid/get-monthly-seasonal-streamflow', 'get-monthly-seasonal-streamflow2': f'{base_url}/get-monthly-seasonal-streamflow'})
 def get_monthly_seasonal_streamflow(request):
     """
      Returns daily seasonal streamflow chart for unique river ID
@@ -855,6 +859,7 @@ def get_monthly_seasonal_streamflow(request):
         print(str(e))
         return JsonResponse({'error': 'No historic data found for calculating monthly seasonality.'})
 
+@controller(name='set_def_ws',url=f'{base_url}/ecmwf-rapid/admin/setdefault')
 def setDefault(request):
     get_data = request.GET
     set_custom_setting(get_data.get('ws_name'), get_data.get('model_name'))
@@ -870,7 +875,7 @@ def get_units_title(unit_type):
         units_title = "ft"
     return units_title
 
-
+@controller(url={'forecastpercent': f'{base_url}/ecmwf-rapid/forecastpercent', 'forecastpercent2': f'{base_url}/forecastpercent'})
 def forecastpercent(request):
 
     # Check if its an ajax post request
@@ -923,7 +928,7 @@ def forecastpercent(request):
     except Exception:
         return JsonResponse({'error': 'No data found for the selected station.'})
 
-
+@controller(url={'get_waterlevel_data': f'{base_url}/ecmwf-rapid/get-waterlevel-data', 'get_waterlevel_data2': f'{base_url}/get-waterlevel-data'})
 def get_waterlevel_data(request):
     """
     Get data from telemetric stations
@@ -1168,7 +1173,7 @@ def get_waterlevel_data(request):
         print(str(e))
         return JsonResponse({'error': 'No  data found for the station.'})
 
-
+@controller(url={'get_observed_waterlevel_csv': f'{base_url}/ecmwf-rapid/get-observed-waterlevel-csv', 'get_observed_waterlevel_csv2': f'{base_url}/get-observed-waterlevel-csv'})
 def get_observed_waterlevel_csv(request):
     """
     Get data from fews stations
@@ -1406,7 +1411,7 @@ def get_observed_waterlevel_csv(request):
         print(str(e))
         return JsonResponse({'error': 'An unknown error occurred while retrieving the Water Level Data.'})
 
-
+@controller(name='get_stations_directories',url=f'{base_url}/get-station-directories')
 def get_station_directories(request):
     global stations
 
