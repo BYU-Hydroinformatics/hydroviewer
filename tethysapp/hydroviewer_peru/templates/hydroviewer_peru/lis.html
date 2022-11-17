@@ -1,6 +1,14 @@
-{% extends base_name|add:"/base.html" %} {% load static %} {% load tethys_gizmos
-%} {% block import_gizmos %} {% import_gizmo_dependency plotly_view %} {%
-endblock %} {% block app_content %}
+{% extends base_name|add:"/base.html" %} 
+
+{% load static %} 
+{% load tethys_gizmos %} 
+
+{% block import_gizmos %} 
+
+{% import_gizmo_dependency plotly_view %} 
+{% endblock %} 
+
+{% block app_content %}
 <div id="map" class="map">
   <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
     <div>
@@ -36,19 +44,29 @@ endblock %} {% block app_content %}
   "
   src="{% static base_name|add:'/images/loader2.gif' %}"
 />
-{% endblock %} {% block header_buttons %} {% if zoom_info %}
+{% endblock %} 
+
+{% block header_buttons %} 
+
+{% if zoom_info %}
 <div class="hidden" style="margin-right: 15px">
   {% gizmo text_input zoom_info %}
 </div>
-{% endif %} {% if geoserver_endpoint %}
+{% endif %} 
+
+{% if geoserver_endpoint %}
 <div class="hidden" style="margin-right: 15px">
   {% gizmo text_input geoserver_endpoint %}
 </div>
-{% endif %} {% if model_input %}
+{% endif %} 
+
+{% if model_input %}
 <div id="modelSelect" style="margin-right: 15px">
   {% gizmo select_input model_input %}
 </div>
-{% endif %} {% if watershed_select %}
+{% endif %} 
+
+{% if watershed_select %}
 <div id="watershedSelect" style="margin-right: 15px">
   {% gizmo select_input watershed_select %}
 </div>
@@ -73,7 +91,9 @@ endblock %} {% block app_content %}
   <a data-toggle="modal" data-target="#about"
     ><i class="bi bi-info-circle"></i></a>
 </div>
-{% endblock %} {% block after_app_content %}
+{% endblock %} 
+
+{% block after_app_content %}
 <!-- Chart Modal -->
 <div
   class="modal fade"
@@ -265,4 +285,8 @@ endblock %} {% block app_content %}
     </div>
   </div>
 </div>
-{% endblock %} {% block app_actions %} {% endblock %}
+{% endblock %} 
+
+{% block app_actions %} 
+
+{% endblock %}
