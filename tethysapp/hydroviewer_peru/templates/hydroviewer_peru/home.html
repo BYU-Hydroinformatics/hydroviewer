@@ -10,7 +10,7 @@
 
 {% block header_buttons %}
   {% if zoom_info %}
-  <div class="hidden" style="margin-right: 15px;">
+  <div class="d-none" style="margin-right: 15px;">
     {% gizmo text_input zoom_info %}
   </div>
   {% endif %}
@@ -20,8 +20,8 @@
     </div>
   {% endif %}
 
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="About">
-    <a data-toggle="modal" data-target="#about"><span class="glyphicon glyphicon-info-sign"></span></a>
+  <div class="header-button glyphicon-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="About">
+    <a data-bs-toggle="modal" data-bs-target="#about"><i class="bi bi-info-circle"></i></a>
   </div>
 {% endblock %}
 
@@ -33,7 +33,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="modal-title" id="about-modal-label">About HydroViewer</h2>
             </div>
             <div class="modal-body">
